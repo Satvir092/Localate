@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Log In - Schedulinnk</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">Schedulinnk</div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('login') }}" class="active">Login</a></li>
+      <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+    </ul>
+  </nav>
+
+  <section class="auth-section">
+    <h2>Log In</h2>
+    <form method="POST" class="auth-form">
+      <input name="username_or_email" placeholder="Username or Email" required />
+      <input name="password" type="password" placeholder="Password" required />
+      <button type="submit" class="cta-button">Log In</button>
+    </form>
+    <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+  </section>
+
+</body>
+</html>

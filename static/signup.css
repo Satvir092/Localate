@@ -1,0 +1,80 @@
+.auth-section {
+  max-width: 400px;
+  margin: 3rem auto;
+  background-color: #1e1e1e;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(100, 100, 150, 0.3);
+  color: #eee;
+  text-align: center;
+}
+
+.auth-section h2 {
+  margin-bottom: 1.5rem;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #333;
+  color: #eee;
+  transition: background-color 0.3s ease;
+}
+
+.auth-form input::placeholder {
+  color: #aaa;
+}
+
+.auth-form input:focus {
+  background-color: #444;
+  outline: none;
+}
+
+.auth-form button.cta-button {
+  width: 100%;
+  font-size: 1.1rem;
+  background-color: #6659c7;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.auth-form button.cta-button:hover {
+  background-color: #8a6ef8;
+}
+
+.auth-section p {
+  margin-top: 1rem;
+  color: #bbb;
+}
+
+.auth-section p a {
+  color: #8a6ef8;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.auth-section p a:hover {
+  color: #6659c7;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .auth-section {
+    margin: 2rem 1rem;
+    padding: 1.5rem;
+  }
+
+  .auth-form input,
+  .auth-form button.cta-button {
+    font-size: 1rem;
+    padding: 0.65rem 1rem;
+  }
+}
