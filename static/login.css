@@ -65,6 +65,25 @@
   color: #6659c7;
 }
 
+.flash-messages {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.flash-messages li {
+  background-color: rgba(182, 30, 106, 0.1); /* subtle pink background */
+  color: #f0f0f0;
+  border-left: 4px solid #b61e6a;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-radius: 4px;
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .auth-section {
