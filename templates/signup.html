@@ -17,6 +17,7 @@
     </label>
     <ul class="nav-links">
       <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('index') }}">About</a></li>
       <li><a href="{{ url_for('login') }}">Login</a></li>
       <li><a href="{{ url_for('signup') }}" class="active">Sign Up</a></li>
     </ul>
@@ -24,12 +25,24 @@
 
   <section class="auth-section">
     <h2>Sign Up</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
     <form method="POST" class="auth-form">
       <input name="username" placeholder="Username" required />
       <input name="email" type="email" placeholder="Email" required />
       <input name="password" type="password" placeholder="Password" required />
       <button type="submit" class="cta-button">Sign Up</button>
     </form>
+
     <p>Already have an account? <a href="{{ url_for('login') }}">Log In</a></p>
   </section>
 
