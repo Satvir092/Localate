@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo">Localate</div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('dashboard') }}" class="active">Dashboard</a></li>
+      <li><a href="{{ url_for('login') }}">Login</a></li>
+      <li><a href="{{ url_for('signup') }}" class="active">Sign Up</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Dashboard Content -->
+  <main class="dashboard-content">
+
+    <!-- Larger Get Started Section -->
+    <section class="get-started-section">
+      <h2>Get Started</h2>
+      <p>Quickly explore or list your business to connect with your local community.</p>
+      <div class="action-buttons">
+        <a href="{{ url_for('signup') }}" class="action-btn">Create Your Business</a>
+        <a href="#" class="action-btn">Search Local Businesses</a>
+      </div>
+    </section>
+
+    <!-- Two side-by-side main boxes -->
+    <div class="main-boxes-container">
+
+      <!-- Booked Appointments -->
+      <section class="business-section">
+        <h2>Your Booked Appointments</h2>
+        <div class="business-list">
+          <div class="business-card">
+            <h3>Moonlight Coffee</h3>
+            <p>Café</p>
+            <p>Appointment: July 5, 2025 at 10:30 AM</p>
+          </div>
+          <div class="business-card">
+            <h3>QuickFix Barbers</h3>
+            <p>Barber Shop</p>
+            <p>Appointment: July 7, 2025 at 2:00 PM</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Created Business -->
+      <section class="your-business-section">
+        <h2>Your Created Businesses</h2>
+        <div class="business-card owner">
+          <h3>Glow Studio</h3>
+          <p>Category: Beauty</p>
+          <p>Location: Irvine, CA</p>
+          <a href="#" class="edit-btn">Edit Business</a>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+</body>
+</html>
