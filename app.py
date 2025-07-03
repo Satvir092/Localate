@@ -1,52 +1,117 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime
+from postgrest.exceptions import APIError
+import os
+from dotenv import load_dotenv
+from supabase import create_client, Client
+
+# Load environment variables from .env
+load_dotenv()
 
 app = Flask(__name__)
 
-# Configuration
-app.config['SECRET_KEY'] = '394802394'  
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Flask app config
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
-# Mail configuration - replace with your credentials
-app.config['MAIL_SERVER'] = 'smtp.gmail.com' 
+# Mail configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'schedulink.verify@gmail.com'     
-app.config['MAIL_PASSWORD'] = 'rxezfiemubgxyoki'
-app.config['MAIL_DEFAULT_SENDER'] = 'schedulink.verify@gmail.com' 
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
-# Initialize extensions
-db = SQLAlchemy(app)
+# Initialize Flask extensions
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 mail = Mail(app)
 
-# User model
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)
-    email = db.Column(db.String(150), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
-    confirmed = db.Column(db.Boolean, default=False)
-    confirmed_on = db.Column(db.DateTime, nullable=True)
+# Initialize Supabase client
+SUPABASE_URL = os.getenv('SUPABASE_URL')
+SUPABASE_SERVICE_ROLE_KEY = os.getenv('SUPABASE_SERVICE_ROLE_KEY')  
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+
+# User class for Flask-Login
+class User(UserMixin):
+    def __init__(self, id, username, email, password_hash, confirmed, confirmed_on):
+        self.id = id
+        self.username = username
+        self.email = email
+        self.password_hash = password_hash
+        self.confirmed = confirmed
+        self.confirmed_on = confirmed_on
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-# Token helpers
+
+# Helper functions for user data via Supabase
+
+
+def get_user_by_id(user_id):
+    try:
+        response = supabase.table('users').select('*').eq('id', user_id).execute()
+    except APIError:
+        # The query returned 0 or multiple rows or other API error
+        return None
+
+    data = response.data
+    if isinstance(data, list) and len(data) == 1:
+        return User(**data[0])
+    return None
+
+def get_user_by_username_or_email(username_or_email):
+    response = supabase.table('users').select('*').or_(
+        f"username.eq.{username_or_email},email.eq.{username_or_email}"
+    ).limit(1).execute()
+    data = response.data
+    if data:
+        return User(**data[0])
+    return None
+
+
+def create_user(username, email, password_hash):
+    response = supabase.table('users').insert({
+        "username": username,
+        "email": email,
+        "password_hash": password_hash,
+        "confirmed": False,
+        "confirmed_on": None
+    }).execute()
+    data = response.data
+    if data:
+        return User(**data[0])
+    return None
+
+
+def confirm_user_email(email):
+    response = supabase.table('users').update({
+        "confirmed": True,
+        "confirmed_on": datetime.utcnow().isoformat()
+    }).eq('email', email).execute()
+    data = response.data
+    if data:
+        return User(**data[0])
+    return None
+
+
+# Flask-Login user loader
+@login_manager.user_loader
+def load_user(user_id):
+    return get_user_by_id(int(user_id))
+
+
+# Token helpers for email confirmation
 def generate_confirmation_token(email):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     return serializer.dumps(email, salt='email-confirm-salt')
+
 
 def confirm_token(token, expiration=3600):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -56,9 +121,6 @@ def confirm_token(token, expiration=3600):
         return False
     return email
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 # Send confirmation email
 def send_confirmation_email(user_email):
@@ -69,15 +131,18 @@ def send_confirmation_email(user_email):
     msg = Message(subject, recipients=[user_email], html=html)
     mail.send(msg)
 
+
 # Routes
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -86,18 +151,21 @@ def signup():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        if User.query.filter_by(username=username).first():
+        # Check if user exists by username or email
+        if get_user_by_username_or_email(username):
             flash('Username already exists.')
             return redirect(url_for('signup'))
 
-        if User.query.filter_by(email=email).first():
+        if get_user_by_username_or_email(email):
             flash('Email already registered.')
             return redirect(url_for('signup'))
 
-        new_user = User(username=username, email=email, confirmed=False)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
+        password_hash = generate_password_hash(password)
+        new_user = create_user(username, email, password_hash)
+
+        if new_user is None:
+            flash('Error creating user. Please try again.')
+            return redirect(url_for('signup'))
 
         send_confirmation_email(new_user.email)
         flash('Signup successful! A confirmation email has been sent. Please check your inbox.')
@@ -105,22 +173,25 @@ def signup():
 
     return render_template('signup.html')
 
+
 @app.route('/confirm/<token>')
 def confirm_email(token):
     email = confirm_token(token)
     if not email:
         return render_template('confirm_result.html', message="The confirmation link is invalid or has expired.")
 
-    user = User.query.filter_by(email=email).first_or_404()
+    user = get_user_by_username_or_email(email)
+    if not user:
+        return render_template('confirm_result.html', message="User not found.")
+
     if user.confirmed:
         message = "Account already confirmed. Please login."
     else:
-        user.confirmed = True
-        user.confirmed_on = datetime.utcnow()
-        db.session.commit()
+        confirm_user_email(email)
         message = "You have confirmed your account and may now login."
 
     return render_template('confirm_result.html', message=message)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -128,9 +199,7 @@ def login():
         username_or_email = request.form.get('username_or_email')
         password = request.form.get('password')
 
-        user = User.query.filter(
-            (User.username == username_or_email) | (User.email == username_or_email)
-        ).first()
+        user = get_user_by_username_or_email(username_or_email)
 
         if user and user.check_password(password):
             if not user.confirmed:
@@ -146,10 +215,18 @@ def login():
 
     return render_template('login.html')
 
-@app.route('/dashboard')
+
+@app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
+
+    if request.method == 'POST':
+
+        pass
+
+
     return render_template('dashboard.html', user=current_user)
+
 
 @app.route('/logout')
 @login_required
@@ -158,7 +235,6 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('index'))
 
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)

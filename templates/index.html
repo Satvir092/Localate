@@ -2,31 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Localate</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-logo">Localate</div>
     <input type="checkbox" id="nav-toggle" class="nav-toggle">
     <ul class="nav-links">
-    <li><a href="{{ url_for('index') }}">Home</a></li>
-    <li><a href="{{ url_for('about') }}">About</a></li>
-    <li><a href="{{ url_for('login') }}">Login</a></li>
-    <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('login') }}">Login</a></li>
+      <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
     </ul>
     <label for="nav-toggle" class="nav-toggle-label">
       <span></span>
     </label>
   </nav>
 
-  <section class="hero">
-    <h1>Build Your Online Business Presence</h1>
-    <p>Let customers find you and book appointments with ease. All from one platform.</p>
-    <a href="{{ url_for('signup') }}" class="cta-button">Get Started</a>
-  </section>
+  <!-- Hero Section -->
+  <main>
+    <section class="hero">
+      <div class="hero-container">
+        <!-- Customers -->
+        <div class="hero-left">
+          <h1>Find and Book Trusted Local Businesses</h1>
+          <p class="subheading">
+            Localate helps you discover nearby services — from hair salons to mechanics — and book instantly online.
+          </p>
+          <ul class="hero-benefits">
+            <li>🔍 Search by location and category</li>
+            <li>📅 Instantly reserve time slots</li>
+            <li>💬 Communicate directly with businesses</li>
+          </ul>
+        </div>
+
+        <!-- Business Owners -->
+        <div class="hero-right">
+          <h2>Own a Business? Get Discovered on Localate</h2>
+          <p class="subheading">
+            Create a business profile, manage your availability, and connect with local customers — all in one place.
+          </p>
+          <ul class="hero-benefits">
+            <li>🏢 Create a professional business listing</li>
+            <li>📈 Track engagement and bookings</li>
+            <li>📬 Get notified when customers reach out</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Centered Get Started button below both boxes -->
+      <a href="{{ url_for('signup') }}" class="cta-button hero-cta-button">Get Started</a>
+    </section>
+  </main>
+
 </body>
 </html>
