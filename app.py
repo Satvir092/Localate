@@ -227,6 +227,48 @@ def dashboard():
 
     return render_template('dashboard.html', user=current_user)
 
+@app.route('/create_business', methods=['GET', 'POST'])
+@login_required
+def create_business():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        category = request.form.get('category')
+        city = request.form.get('city')
+        description = request.form.get('description')
+        opening_time = request.form.get('start_time')
+        closing_time = request.form.get('end_time')
+        interval = request.form.get('interval')
+        days_list = request.form.getlist('weekdays')
+
+        if not name:
+            flash("Business name is required.", "error")
+            return redirect(url_for('create_business'))
+        
+        if opening_time and closing_time and opening_time >= closing_time:
+            flash("Opening time must be earlier than closing time.", "error")
+            return redirect(url_for('create_business'))
+
+        response = supabase.table('businesses').insert({
+            "user_id": str(current_user.id),
+            "name": name,
+            "category": category,
+            "city": city,
+            "description": description,
+            "open_days" : days_list,
+            "opening_time": opening_time,
+            "interval": interval,
+            "closing_time": closing_time
+        }).execute()
+
+        if response.data:
+            flash("Business created successfully!", "success")
+            return redirect(url_for('dashboard'))
+        else:
+            flash("Failed to create business. Please try again.", "error")
+            return redirect(url_for('create_business'))
+
+    return render_template('create_business.html')
+        
 
 @app.route('/logout')
 @login_required

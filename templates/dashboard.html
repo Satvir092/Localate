@@ -19,8 +19,7 @@
     <ul class="nav-links">
       <li><a href="{{ url_for('index') }}">Home</a></li>
       <li><a href="{{ url_for('dashboard') }}" class="active">Dashboard</a></li>
-      <li><a href="{{ url_for('login') }}">Login</a></li>
-      <li><a href="{{ url_for('signup') }}" class="active">Sign Up</a></li>
+      <li><a href="{{ url_for('login') }}">Logout</a></li>
     </ul>
   </nav>
 
@@ -32,7 +31,7 @@
       <h2>Get Started</h2>
       <p>Quickly explore or list your business to connect with your local community.</p>
       <div class="action-buttons">
-        <a href="{{ url_for('signup') }}" class="action-btn">Create Your Business</a>
+        <a href="{{ url_for('create_business') }}" class="action-btn">Create Your Business</a>
         <a href="#" class="action-btn">Search Local Businesses</a>
       </div>
     </section>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Business</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='create_business.css') }}">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo">Localate</div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <ul class="nav-links">
+      <li><a href="{{ url_for('index') }}">Home</a></li>
+      <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+  </nav>
+
+  <!-- Create Business Form -->
+  <main class="create-business-container">
+    <h2>Create Your Business</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for category, message in messages %}
+            <li class="flash-{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="create-business-form">
+      <input type="text" name="name" placeholder="Business Name" required />
+      <input type="text" name="category" placeholder="Category (e.g., Café, Salon)" />
+      <input type="text" name="city" placeholder="City" />
+      <textarea name="description" placeholder="Describe your business..." rows="5"></textarea>
+
+      <!-- Weekday Selection -->
+      <div class="weekday-section">
+        <label class="section-label">Select Open Days</label>
+        <div class="weekday-options">
+          <input type="checkbox" id="monday" name="weekdays" value="Monday">
+          <label for="monday">Mon</label>
+
+          <input type="checkbox" id="tuesday" name="weekdays" value="Tuesday">
+          <label for="tuesday">Tue</label>
+
+          <input type="checkbox" id="wednesday" name="weekdays" value="Wednesday">
+          <label for="wednesday">Wed</label>
+
+          <input type="checkbox" id="thursday" name="weekdays" value="Thursday">
+          <label for="thursday">Thu</label>
+
+          <input type="checkbox" id="friday" name="weekdays" value="Friday">
+          <label for="friday">Fri</label>
+
+          <input type="checkbox" id="saturday" name="weekdays" value="Saturday">
+          <label for="saturday">Sat</label>
+
+          <input type="checkbox" id="sunday" name="weekdays" value="Sunday">
+          <label for="sunday">Sun</label>
+        </div>
+      </div>
+
+      <!-- Time Fields -->
+      <label for="start_time">Start Time</label>
+      <input type="time" id="start_time" name="start_time" required />
+
+      <label for="end_time">End Time</label>
+      <input type="time" id="end_time" name="end_time" required />
+
+      <!-- Interval Selection -->
+      <select name="interval" required>
+        <option value="" disabled selected>Select Appointment Interval</option>
+        <option value="15">15 minutes</option>
+        <option value="30">30 minutes</option>
+        <option value="60">60 minutes</option>
+        <option value="120">120 minutes</option>
+      </select>
+
+      <button type="submit">Create Business</button>
+    </form>
+  </main>
+
+</body>
+</html>
