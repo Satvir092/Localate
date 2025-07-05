@@ -31,7 +31,6 @@
   user-select: text;
 }
 
-/* Updated inputs for simpler style */
 .auth-form input {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -43,7 +42,7 @@
   color: #eee;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   outline-offset: 2px;
-  box-shadow: none; /* remove inset glow */
+  box-shadow: none; 
 }
 
 .auth-form input::placeholder {
@@ -53,77 +52,59 @@
 
 .auth-form input:focus {
   background-color: #444;
-  box-shadow: 0 0 6px 2px rgba(102, 89, 199, 0.8);
   outline: none;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Keep the polished button style */
 .auth-form button.cta-button {
   width: 100%;
-  font-size: 1.15rem;
-  background: linear-gradient(145deg, #6b50e0, #5a3acc);
-  border: none;
+  font-size: 1.1rem;
+  background-color: transparent;
+  border: 2px solid rgba(138, 110, 248, 0.3); 
   border-radius: 10px;
-  color: white;
-  font-weight: 700;
+  color: #8a6ef8;
+  font-weight: 600;
   cursor: pointer;
-  padding: 0.9rem 1rem;
-  letter-spacing: 0.04em;
-  box-shadow:
-    inset 0 -2px 8px rgba(255, 255, 255, 0.18);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  transition:
-    background 0.35s ease,
-    box-shadow 0.3s ease,
-    transform 0.25s ease;
+  padding: 0.75rem 1rem;
+  letter-spacing: 0.03em;
+  text-shadow: none;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
   user-select: none;
+}
+
+.auth-form button.cta-button {
+  width: 25%;
+  font-size: 1.1rem;
+  background-color: transparent;
+  border: 1px solid rgba(177, 177, 177, 0.3); 
+  border-radius: 10px;
+  color: #fff;             
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  letter-spacing: 0.03em;
+  text-shadow: none;
+  box-shadow: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .auth-form button.cta-button::before {
-  content: "";
-  position: absolute;
-  top: -60%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%);
-  transform: rotate(25deg);
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.45;
-  border-radius: 10px;
-  transition: none;
-}
-
-.auth-form button.cta-button:hover::before,
-.auth-form button.cta-button:focus::before {
-  animation: shine 1.2s ease forwards;
-  opacity: 0.7;
+  display: none;
 }
 
 .auth-form button.cta-button:hover,
 .auth-form button.cta-button:focus {
-  background: linear-gradient(145deg, #7a5def, #6a46e3);
-  box-shadow:
-    inset 0 -4px 10px rgba(255, 255, 255, 0.25);
-  transform: translateY(-4px);
+  background-color: rgba(255, 255, 255, 0.1); 
+  border-color: rgba(255, 255, 255, 0.2);     
+  color: #fff;                               
+  transform: translateY(-2px);
   outline: none;
 }
-
-@keyframes shine {
-  0% {
-    transform: translateX(-100%) rotate(25deg);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateX(100%) rotate(25deg);
-    opacity: 0;
-  }
-}
-
 .auth-section p {
   margin-top: 1.5rem;
   color: #bbb;

@@ -24,7 +24,7 @@
   </nav>
 
   <section class="auth-section">
-    <h2>Log In</h2>
+    <h2>Login</h2>
       {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <ul class="flash-messages">
@@ -37,7 +37,7 @@
     <form method="POST" class="auth-form">
       <input name="username_or_email" placeholder="Username or Email" required />
       <input name="password" type="password" placeholder="Password" required />
-      <button type="submit" class="cta-button">Log In</button>
+      <button type="submit" class="cta-button">→</button>
     </form>
     <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
   </section>

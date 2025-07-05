@@ -187,46 +187,44 @@ body {
 
 /* General Action Buttons */
 .action-btn {
-  padding: 0.85rem 2rem;
+  width: 100%;
   font-size: 1.1rem;
-  font-weight: 700;
+  background-color: transparent;
+  border: 1px solid rgba(177, 177, 177, 0.3);  
   border-radius: 10px;
-  background: linear-gradient(145deg, #6b50e0, #5a3acc);
-  color: white;
-  text-decoration: none;
-  text-align: center;
-  box-shadow: inset 0 -2px 8px rgba(255, 255, 255, 0.18);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  transition: background 0.35s ease, box-shadow 0.3s ease, transform 0.25s ease;
+  color: #ddd;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  letter-spacing: 0.03em;
+  text-shadow: none;
+  box-shadow: none;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  user-select: none;
+  text-decoration: none; /* removes underline from links */
 }
 
+/* Remove shine */
 .action-btn::before {
-  content: "";
-  position: absolute;
-  top: -60%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%);
-  transform: rotate(25deg);
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.45;
+  display: none;
 }
 
-.action-btn:hover::before {
-  animation: shine 1.2s ease forwards;
-  opacity: 0.7;
-}
-
-.action-btn:hover {
-  background: linear-gradient(145deg, #7a5def, #6a46e3);
-  box-shadow: inset 0 -4px 10px rgba(255, 255, 255, 0.25);
-  transform: translateY(-4px);
+/* On hover/focus: fill with gray, not purple */
+.action-btn:hover,
+.action-btn:focus {
+  background-color: #2e2e2e; /* clean, noticeable gray */
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  transform: none;
   outline: none;
+}
+
+/* On active/click */
+.action-btn:active {
+  background-color: #353535;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 
 @keyframes shine {

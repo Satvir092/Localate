@@ -207,7 +207,6 @@ def login():
                 return redirect(url_for('login'))
 
             login_user(user)
-            flash('Logged in successfully.')
             return redirect(url_for('dashboard'))
 
         flash('Invalid credentials, please try again.')
