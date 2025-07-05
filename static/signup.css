@@ -13,14 +13,14 @@
   transition: box-shadow 0.35s ease, transform 0.35s ease;
   cursor: default;
   will-change: box-shadow, transform;
-  width: 100%;              /* make it responsive but contained */
-  box-sizing: border-box;   /* ensure padding included in width */
+  width: 100%;              
+  box-sizing: border-box;   
 }
 
 .auth-form input,
 .auth-form button.cta-button {
-  width: 100%;              /* fill the auth-section width */
-  box-sizing: border-box;   /* keep padding inside width */
+  width: 100%;             
+  box-sizing: border-box;   
 }
 
 .auth-section:hover {
@@ -41,15 +41,15 @@
 .auth-form input {
   width: 100%;
   padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.3rem;
   border: none;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
   background-color: #333;
   color: #eee;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
   outline-offset: 2px;
+  box-shadow: none; 
 }
 
 .auth-form input::placeholder {
@@ -58,52 +58,38 @@
 
 .auth-form input:focus {
   background-color: #444;
-  box-shadow: 0 0 8px #8a6ef8;
   outline: none;
 }
 
 .auth-form button.cta-button {
-  width: 100%;
-  font-size: 1.15rem;
-  background: linear-gradient(145deg, #6b50e0, #5a3acc);
-  border: none;
+  width: 40%;
+  font-size: 1.1rem;
+  background-color: transparent;
+  border: 1px solid rgba(177, 177, 177, 0.3); 
   border-radius: 10px;
-  color: white;
-  font-weight: 700;
+  color: #fff;          
+  font-weight: 600;
   cursor: pointer;
-  padding: 0.85rem 1.5rem;
-  transition: background 0.35s ease, box-shadow 0.3s ease, transform 0.25s ease;
-  box-shadow: inset 0 -2px 8px rgba(255, 255, 255, 0.18);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-  user-select: none;
+  padding: 0.75rem 1rem;
   letter-spacing: 0.03em;
-  margin-top: 1.5rem;
+  text-shadow: none;
+  box-shadow: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
   position: relative;
   overflow: hidden;
-  z-index: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .auth-form button.cta-button::before {
-  content: "";
-  position: absolute;
-  top: -60%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%);
-  transform: rotate(25deg);
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.45;
-  border-radius: 10px;
-  transition: none;
+  display: none;
 }
 
-.auth-form button.cta-button:hover::before,
-.auth-form button.cta-button:focus::before {
-  animation: shine 1.2s ease forwards;
-  opacity: 0.7;
+.auth-form button.cta-button:hover,
+.auth-form button.cta-button:focus {
+  background-color: rgba(255, 255, 255, 0.1); 
+  border-color: rgba(255, 255, 255, 0.2);     
+  color: #fff;                                
+  transform: translateY(-2px);
+  outline: none;
 }
 
 @keyframes shine {
@@ -119,13 +105,16 @@
 
 .auth-form button.cta-button:hover,
 .auth-form button.cta-button:focus {
-  background: linear-gradient(145deg, #7a5def, #6a46e3);
-  box-shadow:
-    inset 0 -4px 10px rgba(255, 255, 255, 0.25);
-  transform: translateY(-4px);
+  /* New hover style: subtle gray fill */
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color:     rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-2px);
   outline: none;
+  box-shadow: none;
 }
 
+/* Keep your paragraph and link styles as-is */
 .auth-section p {
   margin-top: 1rem;
   color: #bbb;
@@ -159,6 +148,11 @@
   font-size: 0.95rem;
   border-radius: 4px;
   box-shadow: none;
+}
+ .auth-form button.cta-button {
+  margin-top: 0.8rem; 
+  padding: 0.75rem 1.2rem; 
+  border-radius: 8px; 
 }
 
 /* Mobile adjustments */
