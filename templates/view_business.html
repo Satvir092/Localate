@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='view_bus.css') }}" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo">Localate</div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('business.index') }}">Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}" class="active">Dashboard</a></li>
+      <li><a href="{{ url_for('auth.login') }}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="view-business-container" style="position: relative;">
+    <div class="profile-pic-upload" data-business-id="{{ business.id }}">
+  <label for="profilePicInput" class="upload-circle">
+    {% if business.profile_image_url %}
+      <img id="profilePicPreview"
+           src="{{ business.profile_image_url }}"
+           alt="Profile Preview" />
+      <span class="plus-icon" style="display: none;">+</span>
+    {% else %}
+      <img id="profilePicPreview"
+           src=""
+           alt="Profile Preview" />
+      <span class="plus-icon">+</span>
+    {% endif %}
+  </label>
+  <input type="file" id="profilePicInput" accept="image/*" style="display: none;" />
+  <p class="upload-label">Add Profile Pic</p>
+</div>
+
+    <h1>{{ business.name }}</h1>
+    <p class="category">{{ business.category }}</p>
+    <p class="location"><strong>City:</strong> {{ business.city }}</p>
+    <p class="description">{{ business.description }}</p>
+
+    <div class="business-details">
+      <p><strong>Opening Time:</strong> {{ business.opening_time }}</p>
+      <p><strong>Closing Time:</strong> {{ business.closing_time }}</p>
+      <p><strong>Open Days:</strong> {{ business.open_days | join(', ') }}</p>
+      <p><strong>Slot Interval:</strong> {{ business.interval }} minutes</p>
+    </div>
+
+    <div class="action-buttons">
+      <a href="{{ url_for('business.view_business', business_id=business.id) }}" class="btn">Edit Business</a>
+      <a href="{{ url_for('business.dashboard') }}" class="btn secondary">Back to Dashboard</a>
+    </div>
+  </main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const uploadDiv = document.querySelector('.profile-pic-upload');
+  if (!uploadDiv) return; // guard
+
+  const businessId = uploadDiv.dataset.businessId;
+  const fileInput = document.getElementById('profilePicInput');
+  const previewImg = document.getElementById('profilePicPreview');
+  const plusIcon = document.querySelector('.plus-icon');
+
+  fileInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;  // no file, no upload
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      previewImg.src = e.target.result;
+      previewImg.style.display = 'block';
+      plusIcon.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+
+    const formData = new FormData();
+    formData.append('profile_pic', file);
+
+    fetch(`/upload_profile_pic/${businessId}`, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log("Upload successful:", data.url);
+        } else {
+          alert("Upload failed: " + data.error);
+        }
+      })
+      .catch(err => {
+        console.error("Upload error:", err);
+        alert("Upload failed.");
+      });
+  });
+});
+
+</script>
+
+</body>
+</html>

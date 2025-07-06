@@ -13,10 +13,10 @@
     <div class="nav-logo">Localate</div>
     <input type="checkbox" id="nav-toggle" class="nav-toggle">
     <ul class="nav-links">
-      <li><a href="{{ url_for('index') }}">Home</a></li>
-      <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-      <li><a href="{{ url_for('login') }}">Login</a></li>
-      <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+      <li><a href="{{ url_for('business.index') }}">Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+      <li><a href="{{ url_for('auth.signup') }}">Sign Up</a></li>
     </ul>
     <label for="nav-toggle" class="nav-toggle-label">
       <span></span>
@@ -55,7 +55,7 @@
       </div>
 
       <!-- Centered Get Started button below both boxes -->
-      <a href="{{ url_for('signup') }}" class="cta-button hero-cta-button">Get Started</a>
+      <a href="{{ url_for('auth.signup') }}" class="cta-button hero-cta-button">Get Started</a>
     </section>
   </main>
 

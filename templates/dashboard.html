@@ -17,9 +17,9 @@
       <span></span>
     </label>
     <ul class="nav-links">
-      <li><a href="{{ url_for('index') }}">Home</a></li>
-      <li><a href="{{ url_for('dashboard') }}" class="active">Dashboard</a></li>
-      <li><a href="{{ url_for('login') }}">Logout</a></li>
+      <li><a href="{{ url_for('business.index') }}">Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}" class="active">Dashboard</a></li>
+      <li><a href="{{ url_for('auth.login') }}">Logout</a></li>
     </ul>
   </nav>
 
@@ -31,7 +31,7 @@
       <h2>Get Started</h2>
       <p>Quickly explore or list your business to connect with your local community.</p>
       <div class="action-buttons">
-        <a href="{{ url_for('create_business') }}" class="action-btn">+ Create Your Business</a>
+        <a href="{{ url_for('business.create_business') }}" class="action-btn">+ Create Your Business</a>
         <a href="#" class="action-btn">🔍 Search Local Businesses</a>
       </div>
     </section>
@@ -59,12 +59,19 @@
       <!-- Created Business -->
       <section class="your-business-section">
         <h2>Your Created Businesses</h2>
-        <div class="business-card owner">
-          <h3>Glow Studio</h3>
-          <p>Category: Beauty</p>
-          <p>Location: Irvine, CA</p>
-          <a href="#" class="edit-btn">Edit Business</a>
-        </div>
+
+        {% if businesses %}
+          {% for biz in businesses %}
+            <div class="business-card owner">
+              <h3>{{ biz.name }}</h3>
+              <p>Category: {{ biz.category }}</p>
+              <p>Location: {{ biz.city }}</p>
+              <a href="{{ url_for('business.view_business', business_id=biz.id) }}" class="edit-btn">Edit Business</a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>Nothing to see here yet...</p>
+        {% endif %}
       </section>
 
     </div>

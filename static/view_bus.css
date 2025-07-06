@@ -1,0 +1,219 @@
+body {
+  background-color: #121212;
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Main container */
+.view-business-container {
+  max-width: 1000px;
+  margin: 4rem auto;
+  padding: 3rem 4rem;
+  background-color: #1f1f1f;
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 2px rgba(138, 110, 248, 0.25),
+    0 20px 40px rgba(138, 110, 248, 0.18);
+  text-align: left;
+  transition: all 0.3s ease-in-out;
+}
+
+.view-business-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.view-business-container .category {
+  color: #bbb;
+  font-size: 1.15rem;
+  font-style: italic;
+  margin-bottom: 2rem;
+  display: block;
+}
+
+.view-business-container .location,
+.view-business-container .description {
+  margin-bottom: 1.5rem;
+  font-size: 1.15rem;
+}
+
+.business-details {
+  background-color: #282828;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+}
+
+.business-details p {
+  margin-bottom: 1.2rem;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.business-details strong {
+  display: inline-block;
+  width: 160px;
+  color: #9e9e9e;
+}
+
+/* Buttons */
+.action-buttons {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.85rem 2rem;
+  border-radius: 10px;
+  background-color: transparent;
+  border: 1.5px solid rgba(138, 110, 248, 0.4);
+  color: #eee;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.btn:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(138, 110, 248, 0.6);
+  transform: translateY(-2px);
+}
+
+.btn.secondary {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Mobile Compatibility */
+@media (max-width: 700px) {
+  .view-business-container {
+    margin: 2rem 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .view-business-container h1 {
+    font-size: 2rem;
+  }
+
+  .business-details p {
+    font-size: 1rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .business-details strong {
+    width: 120px;
+  }
+}
+
+/* Mobile Compatibility */
+@media (max-width: 600px) {
+  .view-business-container {
+    margin: 2rem 1rem;
+    padding: 1.8rem 1.5rem;
+  }
+
+  .view-business-container h1 {
+    font-size: 1.6rem;
+  }
+
+  .business-details p {
+    font-size: 0.9rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+.view-business-container {
+  position: relative;
+  background-color: #1f1f1f;
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1.5px rgba(102, 89, 199, 0.6), 0 8px 20px rgba(102, 89, 199, 0.15);
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Profile Pic Upload Button */
+.profile-pic-upload {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  text-align: center;
+}
+
+.upload-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #2c2c2c;
+  color: #fff;
+  font-size: 2.5rem;
+  cursor: pointer;
+  border: 2px solid #444;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden; /* keep image inside the circle */
+}
+
+.upload-circle:hover {
+  background-color: #3a3a3a;
+  transform: scale(1.05);
+}
+
+.upload-circle img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  /* Show image by default; hide/show handled in template or JS */
+  z-index: 2;
+}
+
+.plus-icon {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1;
+  margin-top: -8px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.upload-label {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #aaa;
+}
