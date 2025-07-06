@@ -16,10 +16,10 @@
       <span></span>
     </label>
     <ul class="nav-links">
-      <li><a href="{{ url_for('index') }}">Home</a></li>
-      <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-      <li><a href="{{ url_for('login') }}">Login</a></li>
-      <li><a href="{{ url_for('signup') }}" class="active">Sign Up</a></li>
+      <li><a href="{{ url_for('business.index') }}">Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+      <li><a href="{{ url_for('auth.signup') }}" class="active">Sign Up</a></li>
     </ul>
   </nav>
 
@@ -43,7 +43,7 @@
       <button type="submit" class="cta-button">Sign Up</button>
     </form>
 
-    <p>Already have an account? <a href="{{ url_for('login') }}">Log In</a></p>
+    <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log In</a></p>
   </section>
 
 </body>
