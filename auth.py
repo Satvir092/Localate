@@ -45,8 +45,9 @@ def signup():
         if not data:
             flash('Error creating user. Please try again.')
             return redirect(url_for('auth.signup'))
-
-        send_confirmation_email(email)
+        
+        if not current_app.config.get('TESTING'):
+            send_confirmation_email(email)
         flash('Signup successful! A confirmation email has been sent. Please check your inbox.')
         return redirect(url_for('auth.signup'))
 
