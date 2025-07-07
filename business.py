@@ -107,3 +107,5 @@ def view_business(business_id):
     else:
         flash("Business not found.", "error")
         return redirect(url_for('business.dashboard'))  
+    
+#@business_bp.route('/')
