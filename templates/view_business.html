@@ -9,7 +9,6 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-logo">Localate</div>
     <input type="checkbox" id="nav-toggle" class="nav-toggle" />
@@ -55,7 +54,7 @@
     </div>
 
     <div class="action-buttons">
-      <a href="{{ url_for('business.view_business', business_id=business.id) }}" class="btn">Edit Business</a>
+      <a href="{{ url_for('business.edit_business', business_id=business.id) }}" class="btn">Edit Business</a>
       <a href="{{ url_for('business.dashboard') }}" class="btn secondary">Back to Dashboard</a>
     </div>
   </main>

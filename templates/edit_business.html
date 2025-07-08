@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Business</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='create_business.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">Localate</div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('business.index') }}">Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="create-business-container">
+    <h2>Edit Your Business</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for category, message in messages %}
+            <li class="flash-{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data" class="create-business-form">
+      <label for="name">Business Name</label>
+      <input type="text" name="name" id="name" placeholder="Business Name" value="{{ business.name }}" required />
+
+      <label for="category">Category</label>
+      <input type="text" name="category" id="category" placeholder="Category (e.g., Salon, Gym)" value="{{ business.category }}" />
+
+      <label for="city">City</label>
+      <input type="text" name="city" id="city" placeholder="City" value="{{ business.city }}" required />
+
+      <label for="state">State</label>
+      <select name="state" id="state" required>
+        <option value="" disabled>Select State</option>
+        {% for abbr in ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'] %}
+          <option value="{{ abbr }}" {% if business.state == abbr %}selected{% endif %}>{{ abbr }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="description">Description</label>
+      <textarea name="description" id="description" placeholder="Describe your business..." rows="5">{{ business.description }}</textarea>
+
+      <div class="weekday-section">
+        <label class="section-label">Select Open Days</label>
+        <div class="weekday-options">
+          {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+            <input type="checkbox" name="weekdays" id="{{ day }}" value="{{ day }}"
+                   {% if day in business.open_days %}checked{% endif %} />
+            <label for="{{ day }}">{{ day[:3] }}</label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <label for="start_time">Opening Time</label>
+      <input type="time" name="start_time" id="start_time" value="{{ business.opening_time }}" required />
+
+      <label for="end_time">Closing Time</label>
+      <input type="time" name="end_time" id="end_time" value="{{ business.closing_time }}" required />
+
+      <label for="interval">Appointment Interval</label>
+      <select name="interval" id="interval" required>
+        <option value="15" {% if business.interval == "15" %}selected{% endif %}>15 minutes</option>
+        <option value="30" {% if business.interval == "30" %}selected{% endif %}>30 minutes</option>
+        <option value="60" {% if business.interval == "60" %}selected{% endif %}>60 minutes</option>
+        <option value="120" {% if business.interval == "120" %}selected{% endif %}>120 minutes</option>
+      </select>
+
+      <button type="submit">Update Business</button>
+    </form>
+  </main>
+
+</body>
+</html>

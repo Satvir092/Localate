@@ -122,8 +122,5 @@ class TestAuth(unittest.TestCase):
         self.assertIn("Email already registered.", html)
         self.assertNotIn("Welcome", html)
 
-
-
-
 if __name__ == '__main__':
     unittest.main()

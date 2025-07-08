@@ -1,10 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, current_app
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-import time
 from datetime import datetime
 import json
-from utils import allowed_file
 
 business_bp = Blueprint('business', __name__)
 
@@ -108,4 +106,74 @@ def view_business(business_id):
         flash("Business not found.", "error")
         return redirect(url_for('business.dashboard'))  
     
-#@business_bp.route('/')
+@business_bp.route('/edit_business/<int:business_id>', methods=['GET', 'POST'])
+@login_required
+def edit_business(business_id):
+    supabase = current_app.supabase
+
+    # Fetch business to ensure ownership
+    response = supabase.table('businesses').select('*').eq('id', business_id).eq('user_id', str(current_user.id)).single().execute()
+    
+    if not response.data:
+        flash("Business not found or you don't have permission to edit it.", "error")
+        return redirect(url_for('business.dashboard'))
+
+    business = response.data
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        category = request.form.get('category')
+        city = request.form.get('city')
+        description = request.form.get('description')
+        opening_time = request.form.get('start_time')
+        closing_time = request.form.get('end_time')
+        interval = request.form.get('interval')
+        days_list = request.form.getlist('weekdays')
+        state = request.form.get('state')
+
+        if not name:
+            flash("Business name is required.", "error")
+            return redirect(request.url)
+
+        if not city:
+            flash("Please select a city.", "error")
+            return redirect(request.url)
+
+        if not state:
+            flash("Please select a state.", "error")
+            return redirect(request.url)
+
+        if not days_list:
+            flash("Please select at least one open day.", "error")
+            return redirect(request.url)
+
+        if not interval:
+            flash("Please select an appointment interval.", "error")
+            return redirect(request.url)
+
+        if opening_time and closing_time and opening_time >= closing_time:
+            flash("Opening time must be earlier than closing time.", "error")
+            return redirect(request.url)
+
+        update_data = {
+            "name": name,
+            "category": category,
+            "city": city,
+            "description": description,
+            "opening_time": opening_time,
+            "closing_time": closing_time,
+            "interval": interval,
+            "open_days": days_list,
+            "state": state
+        }
+
+        update_response = supabase.table('businesses').update(update_data).eq('id', business_id).execute()
+
+        if update_response.data:
+            return redirect(url_for('business.dashboard'))
+        else:
+            flash("Failed to update business. Please try again.", "error")
+            return redirect(request.url)
+
+
+    return render_template('edit_business.html', business=business)
