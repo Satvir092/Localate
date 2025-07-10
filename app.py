@@ -5,6 +5,7 @@ from supabase import create_client
 from extensions import login_manager, mail
 from auth import auth_bp
 from business import business_bp
+from search import search_bp
 from flask import render_template
 
 load_dotenv()
@@ -34,6 +35,7 @@ def create_app():
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(business_bp, url_prefix='/business')
+    app.register_blueprint(search_bp, url_prefix='/search')
 
     # Define the index route directly on app so '/' works correctly
     @app.route('/')

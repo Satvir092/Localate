@@ -1,0 +1,144 @@
+body {
+  background-color: #121212;
+  color: #eee;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.business-card {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  color: #eee;
+}
+
+.business-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.business-details-left {
+  flex: 2;
+}
+
+.business-image-wrapper {
+  flex-shrink: 0;
+}
+
+.business-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #8a6ef8;
+}
+
+.business-meta {
+  margin-top: 1.5rem;
+  line-height: 1.6;
+}
+
+.category {
+  color: #8a6ef8;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.location, .description {
+  margin: 0.5rem 0;
+  color: #ccc;
+}
+
+.action-buttons {
+  margin-top: 2rem;
+}
+
+.btn.secondary {
+  background-color: #2a2a2a;
+  color: #eee;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn.secondary:hover {
+  background-color: #444;
+}
+
+.navbar {
+  background-color: #1a1a1a;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo {
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-toggle, .nav-toggle-label {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .business-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .business-card-header {
+    flex-direction: column-reverse;
+    align-items: center;
+    text-align: center;
+  }
+
+  .business-details-left {
+    flex: 1;
+    width: 100%;
+  }
+
+  .business-image-wrapper {
+    margin-bottom: 1rem;
+  }
+
+  .business-image {
+    width: 90px;
+    height: 90px;
+  }
+
+  .action-buttons {
+    text-align: center;
+  }
+
+  .btn.secondary {
+    width: 100%;
+    max-width: 300px;
+  }
+}

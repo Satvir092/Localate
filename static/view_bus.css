@@ -39,6 +39,9 @@ body {
 .view-business-container .description {
   margin-bottom: 1.5rem;
   font-size: 1.15rem;
+  max-width: 100%;       
+  word-wrap: break-word; 
+  overflow-wrap: break-word;
 }
 
 .business-details {
