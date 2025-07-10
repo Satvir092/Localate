@@ -24,12 +24,32 @@
 
   <main class="dashboard-content">
 
-    <section class="get-started-section">
+  <div class="floating-profile">
+  <label for="profilePicInput" class="profile-circle" tabindex="0" aria-label="Upload Profile Picture">
+    {% if current_user.profile_image_url %}
+      <img src="{{ current_user.profile_image_url }}" alt="Your Profile" />
+    {% else %}
+      <span class="plus-only">+</span>
+    {% endif %}
+  </label>
+  <input type="file" id="profilePicInput" accept="image/*" style="display: none;" />
+
+  <div class="edit-profile-btn-container">
+    <a href="#" class="edit-profile-btn">Edit Profile</a>
+  </div>
+</div>
+    
+  <section class="get-started-section">
       <h2>Get Started</h2>
       <p>Quickly explore or list your business to connect with your local community.</p>
       <div class="action-buttons">
         <a href="{{ url_for('business.create_business') }}" class="action-btn">+ Create Your Business</a>
-        <a href="#" class="action-btn">🔍 Search Local Businesses</a>
+        <a href="{{ url_for('search.search') }}" class="action-btn">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16" style="vertical-align: middle; margin-right: -1px; position: relative; top: -2.5px;">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0a7.5 7.5 0 1 0-10.6-10.6 7.5 7.5 0 0 0 10.6 10.6z"/>
+        </svg>
+        Search Local Businesses
+      </a>
       </div>
     </section>
 

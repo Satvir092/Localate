@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Search Businesses</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">Localate</div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('business.index') }}">Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}" class="active">Dashboard</a></li>
+      <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="search-page">
+
+    <section class="search-bar-section">
+      <form method="GET" action="{{ url_for('search.search') }}" class="search-form" role="search" autocomplete="off">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"/>
+          </svg>
+          <input
+            type="search"
+            id="q"
+            name="q"
+            placeholder="Search for businesses"
+            value="{{ request.args.get('q', '') }}"
+            autofocus
+            aria-label="Search businesses"
+            class="search-input"
+          />
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <select name="category" aria-label="Filter by category">
+            <option value="">All Categories</option>
+            <option value="Salon" {% if request.args.get('category') == 'Salon' %}selected{% endif %}>Salon</option>
+            <option value="Gym" {% if request.args.get('category') == 'Gym' %}selected{% endif %}>Gym</option>
+            <option value="Barbershop" {% if request.args.get('category') == 'Barbershop' %}selected{% endif %}>Barbershop</option>
+            <!-- Add more categories as needed -->
+          </select>
+
+          <select name="city" aria-label="Filter by city">
+            <option value="">All Cities</option>
+            <option value="San Francisco" {% if request.args.get('city') == 'San Francisco' %}selected{% endif %}>San Francisco</option>
+            <option value="Los Angeles" {% if request.args.get('city') == 'Los Angeles' %}selected{% endif %}>Los Angeles</option>
+            <option value="New York" {% if request.args.get('city') == 'New York' %}selected{% endif %}>New York</option>
+            <!-- Add more cities -->
+          </select>
+
+          <select name="state" aria-label="Filter by state">
+            <option value="">All States</option>
+            <option value="CA" {% if request.args.get('state') == 'CA' %}selected{% endif %}>California</option>
+            <option value="NY" {% if request.args.get('state') == 'NY' %}selected{% endif %}>New York</option>
+            <option value="TX" {% if request.args.get('state') == 'TX' %}selected{% endif %}>Texas</option>
+            <!-- Add more states -->
+          </select>
+        </div>
+      </form>
+    </section>
+
+    {% if businesses is not none %}
+      <section class="results-section">
+        {% if businesses %}
+          <div class="results-grid">
+            {% for business in businesses %}
+              <div class="business-card">
+                <img src="{{ business.profile_image_url or url_for('static', filename='default_profile.png') }}" alt="Business Image" class="business-image" />
+
+                <div class="business-info-left">
+                  <h3 class="business-name">{{ business.name }}</h3>
+                  <span class="business-category">{{ business.category }}</span>
+                </div>
+
+                <div class="business-info-center">
+                  <p class="business-location">{{ business.city }}, {{ business.state }}</p>
+                </div>
+
+                <div class="business-info-right">
+                  <a href="{{ url_for('search.customer_view', business_id=business.id, q=request.args.get('q', ''), category=request.args.get('category', ''), city=request.args.get('city', ''), state=request.args.get('state', '')) }}" class="view-profile-btn">View Profile</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="no-results">No businesses found.</p>
+        {% endif %}
+      </section>
+    {% endif %}
+
+  </main>
+
+</body>
+</html>

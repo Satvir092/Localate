@@ -1,0 +1,49 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Business Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='customer_view.css') }}" />
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">Localate</div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('business.index') }}">Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <main class="business-card">
+    <div class="business-card-header">
+      <div class="business-details-left">
+        <h1>{{ business.name }}</h1>
+        <p class="category">{{ business.category }}</p>
+        <p class="location"><strong>City:</strong> {{ business.city }}</p>
+        <p class="description">{{ business.description }}</p>
+      </div>
+      <div class="business-image-wrapper">
+        <img src="{{ business.profile_image_url or url_for('static', filename='default_profile.png') }}"
+             alt="Business Image" class="business-image" />
+      </div>
+    </div>
+
+    <div class="business-meta">
+      <p><strong>Opening Time:</strong> {{ business.opening_time }}</p>
+      <p><strong>Closing Time:</strong> {{ business.closing_time }}</p>
+      <p><strong>Open Days:</strong> {{ business.open_days | join(', ') }}</p>
+      <p><strong>Slot Interval:</strong> {{ business.interval }} minutes</p>
+    </div>
+
+    <div class="action-buttons">
+      <a href="{{ url_for('search.search', q=q, category=category, city=city, state=state) }}" class="btn secondary">← Back to Search</a>
+    </div>
+  </main>
+
+</body>
+</html>

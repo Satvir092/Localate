@@ -111,7 +111,6 @@ def view_business(business_id):
 def edit_business(business_id):
     supabase = current_app.supabase
 
-    # Fetch business to ensure ownership
     response = supabase.table('businesses').select('*').eq('id', business_id).eq('user_id', str(current_user.id)).single().execute()
     
     if not response.data:
@@ -174,6 +173,5 @@ def edit_business(business_id):
         else:
             flash("Failed to update business. Please try again.", "error")
             return redirect(request.url)
-
 
     return render_template('edit_business.html', business=business)

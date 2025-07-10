@@ -27,13 +27,10 @@
   <label for="profilePicInput" class="upload-circle">
     {% if business.profile_image_url %}
       <img id="profilePicPreview"
-           src="{{ business.profile_image_url }}"
-           alt="Profile Preview" />
+          src="{{ business.profile_image_url }}"
+          alt="Profile Preview" />
       <span class="plus-icon" style="display: none;">+</span>
     {% else %}
-      <img id="profilePicPreview"
-           src=""
-           alt="Profile Preview" />
       <span class="plus-icon">+</span>
     {% endif %}
   </label>
@@ -43,7 +40,7 @@
 
     <h1>{{ business.name }}</h1>
     <p class="category">{{ business.category }}</p>
-    <p class="location"><strong>City:</strong> {{ business.city }}</p>
+    <p class="location">{{ business.city }}, {{ business.state }}</p>
     <p class="description">{{ business.description }}</p>
 
     <div class="business-details">
