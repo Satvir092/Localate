@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='edit_profile.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+    <div class="nav-logo">Localate</div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <ul class="nav-links">
+      <li><a href="{{ url_for('business.index') }}">Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+      <li><a href="{{ url_for('auth.signup') }}">Sign Up</a></li>
+    </ul>
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+  </nav>
+<main class="edit-profile-container">
+  <h2>Edit Your Profile</h2>
+  <form method="POST" enctype="multipart/form-data" class="edit-profile-form">
+    <label>Full Name</label>
+    <input type="text" name="full_name" value="{{ user.full_name or '' }}" required>
+
+    <label>Age</label>
+    <input type="number" name="age" value="{{ user.age or '' }}">
+
+    <label>Phone Number</label>
+    <input type="tel" name="phone_number" value="{{ user.phone_number or '' }}">
+
+    <button type="submit">Update Profile</button>
+  </form>
+  <a href="{{ url_for('business.dashboard') }}" class="btn secondary">Back to Dashboard</a>
+</main>
+</body>
+</html>

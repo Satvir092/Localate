@@ -6,17 +6,20 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background-color: #121212; /* very dark grey */
-  color: #eee; /* light text */
+  background-color: #121212; 
+  color: #eee; 
 }
 
+
 .navbar {
-  background-color: #1e1e1e; /* dark grey/black */
+  background-color: #1e1e1e; 
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
+  position: sticky;
+  top: 0; 
+  z-index: 1000; 
   box-shadow: 0 2px 5px rgba(0,0,0,0.7);
 }
 
@@ -39,18 +42,15 @@ body {
   transition: color 0.3s ease;
 }
 
-/* Link hover with subtle purple */
 .nav-links a:hover {
-  color: #8a6ef8; /* softer, cooler purple */
+  color: #8a6ef8; 
 }
 
-/* Text selection highlight */
 ::selection {
-  background-color: #6659c7; /* muted purple */
+  background-color: #6659c7; 
   color: white;
 }
 
-/* Navigation toggle (hamburger) */
 .nav-toggle {
   display: none;
 }
@@ -81,7 +81,6 @@ body {
   transform: translateY(5px);
 }
 
-/* Show hamburger on smaller screens */
 @media (max-width: 768px) {
   .nav-toggle-label {
     display: flex;
@@ -105,13 +104,11 @@ body {
   }
 }
 
-/* Text selection highlight */
 ::selection {
   background-color: #6659c7;
   color: white;
 }
 
-/* Hero Section */
 .hero {
   background: linear-gradient(90deg, #1e1e1e 0%, #121212 100%);
   padding: 4rem 1rem 3rem 1rem;
@@ -135,7 +132,6 @@ body {
   justify-content: center;
 }
 
-/* Boxes */
 .hero-left,
 .hero-right {
   flex: 1 1 400px;
@@ -144,8 +140,7 @@ body {
   padding: 2.5rem 3rem;
   border-radius: 12px;
   box-shadow:
-    0 0 0 1.5px rgba(102, 89, 199, 0.6), /* crisp purple border */
-    0 8px 20px rgba(102, 89, 199, 0.15);  /* subtle purple glow */
+    0 0 0 1.5px rgba(102, 89, 199, 0.6);  
   transition: box-shadow 0.35s ease, transform 0.35s ease;
   cursor: default;
   will-change: box-shadow, transform;
@@ -154,16 +149,13 @@ body {
 .hero-left:hover,
 .hero-right:hover {
   box-shadow:
-    0 0 0 2.5px #8a6ef8,
-    0 14px 40px rgba(138, 110, 248, 0.3);
+    0 0 0 2.5px #8a6ef8;
   transform: translateY(-6px);
 }
 
-/* Consistent Titles */
 .hero-left h1,
 .hero-right h2 {
-  color: #e0e0e0;  /* soft off-white */
-  font-weight: 700;
+  color: #e0e0e0; 
   user-select: text;
   letter-spacing: 0.02em;
   line-height: 1.25;

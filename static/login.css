@@ -5,8 +5,7 @@
   padding: 2.5rem 3rem;
   border-radius: 12px;
   box-shadow:
-    0 0 0 1.5px rgba(102, 89, 199, 0.6),
-    0 8px 20px rgba(102, 89, 199, 0.15);
+    0 0 0 1.5px rgba(102, 89, 199, 0.6);
   color: #eee;
   text-align: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,8 +16,7 @@
 
 .auth-section:hover {
   box-shadow:
-    0 0 0 2.5px #8a6ef8,
-    0 14px 40px rgba(138, 110, 248, 0.3);
+    0 0 0 2.5px #8a6ef8;
   transform: translateY(-6px);
 }
 
