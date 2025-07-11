@@ -14,8 +14,7 @@ body {
   background-color: #1f1f1f;
   border-radius: 16px;
   box-shadow:
-    0 0 0 2px rgba(138, 110, 248, 0.25),
-    0 20px 40px rgba(138, 110, 248, 0.18);
+    0 0 0 2px rgba(138, 110, 248, 0.25);
   text-align: left;
   transition: all 0.3s ease-in-out;
 }

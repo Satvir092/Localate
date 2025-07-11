@@ -38,10 +38,6 @@ def customer_view(business_id):
     response = supabase.table('businesses').select('*').eq('id', business_id).single().execute()
     business = response.data
 
-    #if not business:
-        #flash("Business not found", "danger")
-       # return redirect(url_for('search.search'))
-
     return render_template(
         'customer_view.html',
         business=business,

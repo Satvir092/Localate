@@ -1,0 +1,132 @@
+.edit-profile-container {
+  max-width: 500px;
+  margin: 0 auto 3rem auto;
+  background-color: #1f1f1f;
+  padding: 2.5rem 3rem;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1.5px rgba(102, 89, 199, 0.6);
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.edit-profile-container:hover {
+  box-shadow:
+    0 0 0 2.5px #8a6ef8;
+  transform: translateY(-6px);
+}
+
+.edit-profile-container h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.edit-profile-form {
+  text-align: left;
+}
+
+.edit-profile-form label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #d6d6d6;
+}
+
+.edit-profile-form input[type="text"],
+.edit-profile-form input[type="number"],
+.edit-profile-form input[type="tel"],
+.edit-profile-form input[type="file"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.3rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  background-color: #333;
+  color: #eee;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.edit-profile-form input::placeholder {
+  color: #aaa;
+  font-weight: 400;
+}
+
+.edit-profile-form input:focus {
+  background-color: #444;
+  outline: none;
+}
+
+.edit-profile-form button {
+  width: 100%;
+  font-size: 1.15rem;
+  background-color: transparent;
+  border: 1px solid rgba(138, 110, 248, 0.3);
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.9rem 1rem;
+  letter-spacing: 0.04em;
+  box-shadow: none;
+  transition: background-color 0.3s ease,
+              border-color 0.3s ease,
+              transform 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.edit-profile-form button:hover,
+.edit-profile-form button:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+
+.btn.secondary {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.7rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: transparent;
+  color: #eee;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease,
+              border-color 0.3s ease;
+}
+
+.btn.secondary:hover,
+.btn.secondary:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.edit-profile-container {
+  margin: 3rem auto 3rem auto; 
+
+}
+
+
+@media (max-width: 480px) {
+  .edit-profile-container {
+    margin: 2rem 1rem 3rem 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .edit-profile-form input,
+  .edit-profile-form button {
+    font-size: 1rem;
+  }
+}
