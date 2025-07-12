@@ -9,19 +9,21 @@
 </head>
 <body>
 
-    <nav class="navbar">
-    <div class="nav-logo">Localate</div>
-    <input type="checkbox" id="nav-toggle" class="nav-toggle">
-    <ul class="nav-links">
-      <li><a href="{{ url_for('business.index') }}">Home</a></li>
-      <li><a href="{{ url_for('business.dashboard') }}">Dashboard</a></li>
-      <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-      <li><a href="{{ url_for('auth.signup') }}">Sign Up</a></li>
-    </ul>
-    <label for="nav-toggle" class="nav-toggle-label">
-      <span></span>
-    </label>
-  </nav>
+  <nav class="navbar">
+  <div class="nav-logo">
+    Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
+  </div>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <ul class="nav-links">
+    <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+    <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
+  </ul>
+  <label for="nav-toggle" class="nav-toggle-label">
+    <span></span>
+  </label>
+</nav>
+
 <main class="edit-profile-container">
   <h2>Edit Your Profile</h2>
   <form method="POST" enctype="multipart/form-data" class="edit-profile-form">

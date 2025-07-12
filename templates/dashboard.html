@@ -10,17 +10,19 @@
 <body>
 
   <nav class="navbar">
-    <div class="nav-logo">Localate</div>
-    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
-    <label for="nav-toggle" class="nav-toggle-label">
-      <span></span>
-    </label>
-    <ul class="nav-links">
-      <li><a href="{{ url_for('business.index') }}">Home</a></li>
-      <li><a href="{{ url_for('business.dashboard') }}" class="active">Dashboard</a></li>
-      <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-    </ul>
-  </nav>
+  <div class="nav-logo">
+    Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
+  </div>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <ul class="nav-links">
+    <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+    <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
+  </ul>
+  <label for="nav-toggle" class="nav-toggle-label">
+    <span></span>
+  </label>
+</nav>
 
   <main class="dashboard-content">
 
@@ -58,7 +60,7 @@
     <div class="main-boxes-container">
 
       <section class="business-section">
-        <h2>Your Booked Appointments</h2>
+        <h2>Your Appointments</h2>
         <div class="business-list">
           <div class="business-card">
             <h3>Moonlight Coffee</h3>
@@ -74,7 +76,7 @@
       </section>
 
       <section class="your-business-section">
-        <h2>Your Created Businesses</h2>
+        <h2>Your Businesses</h2>
 
         {% if businesses %}
           {% for biz in businesses %}
