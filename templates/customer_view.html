@@ -22,13 +22,22 @@
     <span></span>
   </label>
 </nav>
-
   <main class="business-card">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
     <div class="business-card-header">
       <div class="business-details-left">
         <h1>{{ business.name }}</h1>
         <p class="category">{{ business.category }}</p>
-        <p class="location"><strong>City:</strong> {{ business.city }}</p>
+        <p class="location"><strong>Location:</strong> {{ business.city}}, {{  business.state }}</p>
         <p class="description">{{ business.description }}</p>
       </div>
       <div class="business-image-wrapper">
@@ -41,13 +50,89 @@
       <p><strong>Opening Time:</strong> {{ business.opening_time }}</p>
       <p><strong>Closing Time:</strong> {{ business.closing_time }}</p>
       <p><strong>Open Days:</strong> {{ business.open_days | join(', ') }}</p>
-      <p><strong>Slot Interval:</strong> {{ business.interval }} minutes</p>
     </div>
 
     <div class="action-buttons">
       <a href="{{ url_for('search.search', q=q, category=category, city=city, state=state) }}" class="btn secondary">← Back to Search</a>
+      <button class="btn primary" onclick="openBookingModal()">Book Appointment</button>
     </div>
   </main>
 
-</body>
-</html>
+  <!-- Modal -->
+  <div id="bookingModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#1e1e1e; padding:1em; border-radius:12px; color:#eee; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:1000;">
+    <h3>Book an Appointment</h3>
+    <form method="POST" action="{{ url_for('search.book_appointment') }}">
+        <input type="hidden" name="business_id" value="{{ business.id }}">
+      <label for="date">Date:</label>
+      <select name="selected_date" id="date-select" required></select>
+
+      <label for="time">Time:</label>
+      <select name="selected_time" id="time-select" required></select>
+
+      <div style="margin-top:1em;">
+        <button type="submit" class="btn primary">Confirm</button>
+        <button type="button" class="btn secondary" onclick="closeBookingModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+<script>
+  const openDays = JSON.parse('{{ business.open_days | tojson | safe }}');
+
+  const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  function openBookingModal() {
+    document.getElementById("bookingModal").style.display = "block";
+    populateDates();
+
+    const interval = Number('{{ business.interval | int }}');
+    populateTimes("{{ raw_opening }}", "{{ raw_closing }}", interval);
+  }
+
+  function closeBookingModal() {
+    document.getElementById("bookingModal").style.display = "none";
+  }
+
+  function populateDates() {
+    const dateSelect = document.getElementById("date-select");
+    const today = new Date();
+    dateSelect.innerHTML = "";
+
+    const maxOptions = 14;  
+    const maxLookAhead = 30; 
+    let optionsAdded = 0;
+    for (let offset = 0; offset < maxLookAhead && optionsAdded < maxOptions; offset++) {
+      const date = new Date();
+      date.setDate(today.getDate() + offset);
+
+    const weekdayName = dayMap[date.getDay()];
+    if (openDays.includes(weekdayName)) {
+      const option = document.createElement("option");
+      option.value = date.toISOString().split("T")[0];
+      option.text = date.toDateString();
+      dateSelect.appendChild(option);
+      optionsAdded++;
+  }
+  }
+  }
+
+  function populateTimes(opening, closing, interval) {
+    const timeSelect = document.getElementById("time-select");
+    const [openHour, openMin] = opening.split(":").map(Number);
+    const [closeHour, closeMin] = closing.split(":").map(Number);
+
+    const start = new Date();
+    start.setHours(openHour, openMin, 0);
+    const end = new Date();
+    end.setHours(closeHour, closeMin, 0);
+
+    timeSelect.innerHTML = "";
+    while (start < end) {
+      const option = document.createElement("option");
+      option.value = start.toTimeString().slice(0,5);
+      option.text = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      timeSelect.appendChild(option);
+      start.setMinutes(start.getMinutes() + interval);
+    }
+  }
+</script>

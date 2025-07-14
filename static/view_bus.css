@@ -6,54 +6,61 @@ body {
   padding: 0;
 }
 
-/* Main container */
 .view-business-container {
-  max-width: 1000px;
+  max-width: 900px;
   margin: 4rem auto;
-  padding: 3rem 4rem;
-  background-color: #1f1f1f;
+  padding: 4rem 4rem 3rem;
+  background: linear-gradient(145deg, #212121, #1a1a1a);
   border-radius: 16px;
-  box-shadow:
-    0 0 0 2px rgba(138, 110, 248, 0.25);
-  text-align: left;
-  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 0 1.5px rgba(102, 89, 199, 0.6);
+  color: #eee;
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+  position: relative;
+}
+
+.view-business-container:hover {
+  box-shadow: 0 0 0 2.5px #8a6ef8;
+  transform: translateY(-6px);
 }
 
 .view-business-container h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.3rem;
+  margin-bottom: 0.25rem;
   color: #fff;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .view-business-container .category {
-  color: #bbb;
+  color: #ccc;
   font-size: 1.15rem;
   font-style: italic;
   margin-bottom: 2rem;
-  display: block;
 }
 
 .view-business-container .location,
 .view-business-container .description {
-  margin-bottom: 1.5rem;
-  font-size: 1.15rem;
-  max-width: 100%;       
-  word-wrap: break-word; 
+  margin: 1rem 0;
+  color: #bbb;
+  font-size: 1.2rem;
+  word-wrap: break-word;
   overflow-wrap: break-word;
+  word-break: break-word;
+  line-height: 1.6;
 }
 
 .business-details {
   background-color: #282828;
-  padding: 1.5rem 2rem;
-  border-radius: 12px;
-  margin-top: 1.5rem;
+  padding: 1.8rem 2rem;
+  border-radius: 14px;
+  margin-top: 2rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .business-details p {
-  margin-bottom: 1.2rem;
-  font-size: 1.15rem;
+  margin-bottom: 1.3rem;
+  font-size: 1.2rem;
   line-height: 1.6;
+  color: #ccc;
 }
 
 .business-details strong {
@@ -62,7 +69,6 @@ body {
   color: #9e9e9e;
 }
 
-/* Buttons */
 .action-buttons {
   display: flex;
   gap: 1.5rem;
@@ -71,8 +77,8 @@ body {
 
 .btn {
   display: inline-block;
-  padding: 0.85rem 2rem;
-  border-radius: 10px;
+  padding: 0.9rem 2rem;
+  border-radius: 999px;
   background-color: transparent;
   border: 1.5px solid rgba(138, 110, 248, 0.4);
   color: #eee;
@@ -90,76 +96,9 @@ body {
 }
 
 .btn.secondary {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Mobile Compatibility */
-@media (max-width: 700px) {
-  .view-business-container {
-    margin: 2rem 1rem;
-    padding: 2rem 1.5rem;
-  }
-
-  .view-business-container h1 {
-    font-size: 2rem;
-  }
-
-  .business-details p {
-    font-size: 1rem;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .btn {
-    width: 100%;
-  }
-
-  .business-details strong {
-    width: 120px;
-  }
-}
-
-/* Mobile Compatibility */
-@media (max-width: 600px) {
-  .view-business-container {
-    margin: 2rem 1rem;
-    padding: 1.8rem 1.5rem;
-  }
-
-  .view-business-container h1 {
-    font-size: 1.6rem;
-  }
-
-  .business-details p {
-    font-size: 0.9rem;
-  }
-
-  .action-buttons {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .btn {
-    width: 100%;
-  }
-}
-
-.view-business-container {
-  position: relative;
-  background-color: #1f1f1f;
-  max-width: 600px;
-  margin: 3rem auto;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 0 1.5px rgba(102, 89, 199, 0.6), 0 8px 20px rgba(102, 89, 199, 0.15);
-  color: #eee;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Profile Pic Upload Button */
 .profile-pic-upload {
   position: absolute;
   top: 1.5rem;
@@ -179,11 +118,10 @@ body {
   font-size: 2.5rem;
   cursor: pointer;
   border: 2px solid #444;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
   transition: background-color 0.3s ease, transform 0.2s ease;
-  box-sizing: border-box;
   position: relative;
-  overflow: hidden; /* keep image inside the circle */
+  overflow: hidden;
 }
 
 .upload-circle:hover {
@@ -199,7 +137,6 @@ body {
   border-radius: 50%;
   top: 0;
   left: 0;
-  /* Show image by default; hide/show handled in template or JS */
   z-index: 2;
 }
 
@@ -218,4 +155,50 @@ body {
   margin-top: 0.4rem;
   font-size: 0.85rem;
   color: #aaa;
+}
+
+@media (max-width: 700px) {
+  .view-business-container {
+    padding: 2.5rem 2rem;
+  }
+
+  .view-business-container h1 {
+    font-size: 2rem;
+  }
+
+  .business-details p {
+    font-size: 1rem;
+  }
+
+  .business-details strong {
+    width: 120px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .view-business-container {
+    margin: 2rem 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .view-business-container h1 {
+    font-size: 1.75rem;
+  }
+
+  .business-details p {
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }
