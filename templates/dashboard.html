@@ -41,7 +41,7 @@
       </form>
 
       <div class="edit-profile-btn-container">
-        <a href="{{ url_for('user.edit_profile') }}" class="edit-profile-btn">Edit Profile</a>
+        <a href="{{ url_for('user.edit_profile') }}" class="edit-profile-btn">Manage Profile</a>
       </div>
     </div>
 
@@ -60,36 +60,52 @@
     <div class="main-boxes-container">
 
       <section class="business-section">
-        <h2>Your Appointments</h2>
-        <div class="business-list">
-          <div class="business-card">
-            <h3>Moonlight Coffee</h3>
-            <p>Café</p>
-            <p>Appointment: July 5, 2025 at 10:30 AM</p>
-          </div>
-          <div class="business-card">
-            <h3>QuickFix Barbers</h3>
-            <p>Barber Shop</p>
-            <p>Appointment: July 7, 2025 at 2:00 PM</p>
-          </div>
-        </div>
-      </section>
+      <h2>Your Appointments</h2>
+      <div class="business-list">
+        {% if appointments %}
+          {% for appt in appointments %}
+            <div class="business-card">
+              <h3>{{ appt.business.name or "Unknown Business" }}</h3>
+              <p>{{ appt.business.category or "Unknown Category" }}</p>
 
-      <section class="your-business-section">
-        <h2>Your Businesses</h2>
+              {% set formatted_time = appt.time[:5] %}
+              {% set hour = formatted_time.split(':')[0]|int %}
+              {% set minute = formatted_time.split(':')[1] %}
+              {% set ampm = 'AM' if hour < 12 else 'PM' %}
+              {% set display_hour = hour if hour <= 12 else hour - 12 %}
+              <p>Appointment: {{ appt.date }} at {{ '%02d' % display_hour }}:{{ minute }} {{ ampm }}</p>
 
-        {% if businesses %}
-          {% for biz in businesses %}
-            <div class="business-card owner">
-              <h3>{{ biz.name }}</h3>
-              <p>Category: {{ biz.category }}</p>
-              <p>Location: {{ biz.city }}</p>
-              <a href="{{ url_for('business.view_business', business_id=biz.id) }}" class="edit-btn">View</a>
+              <p>Status: 
+                {% if appt.confirmed %}
+                  <span style="color: #4caf50; font-weight: bold;">Confirmed</span>
+                {% else %}
+                  <span style="color: #f44336; font-weight: bold;">Pending</span>
+                {% endif %}
+              </p>
             </div>
           {% endfor %}
         {% else %}
-          <p>Nothing to see here yet...</p>
+          <p>No appointments found.</p>
         {% endif %}
+      </div>
+    </section>
+
+      <section class="your-business-section">
+        <h2>Your Businesses</h2>
+        <div class="your-business-list">
+          {% if businesses %}
+            {% for biz in businesses %}
+              <div class="business-card owner">
+                <h3>{{ biz.name }}</h3>
+                <p>Category: {{ biz.category }}</p>
+                <p>Location: {{ biz.city }}</p>
+                <a href="{{ url_for('business.view_business', business_id=biz.id) }}" class="edit-btn">Manage</a>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p>Nothing to see here yet...</p>
+          {% endif %}
+        </div>
       </section>
 
     </div>

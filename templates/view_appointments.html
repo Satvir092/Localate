@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Appointments</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='view_appointments.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-logo">
+    Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
+  </div>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <ul class="nav-links">
+    <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
+    <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename='dash_svg.svg') }}" alt="Dash Icon" class="nav-icon-small"> Dashboard</a></li>
+    <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename='logout.svg') }}" alt="Logout Icon" class="nav-icon-small"> Logout</a></li>
+  </ul>
+  <label for="nav-toggle" class="nav-toggle-label"><span></span></label>
+</nav>
+
+<main class="dashboard-content">
+  <div class="outer-card">
+    <h1>Appointments for {{ business.name }}</h1>
+
+    {% if appointments %}
+      <div class="main-boxes-container">
+        <section class="business-section">
+          <div class="business-list">
+            {% for appt in appointments %}
+            <div class="business-card">
+                {% if appt.users %}
+                <p><strong>Customer:</strong> {{ appt.users.full_name }}</p>
+                <p><strong>Email:</strong> {{ appt.users.email or "N/A" }}</p>
+                <p><strong>Phone:</strong> {{ appt.users.phone_number or "N/A" }}</p>
+                <p><strong>Age:</strong> {{ appt.users.age or "N/A" }}</p>
+                {% else %}
+                <p><strong>Customer:</strong> Anonymous</p>
+                {% endif %}
+
+                {% set formatted_time = appt.time[:5] %}
+                {% set hour = formatted_time.split(':')[0]|int %}
+                {% set minute = formatted_time.split(':')[1] %}
+                {% set ampm = 'AM' if hour < 12 else 'PM' %}
+                {% set display_hour = hour if hour <= 12 else hour - 12 %}
+                <p><strong>Date:</strong> {{ appt.date }}</p>
+                <p><strong>Time:</strong> {{ '%02d' % display_hour }}:{{ minute }} {{ ampm }}</p>
+
+                <p><strong>Status:</strong> 
+                {% if appt.confirmed %}
+                    <span style="color: #4caf50; font-weight: bold;">Confirmed</span>
+                {% else %}
+                    <span style="color: #f44336; font-weight: bold;">Pending</span>
+                {% endif %}
+                </p>
+            </div>
+            {% endfor %}
+          </div>
+        </section>
+      </div>
+    {% else %}
+      <p style="text-align:center;">No appointments found for this business.</p>
+    {% endif %}
+
+    <div class="edit-profile-btn-container">
+      <a href="{{ url_for('business.dashboard') }}" class="edit-profile-btn">Back to Dashboard</a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

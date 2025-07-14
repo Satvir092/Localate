@@ -1,0 +1,114 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: #eee;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.outer-card {
+  background: linear-gradient(145deg, #2a2a2a, #252525);
+  border-radius: 20px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 0 0 1.5px rgba(102, 89, 199, 0.6);
+  max-width: 950px;
+  margin: 2rem auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.outer-card:hover {
+  box-shadow: 0 0 0 2.5px #8a6ef8;
+  transform: translateY(-4px);
+}
+
+.outer-card > h1 {
+  text-align: center;
+  font-size: 2.2rem;
+  color: #f0f0f0;
+  margin: 0;
+}
+
+.business-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.business-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr 140px;
+  align-items: center;
+  gap: 1.5rem;
+  background: linear-gradient(145deg, #222222, #1a1a1a);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  border: 1.5px solid #444;
+  box-shadow: none;
+  transition: none;
+  width: 100%;
+}
+
+.business-card:hover {
+  /* No hover effect on inner cards */
+  box-shadow: none;
+  transform: none;
+}
+
+.business-card p {
+  color: #ccc;
+  font-size: 1rem;
+  margin: 0.3rem 0;
+  word-wrap: break-word;    
+  overflow-wrap: break-word; 
+  white-space: normal;      
+}
+
+.business-card p strong {
+  color: #eee;
+}
+
+.edit-profile-btn-container {
+  text-align: center;
+}
+
+.edit-profile-btn {
+  background-color: #222;
+  color: #ccc;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  text-decoration: none;
+  border: 1.5px solid #444;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  display: inline-block;
+  min-width: 140px;
+}
+
+.edit-profile-btn:hover {
+  background-color: #333;
+  color: #eee;
+  border-color: #666;
+}
+
+@media (max-width: 800px) {
+  .business-card {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 0.8rem;
+    padding: 1rem 1.5rem;
+  }
+}

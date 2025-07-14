@@ -20,9 +20,18 @@ def about():
 @login_required
 def dashboard():
     supabase = current_app.supabase
+    
     response = supabase.table('businesses').select('*').eq('user_id', str(current_user.id)).execute()
     businesses = response.data if response.data else []
-    return render_template('dashboard.html', user=current_user, businesses=businesses)
+
+    appointments_resp = supabase.table('appointments').select('*').eq('user_id', current_user.id).execute()
+    appointments = appointments_resp.data or []
+
+    for appt in appointments:
+        business_resp = supabase.table('businesses').select('*').eq('id', appt['business_id']).single().execute()
+        appt['business'] = business_resp.data or {}
+
+    return render_template('dashboard.html', user=current_user, businesses=businesses, appointments=appointments)
 
 @business_bp.route('/create_business', methods=['GET', 'POST'])
 @login_required
@@ -175,3 +184,31 @@ def edit_business(business_id):
             return redirect(request.url)
 
     return render_template('edit_business.html', business=business)
+
+@business_bp.route('/<int:business_id>/view_appointments')
+@login_required
+def view_appointments(business_id):
+    supabase = current_app.supabase
+    business_response = supabase.table('businesses') \
+        .select('*') \
+        .eq('id', business_id) \
+        .eq('user_id', str(current_user.id)) \
+        .single() \
+        .execute()
+
+    if not business_response.data:
+        flash("Business not found or you don't have permission to view its appointments.", "error")
+        return redirect(url_for('business.dashboard'))
+
+    business = business_response.data
+
+    appointments_response = supabase.table('appointments') \
+        .select('*, users(full_name, phone_number, email, age)') \
+        .eq('business_id', business_id) \
+        .order('date', desc=False) \
+        .order('time', desc=False) \
+        .execute()
+
+    appointments = appointments_response.data or []
+
+    return render_template('view_appointments.html', business=business, appointments=appointments)

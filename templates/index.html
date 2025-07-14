@@ -6,24 +6,48 @@
   <title>Localate</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
 </head>
 <body>
 
   <nav class="navbar">
-    <div class="nav-logo">
-      Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
-    </div>
-    <input type="checkbox" id="nav-toggle" class="nav-toggle">
-    <ul class="nav-links">
-      <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
-      <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
-      <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename = 'login.svg') }}" alt ="Login Icon" name="login-icon" class="nav-icon-small"> Login</a></li>
-      <li><a href="{{ url_for('auth.signup') }}"><img src="{{ url_for('static', filename = 'sign.svg') }}" alt ="Sign Up Icon" name="sign-icon" class="nav-icon-small"> Sign Up</a></li>
-    </ul>
-    <label for="nav-toggle" class="nav-toggle-label">
-      <span></span>
-    </label>
-  </nav>
+  <div class="nav-logo">
+    Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
+  </div>
+
+  <form method="GET" action="{{ url_for('search.search') }}" class="navbar-search-form" role="search" autocomplete="off" style="max-width: 600px; min-width: 300px; position: relative; overflow: visible;">
+  <div class="search-input-wrapper" style="position: relative; width: 200%; margin-left: -30%;">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
+         style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 1em; height: 1em; color: #888;">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"/>
+    </svg>
+    <input
+      type="search"
+      id="navbar-q"
+      name="q"
+      placeholder="Search businesses"
+      value="{{ request.args.get('q', '') }}"
+      aria-label="Search businesses"
+      class="search-input"
+      style="width: 75%; padding: 0.5em 0.5em 0.5em 2.2em; border-radius: 25px; border: none; background-color: #1e1e1e; color: #eee; font-size: 1rem;"
+    />
+  </div>
+</form>
+
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+
+  <ul class="nav-links">
+    <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
+    <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+    <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename = 'login.svg') }}" alt ="Login Icon" name="login-icon" class="nav-icon-small"> Login</a></li>
+    <li><a href="{{ url_for('auth.signup') }}"><img src="{{ url_for('static', filename = 'sign.svg') }}" alt ="Sign Up Icon" name="sign-icon" class="nav-icon-small"> Sign Up</a></li>
+  </ul>
+
+  <label for="nav-toggle" class="nav-toggle-label">
+    <span></span>
+  </label>
+</nav>
 
   <main>
     <section class="hero">

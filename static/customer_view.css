@@ -1,82 +1,164 @@
 body {
   background-color: #121212;
   color: #eee;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
+  font-size: 18px;
 }
 
 .business-card {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #1f1f1f;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 900px;
+  width: 100%;
+  margin: 4rem auto;
+  padding: 4rem 4rem 3rem;
+  background: linear-gradient(145deg, #212121, #1a1a1a);
+  border-radius: 16px;
+  box-shadow: 0 0 0 1.5px rgba(102, 89, 199, 0.6);
   color: #eee;
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.business-card:hover {
+  box-shadow: 0 0 0 2.5px #8a6ef8;
+  transform: translateY(-6px);
 }
 
 .business-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 2rem;
   flex-wrap: wrap;
 }
 
 .business-details-left {
   flex: 2;
+  font-size: 1.3rem;
+  line-height: 1.6;
+  color: #ddd;
+  background: linear-gradient(135deg, #282828, #1e1e1e);
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7), inset 0 -2px 6px rgba(255 255 255 / 0.05);
+  transition: box-shadow 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+  border: 1px solid #2c2c2c;
+}
+
+.business-details-left:hover {
+  box-shadow:
+    0 0 12px 3px rgba(138, 110, 248, 0.3),
+    inset 0 3px 12px rgba(255 255 255 / 0.08),
+    inset 0 -3px 10px rgba(0 0 0 / 0.6);
 }
 
 .business-image-wrapper {
   flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(138, 110, 248, 0.4);
 }
 
 .business-image {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 50%;
-  border: 2px solid #8a6ef8;
+  border: 3px solid #222;
+  transition: border-color 0.3s ease;
+}
+
+.business-image:hover {
+  border-color: #8a6ef8;
 }
 
 .business-meta {
-  margin-top: 1.5rem;
-  line-height: 1.6;
+  margin-top: 2.5rem;
+  line-height: 1.9;
+  color: #ccc;
+  font-size: 1.15rem;
+  background: linear-gradient(135deg, #262626, #1c1c1c);
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  border: 1px solid #333;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  transition: background-color 0.3s ease;
+}
+
+.business-meta:hover {
+  background: linear-gradient(135deg, #303030, #232323);
+}
+
+.business-meta p {
+  margin: 0.85rem 0;
+  padding-left: 0;
+  position: static;
+  text-indent: 0;
+}
+
+.business-meta p::before {
+  content: none;
 }
 
 .category {
-  color: #8a6ef8;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
+  color: #fff;
+  font-weight: 700;
+  font-style: italic;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1.5px 3px rgba(0,0,0,0.8);
 }
 
-.location, .description {
-  margin: 0.5rem 0;
-  color: #ccc;
+.location,
+.description {
+  margin: 1rem 0;
+  color: #bbb;
+  font-size: 1.2rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.5;
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .action-buttons {
-  margin-top: 2rem;
+  margin-top: 3rem;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: flex-start;
 }
 
 .btn.secondary {
   background-color: #2a2a2a;
   color: #eee;
-  padding: 0.6rem 1.2rem;
+  padding: 0.85rem 1.8rem;
   border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  box-shadow: none;
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
 }
 
 .btn.secondary:hover {
-  background-color: #444;
+  background-color: #3a3a3a;
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .navbar {
   background-color: #1a1a1a;
-  padding: 1rem 2rem;
+  padding: 1.2rem 3rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -85,32 +167,190 @@ body {
 .nav-logo {
   color: #fff;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .nav-links a {
   color: #ccc;
   text-decoration: none;
   transition: color 0.3s ease;
+  font-weight: 500;
+  font-size: 1.1rem;
 }
 
 .nav-links a:hover {
-  color: #fff;
+  color: #8a6ef8;
 }
 
-.nav-toggle, .nav-toggle-label {
+.nav-toggle,
+.nav-toggle-label {
   display: none;
+}
+
+#bookingModal {
+  background-color: #1f1f1f;
+  color: #eee;
+  padding: 2.5rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 400px;
+  max-width: 90%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: all 0.3s ease;
+}
+
+#bookingModal h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.6rem;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+#bookingModal form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+#bookingModal label {
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #bbb;
+}
+
+#bookingModal select {
+  padding: 0.75rem 1.25rem;
+  font-size: 1.25rem;
+  border-radius: 12px;
+  border: none;
+  background-color: #2a2a2a;
+  color: #eee;
+  appearance: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.7);
+}
+
+#bookingModal select:hover,
+#bookingModal select:focus {
+  background-color: #444;
+  outline: none;
+}
+
+#bookingModal form > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+#bookingModal button.btn {
+  flex: 1;
+  padding: 0.85rem 0;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+  box-shadow: none;
+}
+
+#bookingModal button.btn.primary {
+  background-color: #444;
+  color: #eee;
+  box-shadow: none;
+  border: 1.5px solid #888;
+}
+
+#bookingModal button.btn.primary:hover {
+  background-color: #666;
+  box-shadow: none;
+  border-color: #aaa;
+}
+
+#bookingModal button.btn.secondary {
+  background-color: #2a2a2a;
+  color: #ccc;
+  box-shadow: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#bookingModal button.btn.secondary:hover {
+  background-color: #444;
+  border-color: #666;
+  box-shadow: none;
+}
+
+.action-buttons > * {
+  margin-right: 1.3rem;
+  vertical-align: middle;
+}
+
+.action-buttons button.btn.primary {
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  cursor: pointer;
+  background-color: #444;
+  color: #eee;
+  border: 1.5px solid #888;
+  box-shadow: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.action-buttons button.btn.primary:hover {
+  background-color: #666;
+  border-color: #aaa;
+  box-shadow: none;
+}
+
+.flash-messages-inside {
+  margin-bottom: 2rem;
+}
+
+.flash-message {
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+
+.flash-message.success {
+  background-color: #2e8b57;
+  color: #fff;
+  border-left: 5px solid #4caf50;
+}
+
+.flash-message.error {
+  background-color: #b22222;
+  color: #fff;
+  border-left: 5px solid #f44336;
 }
 
 @media (max-width: 768px) {
   .business-card {
-    padding: 1.5rem 1rem;
+    padding: 3rem 2rem;
   }
 
   .business-card-header {
@@ -122,23 +362,26 @@ body {
   .business-details-left {
     flex: 1;
     width: 100%;
+    font-size: 1.2rem;
   }
 
   .business-image-wrapper {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   .business-image {
-    width: 90px;
-    height: 90px;
+    width: 110px;
+    height: 110px;
   }
 
   .action-buttons {
     text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .btn.secondary {
     width: 100%;
-    max-width: 300px;
+    max-width: 350px;
   }
 }
