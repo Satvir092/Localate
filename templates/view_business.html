@@ -81,7 +81,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
   const uploadDiv = document.querySelector('.profile-pic-upload');
-  if (!uploadDiv) return; // guard
+  if (!uploadDiv) return;
 
   const businessId = uploadDiv.dataset.businessId;
   const fileInput = document.getElementById('profilePicInput');
@@ -90,7 +90,7 @@
 
   fileInput.addEventListener('change', function () {
     const file = this.files[0];
-    if (!file) return;  // no file, no upload
+    if (!file) return;  
 
     const reader = new FileReader();
     reader.onload = function (e) {

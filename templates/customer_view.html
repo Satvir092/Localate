@@ -97,7 +97,6 @@
 
 <script>
   const openDays = JSON.parse('{{ business.open_days | tojson | safe }}');
-
   const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   function openBookingModal() {
@@ -120,19 +119,20 @@
     const maxOptions = 14;  
     const maxLookAhead = 30; 
     let optionsAdded = 0;
+
     for (let offset = 0; offset < maxLookAhead && optionsAdded < maxOptions; offset++) {
       const date = new Date();
       date.setDate(today.getDate() + offset);
 
-    const weekdayName = dayMap[date.getDay()];
-    if (openDays.includes(weekdayName)) {
-      const option = document.createElement("option");
-      option.value = date.toISOString().split("T")[0];
-      option.text = date.toDateString();
-      dateSelect.appendChild(option);
-      optionsAdded++;
-  }
-  }
+      const weekdayName = dayMap[date.getDay()];
+      if (openDays.includes(weekdayName)) {
+        const option = document.createElement("option");
+        option.value = date.toISOString().split("T")[0];  
+        option.text = date.toDateString();
+        dateSelect.appendChild(option);
+        optionsAdded++;
+      }
+    }
   }
 
   function populateTimes(opening, closing, interval) {
@@ -140,18 +140,26 @@
     const [openHour, openMin] = opening.split(":").map(Number);
     const [closeHour, closeMin] = closing.split(":").map(Number);
 
-    const start = new Date();
-    start.setHours(openHour, openMin, 0);
-    const end = new Date();
-    end.setHours(closeHour, closeMin, 0);
-
     timeSelect.innerHTML = "";
-    while (start < end) {
+
+    let currentMinutes = openHour * 60 + openMin;
+    const endMinutes = closeHour * 60 + closeMin;
+
+    while (currentMinutes < endMinutes) {
+      const hour = Math.floor(currentMinutes / 60);
+      const minute = currentMinutes % 60;
+
+      const value = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+
+      const displayDate = new Date(2000, 0, 1, hour, minute);
+      const text = displayDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
       const option = document.createElement("option");
-      option.value = start.toTimeString().slice(0,5);
-      option.text = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      option.value = value;
+      option.text = text;
       timeSelect.appendChild(option);
-      start.setMinutes(start.getMinutes() + interval);
+
+      currentMinutes += interval;
     }
   }
 </script>

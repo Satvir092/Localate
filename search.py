@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash
 from flask_login import login_required, current_user
 from datetime import datetime
+from datetime import datetime, date
+import pytz
+
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
 
@@ -41,13 +44,24 @@ def customer_view(business_id):
 
     if business:
 
+        tz_str = business.get('timezone', 'UTC')
+        try:
+            tz = pytz.timezone(tz_str)
+        except:
+            tz = pytz.utc  
+
+        today = date.today().isoformat()
         raw_opening = business['opening_time']
         raw_closing = business['closing_time']
 
+        opening_str = f"{today} {raw_opening}"
+        closing_str = f"{today} {raw_closing}"
 
-        business['opening_time'] = datetime.strptime(raw_opening, "%H:%M:%S").strftime("%I:%M %p").lstrip('0')
-        business['closing_time'] = datetime.strptime(raw_closing, "%H:%M:%S").strftime("%I:%M %p").lstrip('0')
-    
+        opening_dt = tz.localize(datetime.strptime(opening_str, "%Y-%m-%d %H:%M:%S"))
+        closing_dt = tz.localize(datetime.strptime(closing_str, "%Y-%m-%d %H:%M:%S"))
+
+        business['opening_time'] = opening_dt.strftime("%I:%M %p").lstrip('0')
+        business['closing_time'] = closing_dt.strftime("%I:%M %p").lstrip('0')
     else:
         raw_opening = None
         raw_closing = None
@@ -61,7 +75,7 @@ def customer_view(business_id):
         category=request.args.get('category', ''),
         city=request.args.get('city', ''),
         state=request.args.get('state', '')
-        )
+    )
 
 @search_bp.route('/book_appointment', methods=['POST'])
 @login_required
