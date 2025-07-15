@@ -203,7 +203,7 @@ def view_appointments(business_id):
     business = business_response.data
 
     appointments_response = supabase.table('appointments') \
-        .select('*, users(full_name, phone_number, email, age)') \
+        .select('*, users(full_name, phone_number, email, age, profile_image_url)') \
         .eq('business_id', business_id) \
         .order('date', desc=False) \
         .order('time', desc=False) \
@@ -212,3 +212,26 @@ def view_appointments(business_id):
     appointments = appointments_response.data or []
 
     return render_template('view_appointments.html', business=business, appointments=appointments)
+
+@business_bp.route('/confirm_appointment', methods=['POST'])
+@login_required
+def confirm_appointment():
+    supabase = current_app.supabase
+    appt_id = request.form.get('id')
+
+    if not appt_id:
+        return "Missing appointment ID", 400
+
+    appt_resp = supabase.table('appointments').select('business_id').eq('id', appt_id).single().execute()
+    if not appt_resp.data:
+        return "Appointment not found", 404
+
+    business_id = appt_resp.data['business_id']
+
+    business_resp = supabase.table('businesses').select('user_id').eq('id', business_id).single().execute()
+    if not business_resp.data or str(business_resp.data['user_id']) != str(current_user.id):
+        return "Unauthorized", 403
+
+    supabase.table('appointments').update({'confirmed': True}).eq('id', appt_id).execute()
+
+    return "Appointment confirmed", 200

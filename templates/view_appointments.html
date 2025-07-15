@@ -27,49 +27,125 @@
     <h1>Appointments for {{ business.name }}</h1>
 
     {% if appointments %}
-      <div class="main-boxes-container">
-        <section class="business-section">
-          <div class="business-list">
-            {% for appt in appointments %}
-            <div class="business-card">
-                {% if appt.users %}
-                <p><strong>Customer:</strong> {{ appt.users.full_name }}</p>
+    <div class="main-boxes-container">
+      <section class="business-section">
+        <div class="business-list">
+          {% for appt in appointments %}
+          <div class="business-card">
+
+            <p><strong>Customer:</strong>
+              {% if appt.users %}
+                {{ appt.users.full_name }}
+              {% else %}
+                Anonymous
+              {% endif %}
+            </p>
+
+            <p><strong>Status:</strong> 
+              {% if appt.confirmed %}
+                <span style="color: #4caf50; font-weight: bold;">Confirmed</span>
+              {% else %}
+                <span style="color: #f44336; font-weight: bold;">Pending</span>
+              {% endif %}
+            </p>
+
+            <div class="buttons-container">
+              {% if not appt.confirmed %}
+                <button class="confirm-btn" data-appt-id="{{ appt.id }}">Confirm</button>
+              {% endif %}
+              <button class="view-more-btn">View More</button>
+            </div>
+
+            <div class="appointment-details hidden">
+              {% if appt.users %}
+                {% if appt.users.profile_image_url %}
+                  <img 
+                    src="{{ appt.users.profile_image_url }}" 
+                    alt="Profile image of {{ appt.users.full_name }}" 
+                    class="profile-image"
+                    loading="lazy"
+                  >
+                {% endif %}
                 <p><strong>Email:</strong> {{ appt.users.email or "N/A" }}</p>
                 <p><strong>Phone:</strong> {{ appt.users.phone_number or "N/A" }}</p>
                 <p><strong>Age:</strong> {{ appt.users.age or "N/A" }}</p>
-                {% else %}
-                <p><strong>Customer:</strong> Anonymous</p>
-                {% endif %}
+              {% endif %}
 
-                {% set formatted_time = appt.time[:5] %}
-                {% set hour = formatted_time.split(':')[0]|int %}
-                {% set minute = formatted_time.split(':')[1] %}
-                {% set ampm = 'AM' if hour < 12 else 'PM' %}
-                {% set display_hour = hour if hour <= 12 else hour - 12 %}
-                <p><strong>Date:</strong> {{ appt.date }}</p>
-                <p><strong>Time:</strong> {{ '%02d' % display_hour }}:{{ minute }} {{ ampm }}</p>
-
-                <p><strong>Status:</strong> 
-                {% if appt.confirmed %}
-                    <span style="color: #4caf50; font-weight: bold;">Confirmed</span>
-                {% else %}
-                    <span style="color: #f44336; font-weight: bold;">Pending</span>
-                {% endif %}
-                </p>
+              {% set formatted_time = appt.time[:5] %}
+              {% set hour = formatted_time.split(':')[0]|int %}
+              {% set minute = formatted_time.split(':')[1] %}
+              {% set ampm = 'AM' if hour < 12 else 'PM' %}
+              {% set display_hour = hour if hour <= 12 else hour - 12 %}
+              <p><strong>Date:</strong> {{ appt.date }}</p>
+              <p><strong>Time:</strong> {{ '%02d' % display_hour }}:{{ minute }} {{ ampm }}</p>
             </div>
-            {% endfor %}
           </div>
-        </section>
-      </div>
-    {% else %}
-      <p style="text-align:center;">No appointments found for this business.</p>
-    {% endif %}
-
-    <div class="edit-profile-btn-container">
-      <a href="{{ url_for('business.dashboard') }}" class="edit-profile-btn">Back to Dashboard</a>
+          {% endfor %}
+        </div>
+      </section>
     </div>
+    {% else %}
+    <p style="text-align:center;">No appointments found for this business.</p>
+    {% endif %}
   </div>
 </main>
 
+<div class="edit-profile-btn-container">
+  <a href="{{ url_for('business.view_business', business_id=business.id) }}" class="edit-profile-btn">Back</a>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const viewMoreButtons = document.querySelectorAll('.view-more-btn');
+
+    viewMoreButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.business-card');
+        const details = card.querySelector('.appointment-details');
+        const isHidden = details.classList.toggle('hidden');
+        button.textContent = isHidden ? 'View More' : 'Hide Details';
+      });
+    });
+
+    const confirmButtons = document.querySelectorAll('.confirm-btn');
+
+    confirmButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const apptId = button.dataset.apptId;
+
+        if (!apptId) {
+          alert('Missing appointment ID');
+          return;
+        }
+
+        const card = button.closest('.business-card');
+        const statusSpan = card.querySelector('p strong + span') || card.querySelector('p span');
+
+        if (statusSpan) {
+          statusSpan.textContent = 'Confirmed';
+          statusSpan.style.color = '#4caf50';
+          statusSpan.style.fontWeight = 'bold';
+        }
+
+        button.disabled = true;
+        button.textContent = 'Confirmed';
+
+        fetch('/business/confirm_appointment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ id: apptId })
+        })
+        .then(response => {
+          if (!response.ok) {
+            alert('Error confirming appointment');
+          }
+        })
+        .catch(err => {
+          console.error('Fetch error:', err);
+        });
+      });
+    });
+  });
+</script>
 </body>
 </html>

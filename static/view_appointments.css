@@ -50,7 +50,7 @@ body {
 
 .business-card {
   display: grid;
-  grid-template-columns: 1fr 1fr 140px;
+  grid-template-columns: 1fr 1fr auto;
   align-items: center;
   gap: 1.5rem;
   background: linear-gradient(145deg, #222222, #1a1a1a);
@@ -63,7 +63,6 @@ body {
 }
 
 .business-card:hover {
-  /* No hover effect on inner cards */
   box-shadow: none;
   transform: none;
 }
@@ -96,12 +95,94 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
   display: inline-block;
   min-width: 140px;
+  margin-bottom: 10rem;
 }
 
 .edit-profile-btn:hover {
   background-color: #333;
   color: #eee;
   border-color: #666;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.view-more-btn {
+  margin-top: 0.75rem;
+  padding: 0.45rem 0.9rem;
+  background-color: #2e2e2e; 
+  color: #e0e0e0; 
+  border: 1px solid #444; 
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;  
+}
+
+.view-more-btn:hover {
+  background-color: #3b3b3b;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.view-more-btn:active {
+  background-color: #1e1e1e;
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-btn {
+  margin-top: 0.75rem;
+  margin-right: 0.3rem;
+  padding: 0.45rem 0.9rem;
+  background-color: #2e8b57;   
+  color: #fff;                 
+  border: 1.5px solid #4caf50; 
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+  display: inline-block;
+  box-shadow: none;            
+}
+
+.confirm-btn:hover {
+  background-color: #246b43;   
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
+.confirm-btn:active {
+  background-color: #1f5637;   
+  transform: translateY(0);
+  box-shadow: none;
+}
+.profile-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;  
+  margin-bottom: 0.75rem;
+  display: block; 
+}
+
+.buttons-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  flex-wrap: nowrap;       
+  justify-content: flex-start; 
+  width: 100%;             
+  box-sizing: border-box;  
 }
 
 @media (max-width: 800px) {
