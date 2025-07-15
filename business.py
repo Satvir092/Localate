@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, current_app
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from flask_login import login_required, current_user
-from werkzeug.utils import secure_filename
 from datetime import datetime
 import json
+from datetime import datetime, date
+import pytz
 
 business_bp = Blueprint('business', __name__)
 
@@ -27,11 +28,27 @@ def dashboard():
     appointments_resp = supabase.table('appointments').select('*').eq('user_id', current_user.id).execute()
     appointments = appointments_resp.data or []
 
+    filtered_appointments = []
+
     for appt in appointments:
         business_resp = supabase.table('businesses').select('*').eq('id', appt['business_id']).single().execute()
-        appt['business'] = business_resp.data or {}
+        business = business_resp.data or {}
 
-    return render_template('dashboard.html', user=current_user, businesses=businesses, appointments=appointments)
+        appt['business'] = business
+
+        appt_datetime_str = f"{appt['date']} {appt['time']}" 
+        business_tz_str = business.get('timezone', 'UTC')
+        business_tz = pytz.timezone(business_tz_str)
+
+        appt_naive = datetime.strptime(appt_datetime_str, '%Y-%m-%d %H:%M:%S')
+        appt_localized = business_tz.localize(appt_naive)
+
+        now_local = datetime.now(business_tz)
+
+        if appt_localized >= now_local:
+            filtered_appointments.append(appt)
+
+    return render_template('dashboard.html', user=current_user, businesses=businesses, appointments=filtered_appointments)
 
 @business_bp.route('/create_business', methods=['GET', 'POST'])
 @login_required
@@ -46,6 +63,7 @@ def create_business():
         interval = request.form.get('interval')
         days_list = request.form.getlist('weekdays')
         state = request.form.get('state')
+        timezone = request.form.get('timezone')
 
         if not name:
             flash("Business name is required.", "error")
@@ -66,6 +84,10 @@ def create_business():
         if not interval:
             flash("Please select an appointment interval", "error")
             return redirect(url_for('business.create_business'))
+        
+        if not timezone:
+            flash("Please select a timezone")
+            return redirect(url_for('business.create_business'))
 
         if opening_time and closing_time and opening_time >= closing_time:
             flash("Opening time must be earlier than closing time.", "error")
@@ -82,6 +104,7 @@ def create_business():
             "opening_time": opening_time,
             "interval": interval,
             "state": state,
+            "timezone": timezone,
             "closing_time": closing_time
         }).execute()
 
@@ -102,8 +125,21 @@ def view_business(business_id):
     if response.data:
         business = response.data
 
-        business['opening_time'] = datetime.strptime(business['opening_time'], "%H:%M:%S").strftime("%I:%M %p")
-        business['closing_time'] = datetime.strptime(business['closing_time'], "%H:%M:%S").strftime("%I:%M %p")
+        tz_str = business.get('timezone', 'UTC')
+        try:
+            tz = pytz.timezone(tz_str)
+        except:
+            tz = pytz.utc 
+
+        today = date.today().isoformat()
+        opening_str = f"{today} {business['opening_time']}"
+        closing_str = f"{today} {business['closing_time']}"
+
+        opening_dt = tz.localize(datetime.strptime(opening_str, "%Y-%m-%d %H:%M:%S"))
+        closing_dt = tz.localize(datetime.strptime(closing_str, "%Y-%m-%d %H:%M:%S"))
+
+        business['opening_time'] = opening_dt.strftime("%I:%M %p")
+        business['closing_time'] = closing_dt.strftime("%I:%M %p")
 
         if isinstance(business['open_days'], str) and business['open_days'].startswith("["):
             business['open_days'] = json.loads(business['open_days'])
@@ -113,7 +149,7 @@ def view_business(business_id):
         return render_template('view_business.html', business=business)
     else:
         flash("Business not found.", "error")
-        return redirect(url_for('business.dashboard'))  
+        return redirect(url_for('business.dashboard'))
     
 @business_bp.route('/edit_business/<int:business_id>', methods=['GET', 'POST'])
 @login_required
@@ -138,6 +174,7 @@ def edit_business(business_id):
         interval = request.form.get('interval')
         days_list = request.form.getlist('weekdays')
         state = request.form.get('state')
+        timezone = request.form.get('timezone')
 
         if not name:
             flash("Business name is required.", "error")
@@ -158,6 +195,10 @@ def edit_business(business_id):
         if not interval:
             flash("Please select an appointment interval.", "error")
             return redirect(request.url)
+        
+        if not timezone:
+            flash("Please select a timezone", "error")
+            return redirect(request.url)
 
         if opening_time and closing_time and opening_time >= closing_time:
             flash("Opening time must be earlier than closing time.", "error")
@@ -172,6 +213,7 @@ def edit_business(business_id):
             "closing_time": closing_time,
             "interval": interval,
             "open_days": days_list,
+            "timezone": timezone,
             "state": state
         }
 
@@ -201,6 +243,8 @@ def view_appointments(business_id):
         return redirect(url_for('business.dashboard'))
 
     business = business_response.data
+    business_tz_str = business.get('timezone', 'UTC')
+    business_tz = pytz.timezone(business_tz_str)
 
     appointments_response = supabase.table('appointments') \
         .select('*, users(full_name, phone_number, email, age, profile_image_url)') \
@@ -211,7 +255,22 @@ def view_appointments(business_id):
 
     appointments = appointments_response.data or []
 
-    return render_template('view_appointments.html', business=business, appointments=appointments)
+    filtered_appointments = []
+    for appt in appointments:
+        appt_datetime_str = f"{appt['date']} {appt['time']}"
+        try:
+            appt_naive = datetime.strptime(appt_datetime_str, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+
+            appt_naive = datetime.strptime(appt_datetime_str, '%Y-%m-%d %H:%M')
+        appt_localized = business_tz.localize(appt_naive)
+
+        now_local = datetime.now(business_tz)
+
+        if appt_localized >= now_local:
+            filtered_appointments.append(appt)
+
+    return render_template('view_appointments.html', business=business, appointments=filtered_appointments)
 
 @business_bp.route('/confirm_appointment', methods=['POST'])
 @login_required

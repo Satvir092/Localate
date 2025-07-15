@@ -74,6 +74,17 @@
         {% endfor %}
       </select>
 
+      <label for="timezone">Timezone</label>
+      <select name="timezone" id="timezone" required>
+        <option value="" disabled {% if not business.timezone %}selected{% endif %}>Select Time Zone</option>
+        <option value="America/New_York" {% if business.timezone == 'America/New_York' %}selected{% endif %}>Eastern Time (ET)</option>
+        <option value="America/Chicago" {% if business.timezone == 'America/Chicago' %}selected{% endif %}>Central Time (CT)</option>
+        <option value="America/Denver" {% if business.timezone == 'America/Denver' %}selected{% endif %}>Mountain Time (MT)</option>
+        <option value="America/Los_Angeles" {% if business.timezone == 'America/Los_Angeles' %}selected{% endif %}>Pacific Time (PT)</option>
+        <option value="America/Anchorage" {% if business.timezone == 'America/Anchorage' %}selected{% endif %}>Alaska Time</option>
+        <option value="Pacific/Honolulu" {% if business.timezone == 'Pacific/Honolulu' %}selected{% endif %}>Hawaii Time</option>
+      </select>
+
       <label for="description">Description</label>
       <textarea name="description" id="description" placeholder="Describe your business..." rows="5">{{ business.description }}</textarea>
 

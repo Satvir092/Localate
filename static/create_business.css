@@ -18,14 +18,12 @@
   transform: translateY(-6px);
 }
 
-/* Heading */
 .create-business-container h2 {
   margin-bottom: 1.5rem;
   font-size: 2rem;
   font-weight: 700;
 }
 
-/* Label styling */
 .create-business-form label {
   display: block;
   text-align: left;
@@ -35,7 +33,6 @@
   color: #d6d6d6;
 }
 
-/* Consistent Input/Select/Textarea Styling */
 .create-business-form input,
 .create-business-form textarea,
 .create-business-form select {
@@ -74,9 +71,9 @@
   width: 100%;
   font-size: 1.15rem;
   background-color: transparent;
-  border: 1px solid rgba(138, 110, 248, 0.3); /* subtle purple outline */
+  border: 1px solid rgba(138, 110, 248, 0.3); 
   border-radius: 10px;
-  color: #fff;               /* white text */
+  color: #fff;              
   font-weight: 700;
   cursor: pointer;
   padding: 0.9rem 1rem;
@@ -90,7 +87,6 @@
   overflow: hidden;
 }
 
-/* Remove glossy overlay */
 .create-business-form button::before {
   display: none;
 }
@@ -199,6 +195,27 @@
 
 .weekday-options label:hover {
   background-color: #3a3a3a;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.9rem 1.5rem 0.9rem 3rem;
+  border: none;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  background-color: #1f1f1f;
+  color: #eee;
+  box-shadow: 0 0 0 2px #444;
+  transition: box-shadow 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: #666;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #8a6ef8;
 }
 
 
