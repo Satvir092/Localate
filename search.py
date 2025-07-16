@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from datetime import datetime
 from datetime import datetime, date
 import pytz
+from flask import jsonify
 
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
@@ -17,9 +18,10 @@ def search():
     state = request.args.get('state', '').strip()
 
     if not query and not category and not city and not state:
-        # No filters or search terms — no results to show yet
+
         businesses = None
-    else:
+
+    else:   
         business_query = supabase.table('businesses').select('*')
         if query:
             business_query = business_query.ilike('name', f'%{query}%')
@@ -127,3 +129,20 @@ def book_appointment():
         flash("Please make sure an account and profile is created before trying to book.", "error")
 
     return redirect(request.referrer or url_for('search.customer_view', business_id=business_id))
+
+@search_bp.route('/autocomplete')
+def autocomplete():
+    supabase = current_app.supabase
+    query = request.args.get('q', '').strip()
+
+    if not query:
+        return jsonify([])
+
+    response = supabase.table('businesses') \
+        .select('name') \
+        .ilike('name', f'%{query}%') \
+        .limit(10) \
+        .execute()
+
+    results = [b['name'] for b in response.data]
+    return jsonify(results)

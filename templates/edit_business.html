@@ -13,8 +13,8 @@
   <div class="nav-logo">
     Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
   </div>
-  <form method="GET" action="{{ url_for('search.search') }}" class="navbar-search-form" role="search" autocomplete="off" style="max-width: 600px; min-width: 300px; position: relative; overflow: visible;">
-    <div class="search-input-wrapper" style="position: relative; width: 200%; margin-left: -30%;">
+  <form id="navbar-search-form" method="GET" action="{{ url_for('search.search') }}" class="navbar-search-form" role="search" autocomplete="off" style="max-width: 600px; min-width: 300px; position: relative; overflow: visible;">
+  <div class="search-input-wrapper" style="position: relative; width: 200%; margin-left: -30%;">
     <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
          style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 1em; height: 1em; color: #888;">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,8 +30,9 @@
       class="search-input"
       style="width: 75%; padding: 0.5em 0.5em 0.5em 2.2em; border-radius: 25px; border: none; background-color: #1e1e1e; color: #eee; font-size: 1rem;"
     />
+    <ul id="navbar-autocomplete-list" class="autocomplete-suggestions hidden" style="top: 110%; left: 0; width: 75%;"></ul>
   </div>
-  </form>
+</form>
   <input type="checkbox" id="nav-toggle" class="nav-toggle">
   <ul class="nav-links">
     <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
@@ -61,7 +62,20 @@
       <input type="text" name="name" id="name" placeholder="Business Name" value="{{ business.name }}" required />
 
       <label for="category">Category</label>
-      <input type="text" name="category" id="category" placeholder="Category (e.g., Salon, Gym)" value="{{ business.category }}" />
+      <select name="category" id="category" required>
+        <option value="" disabled>Select a category</option>
+        {% for cat in [
+          "Beauty and Personal Care", "Health and Wellness", "Medical Services",
+          "Fitness and Training", "Childcare and Parenting", "Pet Care",
+          "Automotive Services", "Home Services", "Photography and Media",
+          "Education", "Event Services", "Legal Services",
+          "Financial Services", "Technology Services", "Retail and Boutiques",
+          "Repair and Maintenance", "Consulting", "Art and Design",
+          "Moving and Delivery", "Food and Beverage"
+        ] %}
+          <option value="{{ cat }}" {% if business.category == cat %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      </select>
 
       <label for="city">City</label>
       <input type="text" name="city" id="city" placeholder="City" value="{{ business.city }}" required />
