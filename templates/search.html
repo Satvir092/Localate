@@ -38,7 +38,7 @@
             type="search"
             id="q"
             name="q"
-            placeholder="Search for businesses"
+            placeholder="Search for a business or city"
             value="{{ request.args.get('q', '') }}"
             autofocus
             aria-label="Search businesses"
@@ -61,14 +61,6 @@
           ] %}
             <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
           {% endfor %}
-        </select>
-
-        <select name="city" aria-label="Filter by city">
-          <option value="">All Cities</option>
-          <option value="San Francisco" {% if request.args.get('city') == 'San Francisco' %}selected{% endif %}>San Francisco</option>
-          <option value="Los Angeles" {% if request.args.get('city') == 'Los Angeles' %}selected{% endif %}>Los Angeles</option>
-          <option value="New York" {% if request.args.get('city') == 'New York' %}selected{% endif %}>New York</option>
-
         </select>
 
         <select name="state" aria-label="Filter by state">
