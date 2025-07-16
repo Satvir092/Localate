@@ -26,7 +26,7 @@
       name="q"
       placeholder="Search businesses"
       value="{{ request.args.get('q', '') }}"
-      aria-label="Search businesses"
+      aria-label="Search for a business or city"
       class="search-input"
       style="width: 75%; padding: 0.5em 0.5em 0.5em 2.2em; border-radius: 25px; border: none; background-color: #1e1e1e; color: #eee; font-size: 1rem;"
     />
@@ -130,6 +130,57 @@
       <button type="submit">Update Business</button>
     </form>
   </main>
+
+  <script>
+function setupAutocomplete(inputId, listId, formId) {
+  const input = document.getElementById(inputId);
+  const list = document.getElementById(listId);
+  const form = document.getElementById(formId);
+
+  if (!input || !list || !form) return;
+
+  input.addEventListener('input', async () => {
+    const query = input.value.trim();
+
+    if (query.length < 2) {
+      list.innerHTML = '';
+      list.classList.add('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/search/autocomplete?q=${encodeURIComponent(query)}`);
+      const suggestions = await res.json();
+
+      list.innerHTML = '';
+      suggestions.forEach(name => {
+        const li = document.createElement('li');
+        li.textContent = name;
+        li.addEventListener('click', () => {
+          input.value = name;
+          list.innerHTML = '';
+          form.submit();
+        });
+        list.appendChild(li);
+      });
+
+      list.classList.remove('hidden');
+    } catch (err) {
+      console.error('Autocomplete fetch failed', err);
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      list.innerHTML = '';
+      list.classList.add('hidden');
+    }
+  });
+}
+
+setupAutocomplete('q', 'autocomplete-list', 'search-form');
+setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
+</script>
 
 </body>
 </html>
