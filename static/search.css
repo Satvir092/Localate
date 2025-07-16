@@ -227,6 +227,15 @@ body {
   background-color: #333;
 }
 
+.business-image svg {
+  width: 50px;      
+  height: 50px;
+  color: white;     
+  background-color: transparent; 
+  display: block;
+  margin: 0 auto;   
+}
+
 @media (max-width: 800px) {
   .business-card {
     grid-template-columns: 60px 1fr 120px;
