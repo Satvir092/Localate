@@ -20,9 +20,21 @@ def send_confirmation_email(user_email):
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '')
+
+        if not (3 <= len(username) <= 30):
+            flash('Username must be between 3 and 30 characters.')
+            return redirect(url_for('auth.signup'))
+
+        if len(email) > 100:
+            flash('Email must be less than 100 characters.')
+            return redirect(url_for('auth.signup'))
+
+        if len(password) < 8 or len(password) > 30:
+            flash('Password must be 8-30 characters long.')
+            return redirect(url_for('auth.signup'))
 
         if get_user_by_username_or_email(username):
             flash('Username already exists.')
@@ -41,6 +53,7 @@ def signup():
             "confirmed": False,
             "confirmed_on": None
         }).execute()
+
         data = response.data
         if not data:
             flash('Error creating user. Please try again.')
@@ -48,6 +61,7 @@ def signup():
         
         if not current_app.config.get('TESTING'):
             send_confirmation_email(email)
+
         flash('Signup successful! A confirmation email has been sent. Please check your inbox.')
         return redirect(url_for('auth.signup'))
 
