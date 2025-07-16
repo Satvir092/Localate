@@ -90,6 +90,10 @@ body {
   cursor: pointer;
   transition: box-shadow 0.3s ease;
   min-width: 140px;
+  width: 160px;          
+  max-width: 180px;      
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .filter-bar select:focus {
@@ -195,7 +199,33 @@ body {
   color: #aaa;
 }
 
+.hidden {
+  display: none;
+}
 
+.autocomplete-suggestions {
+  position: absolute;
+  background-color: #1f1f1f;
+  border: 1px solid #444;
+  border-radius: 8px;
+  margin-top: 4px;
+  list-style: none;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 1000;
+}
+
+.autocomplete-suggestions li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: #eee;
+}
+
+.autocomplete-suggestions li:hover {
+  background-color: #333;
+}
 
 @media (max-width: 800px) {
   .business-card {
