@@ -36,6 +36,12 @@ class TestAuth(unittest.TestCase):
             'password': self.test_password
         }, follow_redirects=True)
 
+    def get_logged_in_user_id(self):
+        """Get user ID from the session by checking profile"""
+        supabase = self.app.supabase
+        result = supabase.table('users').select('id').eq('email', self.test_email).execute()
+        return result.data[0]['id']
+
     def test_index_route(self):
         response = self.client.get('/business/')
         self.assertEqual(response.status_code, 200)
@@ -60,6 +66,7 @@ class TestAuth(unittest.TestCase):
             'description': 'Test business description',
             'start_time': '09:00',
             'end_time': '17:00',
+            'timezone': 'America/Los_Angeles',
             'interval': '30',
             'weekdays': ['Monday', 'Wednesday']
         }
@@ -79,6 +86,7 @@ class TestAuth(unittest.TestCase):
             'state': 'TS',
             'description': 'Test business description',
             'start_time': '09:00',
+            'timezone': 'America/Los_Angeles',
             'end_time': '17:00',
             'interval': '30',
             'weekdays': ['Monday', 'Wednesday']
@@ -96,6 +104,7 @@ class TestAuth(unittest.TestCase):
             'state': 'TS',
             'description': 'Test business description',
             'start_time': '09:00',
+            'timezone': 'America/Los_Angeles',
             'end_time': '17:00',
             'interval': '30',
             'weekdays': ['Monday', 'Wednesday']
@@ -113,6 +122,7 @@ class TestAuth(unittest.TestCase):
             'state': 'TS',
             'description': 'Test business description',
             'start_time': '09:00',
+            'timezone': 'America/Los_Angeles',
             'end_time': '17:00',
             'interval': '30',
             'weekdays': []
@@ -130,6 +140,7 @@ class TestAuth(unittest.TestCase):
             'state': '',
             'description': 'Test business description',
             'start_time': '09:00',
+            'timezone': 'America/Los_Angeles',
             'end_time': '17:00',
             'interval': '30',
             'weekdays': ['Monday']
@@ -148,6 +159,7 @@ class TestAuth(unittest.TestCase):
             'state': 'CA',
             'description': 'Test business description',
             'start_time': '18:00',
+            'timezone': 'America/Los_Angeles',
             'end_time': '17:00',
             'interval': '30',
             'weekdays': ['Monday']
@@ -160,11 +172,11 @@ class TestAuth(unittest.TestCase):
 
     def test_view_existing_business(self):
 
-        business_id = 4
+        business_id = 5
 
         response = self.client.get(f'/business/view_business/{business_id}')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Local Detailer', response.data)
+        self.assertIn(b'Threading yuba', response.data)
 
     def test_editing_exisiting_business(self):
 
@@ -175,6 +187,7 @@ class TestAuth(unittest.TestCase):
             'state': 'CA',
             'description': 'A business to be edited',
             'start_time': '09:00',
+            'timezone': 'America/Los_Angeles',
             'end_time': '17:00',
             'interval': '30',
             'weekdays': ['Monday', 'Tuesday']
@@ -198,6 +211,7 @@ class TestAuth(unittest.TestCase):
             'description': 'Updated description',
             'start_time': '10:00',
             'end_time': '18:00',
+            'timezone': 'America/Los_Angeles',
             'interval': '60',
             'weekdays': ['Wednesday', 'Thursday']
         }
@@ -208,3 +222,55 @@ class TestAuth(unittest.TestCase):
 
         if business['name'].startswith('TEST:'):
             supabase.table('businesses').delete().eq('id', business_id).execute()
+
+    def test_confirm_appointment_success(self):
+        """POST /confirm_appointment confirms the appointment if user owns the business"""
+
+        supabase = self.app.supabase
+
+        # First, create a test business
+        business_data = {
+            'name': 'TEST: Confirm Appt Biz',
+            'category': 'Testing',
+            'city': 'ConfirmCity',
+            'state': 'CA',
+            'description': 'To test confirming appt',
+            'opening_time': '09:00',
+            'closing_time': '17:00',
+            'timezone': 'America/Los_Angeles',
+            'interval': 30,
+            'open_days': ['Monday', 'Tuesday'],
+            'user_id': self.get_logged_in_user_id()  # you’ll define this helper below
+        }
+
+        business = supabase.table('businesses').insert(business_data).execute().data[0]
+        business_id = business['id']
+
+        # Then, create an appointment under that business
+        appointment_data = {
+            'user_id': business_data['user_id'],
+            'business_id': business_id,
+            'date': '2099-12-31',
+            'time': '13:00:00',
+            'email': self.test_email,
+            'name': 'Test User',
+            'phone': '1234567890',
+            'age': 30,
+            'profile_image_url': None,
+            'confirmed': False
+        }
+
+        appt = supabase.table('appointments').insert(appointment_data).execute().data[0]
+        appt_id = appt['id']
+
+        # Confirm the appointment
+        response = self.client.post('/business/confirm_appointment', data={
+            'id': appt_id
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'Appointment confirmed', response.data)
+
+        # Cleanup
+        supabase.table('appointments').delete().eq('id', appt_id).execute()
+        supabase.table('businesses').delete().eq('id', business_id).execute()
