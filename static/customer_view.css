@@ -60,7 +60,6 @@ body {
   flex-shrink: 0;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: 0 0 8px rgba(138, 110, 248, 0.4);
 }
 
 .business-image {
@@ -68,12 +67,8 @@ body {
   height: 120px;
   object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #222;
+  border: 3px solid #ffffff;
   transition: border-color 0.3s ease;
-}
-
-.business-image:hover {
-  border-color: #8a6ef8;
 }
 
 .business-meta {
@@ -396,6 +391,25 @@ body {
 
 .autocomplete-suggestions li:hover {
   background-color: #333;
+}
+
+.fallback-icon-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  transition: border-color 0.3s ease;
+}
+
+.fallback-icon {
+  width: 60%;
+  height: 60%;
+  color: white;
 }
 
 @media (max-width: 768px) {
