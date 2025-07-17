@@ -27,9 +27,21 @@ def edit_profile():
             flash("Please fill out all required fields: Full Name, Age, and Phone Number.", "error")
             return redirect(url_for('user.edit_profile'))
 
+        if len(name) > 50:
+            flash("Full Name must be 50 characters or fewer.", "error")
+            return redirect(url_for('user.edit_profile'))
+
+        if not age.isdigit() or not(0 < int(age) <= 120):
+            flash("Please enter a valid age between 1 and 120.", "error")
+            return redirect(url_for('user.edit_profile'))
+
+        if not(10 <= len(phone) <= 14):
+            flash("Phone number must be between 10 and 14 characters", "error")
+            return redirect(url_for('user.edit_profile'))
+
         update_data = {
             'full_name': name,
-            'age': age,
+            'age': int(age),
             'phone_number': phone,
             'profile_image_url': profile_image_url
         }

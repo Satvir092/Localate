@@ -92,6 +92,19 @@ def create_business():
         if opening_time and closing_time and opening_time >= closing_time:
             flash("Opening time must be earlier than closing time.", "error")
             return redirect(url_for('business.create_business'))
+        
+        if len(name) > 50:
+            flash("Business name must be under 50 characters.", "error")
+            return redirect(url_for('business.create_business'))
+
+        if len(description) > 500:
+            flash("Description must be under 500 characters.", "error")
+            return redirect(url_for('business.create_business'))
+
+        if len(city) > 50:
+            flash("City name must be under 50 characters.", "error")
+            return redirect(url_for('business.create_business'))
+
 
         supabase = current_app.supabase
         response = supabase.table('businesses').insert({
@@ -203,6 +216,19 @@ def edit_business(business_id):
         if opening_time and closing_time and opening_time >= closing_time:
             flash("Opening time must be earlier than closing time.", "error")
             return redirect(request.url)
+        
+        if len(name) > 50:
+            flash("Business name must be under 50 characters.", "error")
+            return redirect(url_for('business.create_business'))
+
+        if len(description) > 500:
+            flash("Description must be under 500 characters.", "error")
+            return redirect(url_for('business.create_business'))
+
+        if len(city) > 50:
+            flash("City name must be under 50 characters.", "error")
+            return redirect(url_for('business.create_business'))
+
 
         update_data = {
             "name": name,
@@ -267,7 +293,12 @@ def view_appointments(business_id):
 
         now_local = datetime.now(business_tz)
 
+        print("DEBUG:", appt['date'], type(appt['date']))
+        print("DEBUG:", appt['time'], type(appt['time']))
+
         if appt_localized >= now_local:
+            appt['local_date'] = appt_localized.strftime('%B %d, %Y')
+            appt['local_time'] = appt_localized.strftime('%I:%M %p')
             filtered_appointments.append(appt)
 
     return render_template('view_appointments.html', business=business, appointments=filtered_appointments)

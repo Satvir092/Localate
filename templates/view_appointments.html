@@ -96,8 +96,8 @@
               {% set minute = formatted_time.split(':')[1] %}
               {% set ampm = 'AM' if hour < 12 else 'PM' %}
               {% set display_hour = hour if hour <= 12 else hour - 12 %}
-              <p><strong>Date:</strong> {{ appt.date }}</p>
-              <p><strong>Time:</strong> {{ '%02d' % display_hour }}:{{ minute }} {{ ampm }}</p>
+              <p><strong>Date:</strong> {{ appt.local_date }}</p>
+              <p><strong>Time:</strong> {{ appt.local_time }}</p>
             </div>
           </div>
           {% endfor %}

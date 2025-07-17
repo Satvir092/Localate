@@ -153,36 +153,34 @@ passwordInput.addEventListener('input', () => {
   container.style.display = 'block';
 
   if (val.length < 8) {
-    // Weak if under 8 chars, no matter what
+
     bar.style.width = '25%';
-    bar.style.backgroundColor = '#f44336'; // red
+    bar.style.backgroundColor = '#f44336'; 
     strengthText.textContent = 'Weak';
     return;
   }
 
-  // Now check for presence of uppercase, numbers, special chars
   let checks = 0;
   if (/[A-Z]/.test(val)) checks++;
   if (/[0-9]/.test(val)) checks++;
   if (/[^A-Za-z0-9]/.test(val)) checks++;
 
-  // Decide strength based on how many checks pass
   let width, color, text;
 
   switch (checks) {
     case 0:
       width = 50;
-      color = '#ff9800'; // orange
+      color = '#ff9800'; 
       text = 'Acceptable';
       break;
     case 1:
       width = 75;
-      color = '#ffeb3b'; // yellow
+      color = '#ffeb3b';
       text = 'Good';
       break;
     default:
       width = 100;
-      color = '#4caf50'; // green
+      color = '#4caf50';
       text = 'Strong';
   }
 

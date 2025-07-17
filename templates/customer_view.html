@@ -61,9 +61,14 @@
         <p class="description">{{ business.description }}</p>
       </div>
       <div class="business-image-wrapper">
-        <img src="{{ business.profile_image_url or url_for('static', filename='default_profile.png') }}"
-             alt="Business Image" class="business-image" />
-      </div>
+    {% if business.profile_image_url %}
+      <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
+    {% else %}
+      <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" style="width:80px; height:80px; color:#888;">
+        <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
+    </svg>
+  {% endif %}
+</div>
     </div>
 
     <div class="business-meta">

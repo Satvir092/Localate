@@ -168,6 +168,26 @@
   background-color: #333;
 }
 
+.flash-messages {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.8rem;
+  width: 100%;
+}
+
+.flash-messages li {
+  background-color: rgba(182, 30, 106, 0.1);
+  color: #f0f0f0;
+  border-left: 4px solid #b61e6a;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.7rem;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  user-select: text;
+}
+
 @media (max-width: 480px) {
   .edit-profile-container {
     margin: 2rem 1rem 3rem 1rem;

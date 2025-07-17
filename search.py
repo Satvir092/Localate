@@ -13,7 +13,7 @@ def search():
     supabase = current_app.supabase
     query = request.args.get('q', '').strip()
     category = request.args.get('category', '').strip()
-    # city removed from args since not filtering by exact city anymore
+
     state = request.args.get('state', '').strip()
 
     if not query and not category and not state:
