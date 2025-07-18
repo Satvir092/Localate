@@ -64,7 +64,7 @@
     {% if business.profile_image_url %}
       <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
     {% else %}
-      <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" style="width:80px; height:80px; color:#888;">
+      <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" style="width:120px; height:120px; color:#888;">
         <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
     </svg>
   {% endif %}
@@ -84,90 +84,127 @@
   </main>
 
   <div id="bookingModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#1e1e1e; padding:1em; border-radius:12px; color:#eee; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:1000;">
-    <h3>Book an Appointment</h3>
-    <form method="POST" action="{{ url_for('search.book_appointment') }}">
-        <input type="hidden" name="business_id" value="{{ business.id }}">
+  <h3>Book an Appointment</h3>
+
+  <form method="POST" action="{{ url_for('search.book_appointment') }}">
+    <input type="hidden" name="business_id" value="{{ business.id }}">
+
+    <div id="bookingModalContent">
       <label for="date">Date:</label>
       <select name="selected_date" id="date-select" required></select>
 
       <label for="time">Time:</label>
       <select name="selected_time" id="time-select" required></select>
+    </div>
 
-      <div style="margin-top:1em;">
-        <button type="submit" class="btn primary">Confirm</button>
-        <button type="button" class="btn secondary" onclick="closeBookingModal()">Cancel</button>
-      </div>
-    </form>
-  </div>
+    <div style="margin-top:1em;">
+      <button type="submit" class="btn primary">Confirm</button>
+      <button type="button" class="btn secondary" onclick="closeBookingModal()">Cancel</button>
+    </div>
+  </form>
+</div>
 
 <script>
-  const openDays = JSON.parse('{{ business.open_days | tojson | safe }}');
-  const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const openDays = JSON.parse('{{ business.open_days | tojson | safe }}');
+const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  function openBookingModal() {
-    document.getElementById("bookingModal").style.display = "block";
+function openBookingModal() {
+  const modal = document.getElementById("bookingModal");
+  modal.style.display = "block";
+
+  const intervalRaw = '{{ business.interval }}'; 
+  const interval = intervalRaw ? Number(intervalRaw) : null;
+
+  if (!interval) {
+    showNoAppointmentsMessage();
+  } else {
+    restoreModalContent();  
     populateDates();
-
-    const interval = Number('{{ business.interval | int }}');
     populateTimes("{{ raw_opening }}", "{{ raw_closing }}", interval);
   }
+}
 
-  function closeBookingModal() {
-    document.getElementById("bookingModal").style.display = "none";
-  }
+function closeBookingModal() {
+  document.getElementById("bookingModal").style.display = "none";
+}
 
-  function populateDates() {
-    const dateSelect = document.getElementById("date-select");
-    const today = new Date();
-    dateSelect.innerHTML = "";
+function populateDates() {
+  const dateSelect = document.getElementById("date-select");
+  const today = new Date();
+  dateSelect.innerHTML = "";
 
-    const maxOptions = 14;  
-    const maxLookAhead = 30; 
-    let optionsAdded = 0;
+  const maxOptions = 14;
+  const maxLookAhead = 30;
+  let optionsAdded = 0;
 
-    for (let offset = 0; offset < maxLookAhead && optionsAdded < maxOptions; offset++) {
-      const date = new Date();
-      date.setDate(today.getDate() + offset);
+  for (let offset = 0; offset < maxLookAhead && optionsAdded < maxOptions; offset++) {
+    const date = new Date();
+    date.setDate(today.getDate() + offset);
 
-      const weekdayName = dayMap[date.getDay()];
-      if (openDays.includes(weekdayName)) {
-        const option = document.createElement("option");
-        option.value = date.toISOString().split("T")[0];  
-        option.text = date.toDateString();
-        dateSelect.appendChild(option);
-        optionsAdded++;
-      }
-    }
-  }
-
-  function populateTimes(opening, closing, interval) {
-    const timeSelect = document.getElementById("time-select");
-    const [openHour, openMin] = opening.split(":").map(Number);
-    const [closeHour, closeMin] = closing.split(":").map(Number);
-
-    timeSelect.innerHTML = "";
-
-    let currentMinutes = openHour * 60 + openMin;
-    const endMinutes = closeHour * 60 + closeMin;
-
-    while (currentMinutes < endMinutes) {
-      const hour = Math.floor(currentMinutes / 60);
-      const minute = currentMinutes % 60;
-
-      const value = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-
-      const displayDate = new Date(2000, 0, 1, hour, minute);
-      const text = displayDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
+    const weekdayName = dayMap[date.getDay()];
+    if (openDays.includes(weekdayName)) {
       const option = document.createElement("option");
-      option.value = value;
-      option.text = text;
-      timeSelect.appendChild(option);
-
-      currentMinutes += interval;
+      option.value = date.toISOString().split("T")[0];
+      option.text = date.toDateString();
+      dateSelect.appendChild(option);
+      optionsAdded++;
     }
   }
-  
+}
+
+function populateTimes(opening, closing, interval) {
+  const timeSelect = document.getElementById("time-select");
+  timeSelect.innerHTML = "";
+
+  const [openHour, openMin] = opening.split(":").map(Number);
+  const [closeHour, closeMin] = closing.split(":").map(Number);
+
+  let currentMinutes = openHour * 60 + openMin;
+  const endMinutes = closeHour * 60 + closeMin;
+
+  while (currentMinutes < endMinutes) {
+    const hour = Math.floor(currentMinutes / 60);
+    const minute = currentMinutes % 60;
+
+    const value = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+
+    const displayDate = new Date(2000, 0, 1, hour, minute);
+    const text = displayDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const option = document.createElement("option");
+    option.value = value;
+    option.text = text;
+    timeSelect.appendChild(option);
+
+    currentMinutes += interval;
+  }
+}
+
+function showNoAppointmentsMessage() {
+  const modalContent = document.getElementById("bookingModalContent");
+
+  if (!modalContent.originalContent) {
+    modalContent.originalContent = modalContent.innerHTML;
+  }
+
+  modalContent.innerHTML = "";
+
+  const msg = document.createElement("p");
+  msg.textContent = "This business does not accept appointments.";
+  msg.style.fontWeight = "bold";
+  msg.style.fontSize = "1.2em";
+  msg.style.margin = "2em 0";
+  msg.style.textAlign = "center";
+
+  modalContent.appendChild(msg);
+}
+
+function restoreModalContent() {
+  const modalContent = document.getElementById("bookingModalContent");
+  if (modalContent.originalContent) {
+    modalContent.innerHTML = modalContent.originalContent;
+  }
+}
 </script>
 
 <script>

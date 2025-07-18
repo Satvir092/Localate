@@ -193,7 +193,7 @@ body {
   color: #eee;
   padding: 2.5rem 3rem;
   border-radius: 16px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
   position: fixed;
   top: 20%;
   left: 50%;
@@ -207,90 +207,101 @@ body {
 
 #bookingModal h3 {
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   color: #ffffff;
-  font-weight: 700;
-  font-size: 1.6rem;
+  font-weight: bold;
+  font-size: 1.75rem;
   text-align: center;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  font-family: inherit;
+  user-select: none;
 }
 
 #bookingModal form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 #bookingModal label {
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 0.5rem;
   color: #bbb;
+  user-select: none;
+}
+
+#bookingModal #bookingModalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 #bookingModal select {
   padding: 0.75rem 1.25rem;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   border-radius: 12px;
   border: none;
   background-color: #2a2a2a;
   color: #eee;
   appearance: none;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.7);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.85);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #bookingModal select:hover,
 #bookingModal select:focus {
   background-color: #444;
   outline: none;
+  box-shadow: 0 0 10px #666;
 }
 
-#bookingModal form > div {
+#bookingModal form > div:last-child {
   display: flex;
   justify-content: space-between;
-  gap: 1.2rem;
-  margin-top: 1rem;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 #bookingModal button.btn {
   flex: 1;
   padding: 0.85rem 0;
-  border-radius: 999px;
+  border-radius: 9999px;
   font-size: 1.2rem;
   border: none;
   cursor: pointer;
   font-weight: 700;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   box-shadow: none;
+  user-select: none;
 }
 
 #bookingModal button.btn.primary {
-  background-color: #444;
-  color: #eee;
-  box-shadow: none;
-  border: 1.5px solid #888;
+  background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+  color: #fff;
+  border: none;
 }
 
 #bookingModal button.btn.primary:hover {
-  background-color: #666;
-  box-shadow: none;
-  border-color: #aaa;
+  background: linear-gradient(135deg, #9d4edd, #c77dff);
 }
 
 #bookingModal button.btn.secondary {
   background-color: #2a2a2a;
   color: #ccc;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   box-shadow: none;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 #bookingModal button.btn.secondary:hover {
   background-color: #444;
   border-color: #666;
-  box-shadow: none;
+  box-shadow: 0 3px 8px rgba(68, 68, 68, 0.5);
 }
 
 .action-buttons > * {
@@ -304,17 +315,14 @@ body {
   font-weight: 700;
   font-size: 1.15rem;
   cursor: pointer;
-  background-color: #444;
-  color: #eee;
-  border: 1.5px solid #888;
-  box-shadow: none;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  color: #fff;
+  background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+  border: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .action-buttons button.btn.primary:hover {
-  background-color: #666;
-  border-color: #aaa;
-  box-shadow: none;
+  background: linear-gradient(135deg, #9d4edd, #c77dff);
 }
 
 .flash-messages-inside {

@@ -69,7 +69,9 @@
       <p><strong>Opening Time:</strong> {{ business.opening_time }}</p>
       <p><strong>Closing Time:</strong> {{ business.closing_time }}</p>
       <p><strong>Open Days:</strong> {{ business.open_days | join(', ') }}</p>
-      <p><strong>Slot Interval:</strong> {{ business.interval }} minutes</p>
+      {% if business.interval %}
+        <p><strong>Slot Interval:</strong> {{ business.interval }} minutes</p>
+      {% endif %}
     </div>
 
     <div class="action-buttons">

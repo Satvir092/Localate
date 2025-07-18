@@ -84,12 +84,20 @@ def create_business():
             flash("Please select a state.", "error")
             return redirect(url_for('business.create_business'))
 
-        if not interval:
-            flash("Please select an appointment interval", "error")
-            return redirect(url_for('business.create_business'))
-        
         if not timezone:
-            flash("Please select a timezone")
+            flash("Please select a timezone", "error")
+            return redirect(url_for('business.create_business'))
+
+        if interval == 'none':
+            interval = None
+        elif interval:
+            try:
+                interval = int(interval)
+            except (ValueError, TypeError):
+                flash("Invalid appointment interval selected.", "error")
+                return redirect(url_for('business.create_business'))
+        else:
+            flash("Please select an appointment interval", "error")
             return redirect(url_for('business.create_business'))
 
         if opening_time and closing_time and opening_time >= closing_time:
@@ -100,14 +108,13 @@ def create_business():
             flash("Business name must be under 50 characters.", "error")
             return redirect(url_for('business.create_business'))
 
-        if len(description) > 500:
+        if description and len(description) > 500:
             flash("Description must be under 500 characters.", "error")
             return redirect(url_for('business.create_business'))
 
         if len(city) > 50:
             flash("City name must be under 50 characters.", "error")
             return redirect(url_for('business.create_business'))
-
 
         supabase = current_app.supabase
         response = supabase.table('businesses').insert({
@@ -118,7 +125,7 @@ def create_business():
             "description": description,
             "open_days": days_list,
             "opening_time": opening_time,
-            "interval": interval,
+            "interval": interval,  
             "state": state,
             "timezone": timezone,
             "closing_time": closing_time
