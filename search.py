@@ -1,6 +1,9 @@
 from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash
 from flask_login import login_required, current_user
 from datetime import datetime
+from flask_mail import Message
+from itsdangerous import URLSafeTimedSerializer
+from extensions import mail
 from datetime import datetime, date
 import pytz
 from flask import jsonify
@@ -82,11 +85,8 @@ def book_appointment():
     supabase = current_app.supabase
 
     business_id = request.form.get('business_id')
-    selected_date = request.form.get('selected_date')  
-    selected_time = request.form.get('selected_time')  
-
-    current_app.logger.info(f"Form submitted: business_id={business_id}, date={selected_date}, time={selected_time}")
-    current_app.logger.info(f"Current user: id={current_user.id}, email={current_user.email}")
+    selected_date = request.form.get('selected_date')
+    selected_time = request.form.get('selected_time')
 
     if not all([business_id, selected_date, selected_time]):
         flash("Please select a date and time.", "error")
@@ -106,7 +106,7 @@ def book_appointment():
         if existing.data:
             flash("This time slot is already booked. Please choose another.", "error")
             return redirect(request.referrer or url_for('search.customer_view', business_id=business_id))
-
+        
         supabase.table('appointments').insert({
             'user_id': current_user.id,
             'business_id': int(business_id),
@@ -119,11 +119,75 @@ def book_appointment():
             'profile_image_url': current_user.profile_image_url
         }).execute()
 
-        flash("Appointment booked successfully, awaiting confirmation from owner!", "success")
+        business_info = supabase.table('businesses') \
+            .select('user_id, name') \
+            .eq('id', int(business_id)) \
+            .single() \
+            .execute()
+        
+        owner_id = business_info.data['user_id']
+        business_name = business_info.data['name']
+
+        owner_info = supabase.table('users') \
+            .select('email') \
+            .eq('id', owner_id) \
+            .single() \
+            .execute()
+
+        owner_email = owner_info.data['email']
+
+        msg = Message(
+            subject=f"New Appointment for {business_name}",
+            sender=current_app.config['MAIL_DEFAULT_SENDER'],
+            recipients=[owner_email]
+        )
+        formatted_time = time_obj.strftime("%I:%M %p").lstrip("0")
+        msg.html = f"""
+            <!DOCTYPE html>
+            <html>
+            <body style="background-color: #1e1e1e; color: #e0e0e0; font-family: Arial, sans-serif; padding: 20px;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background-color: #2b2b2b; border-radius: 8px;">
+                <tr>
+                    <td style="padding: 30px;">
+                    <h2 style="color: #bb86fc; margin-top: 0;">New Appointment for {business_name}</h2>
+
+                    <p style="font-size: 16px; line-height: 1.6;">
+                        You have a new appointment booking:
+                    </p>
+
+                    <hr style="border: 1px solid #444;" />
+
+                    <p style="font-size: 16px;">
+                        <strong>Name:</strong> {current_user.full_name}<br>
+                        <strong>Email:</strong> {current_user.email}<br>
+                        <strong>Phone:</strong> {current_user.phone_number}<br>
+                        <strong>Date:</strong> {selected_date}<br>
+                        <strong>Time:</strong> {formatted_time}
+                    </p>
+
+                    <hr style="border: 1px solid #444;" />
+
+                    <p style="font-size: 16px;">
+                        Please confirm this appointment or contact the user if the time is no longer available.
+                    </p>
+
+                    <p style="margin-top: 30px; font-size: 14px; color: #999;">
+                        — Localate Team
+                    </p>
+                    </td>
+                </tr>
+                </table>
+            </body>
+            </html>
+            """
+
+        mail.send(msg)
+
+        flash("Appointment booked successfully. Confirmation pending from owner!", "success")
 
     except Exception as e:
         current_app.logger.error(f"Error booking appointment: {e}")
-        flash("Please update your profile before booking.", "error")
+        flash("Error booking appointment. Please try again or update your profile.", "error")
 
     return redirect(request.referrer or url_for('search.customer_view', business_id=business_id))
 

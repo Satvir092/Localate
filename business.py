@@ -2,6 +2,9 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from flask_login import login_required, current_user
 from datetime import datetime
 import json
+from extensions import mail
+from flask_mail import Message
+from datetime import datetime
 from datetime import datetime, date
 import pytz
 
@@ -312,16 +315,46 @@ def confirm_appointment():
     if not appt_id:
         return "Missing appointment ID", 400
 
-    appt_resp = supabase.table('appointments').select('business_id').eq('id', appt_id).single().execute()
+    appt_resp = supabase.table('appointments').select('*').eq('id', appt_id).single().execute()
     if not appt_resp.data:
         return "Appointment not found", 404
 
-    business_id = appt_resp.data['business_id']
+    appointment = appt_resp.data
+    business_id = appointment['business_id']
 
-    business_resp = supabase.table('businesses').select('user_id').eq('id', business_id).single().execute()
+    business_resp = supabase.table('businesses').select('user_id, name').eq('id', business_id).single().execute()
     if not business_resp.data or str(business_resp.data['user_id']) != str(current_user.id):
         return "Unauthorized", 403
 
+    business_name = business_resp.data['name']
+
     supabase.table('appointments').update({'confirmed': True}).eq('id', appt_id).execute()
 
-    return "Appointment confirmed", 200
+    date_str = appointment['date']
+    time_str = appointment['time']
+    date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+    time_obj = datetime.strptime(time_str, "%H:%M:%S")
+
+    formatted_date = date_obj.strftime("%B %d, %Y")  
+    formatted_time = time_obj.strftime("%I:%M %p").lstrip("0")  
+
+    msg = Message(
+        subject=f"Your Appointment with {business_name} is Confirmed",
+        sender=current_app.config['MAIL_DEFAULT_SENDER'],
+        recipients=[appointment['email']]
+    )
+    msg.html = f"""
+    <div style="background-color:#1f1f1f; color:#e0d4ff; font-family:sans-serif; padding:1.5em; border-radius:8px;">
+        <h2 style="color:#b37bff;">Appointment Confirmed 🎉</h2>
+        <p>Hi <strong>{appointment['name']}</strong>,</p>
+        <p>Your appointment with <strong>{business_name}</strong> has been confirmed!</p>
+        <p>
+            <strong>Date:</strong> {formatted_date}<br>
+            <strong>Time:</strong> {formatted_time}
+        </p>
+        <p style="margin-top:1em;">We look forward to seeing you!</p>
+    </div>
+    """
+    mail.send(msg)
+
+    return "Appointment confirmed and email sent", 200
