@@ -6,59 +6,78 @@
   <title>Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='view_bus.css') }}" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
 </head>
 <body>
   <nav class="navbar">
-  <div class="nav-logo">
-    Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
-  </div>
-  <form id="navbar-search-form" method="GET" action="{{ url_for('search.search') }}" class="navbar-search-form" role="search" autocomplete="off" style="max-width: 600px; min-width: 300px; position: relative; overflow: visible;">
-  <div class="search-input-wrapper" style="position: relative; width: 200%; margin-left: -30%;">
-    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
-         style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 1em; height: 1em; color: #888;">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"/>
-    </svg>
-    <input
-      type="search"
-      id="navbar-q"
-      name="q"
-      placeholder="Search for a business or city"
-      value="{{ request.args.get('q', '') }}"
-      aria-label="Search businesses"
-      class="search-input"
-      style="width: 75%; padding: 0.5em 0.5em 0.5em 2.2em; border-radius: 25px; border: none; background-color: #1e1e1e; color: #eee; font-size: 1rem;"
-    />
-    <ul id="navbar-autocomplete-list" class="autocomplete-suggestions hidden" style="top: 110%; left: 0; width: 75%;"></ul>
-  </div>
-</form>
-  <input type="checkbox" id="nav-toggle" class="nav-toggle">
-  <ul class="nav-links">
-    <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
-      <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
-    <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
-  </ul>
-  <label for="nav-toggle" class="nav-toggle-label">
-    <span></span>
-  </label>
-</nav>
-
+    <div class="nav-logo">
+      Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon" />
+    </div>
+    <form
+      id="navbar-search-form"
+      method="GET"
+      action="{{ url_for('search.search') }}"
+      class="navbar-search-form"
+      role="search"
+      autocomplete="off"
+      style="max-width: 600px; min-width: 300px; position: relative; overflow: visible;"
+    >
+      <div class="search-input-wrapper" style="position: relative; width: 200%; margin-left: -30%;">
+        <svg
+          class="search-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+          style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 1em; height: 1em; color: #888;"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"
+          />
+        </svg>
+        <input
+          type="search"
+          id="navbar-q"
+          name="q"
+          placeholder="Search for a business or city"
+          value="{{ request.args.get('q', '') }}"
+          aria-label="Search businesses"
+          class="search-input"
+          style="width: 75%; padding: 0.5em 0.5em 0.5em 2.2em; border-radius: 25px; border: none; background-color: #1e1e1e; color: #eee; font-size: 1rem;"
+        />
+        <ul id="navbar-autocomplete-list" class="autocomplete-suggestions hidden" style="top: 110%; left: 0; width: 75%;"></ul>
+      </div>
+    </form>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <ul class="nav-links">
+      <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small" /> Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename='dash_svg.svg') }}" alt="Dash Icon" class="nav-icon-small" /> Dashboard</a></li>
+      <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename='logout.svg') }}" alt="Logout Icon" class="nav-icon-small" /> Logout</a></li>
+    </ul>
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+  </nav>
 
   <main class="view-business-container" style="position: relative;">
-    <div class="profile-pic-upload" data-business-id="{{ business.id }}">
-  <label for="profilePicInput" class="upload-circle">
-    {% if business.profile_image_url %}
-      <img id="profilePicPreview"
-          src="{{ business.profile_image_url }}"
-          alt="Profile Preview" />
-      <span class="plus-icon" style="display: none;">+</span>
-    {% else %}
-      <span class="plus-icon">+</span>
-    {% endif %}
-  </label>
-  <input type="file" id="profilePicInput" accept="image/*" style="display: none;" />
-  <p class="upload-label">Add Profile Pic</p>
-</div>
+    <form id="profilePicForm" method="POST" enctype="multipart/form-data" action="{{ url_for('business.upload_business_profile_pic', business_id=business.id) }}">
+      <div class="profile-pic-upload" data-business-id="{{ business.id }}">
+        <label for="profilePicInput" class="upload-circle" style="cursor:pointer;">
+          {% if business.profile_image_url %}
+            <img id="profilePicPreview" src="{{ business.profile_image_url }}" alt="Profile Preview" />
+            <span class="plus-icon" style="display: none;">+</span>
+          {% else %}
+            <span class="plus-icon">+</span>
+          {% endif %}
+        </label>
+        <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" style="display: none;" />
+        <p class="upload-label">Add Profile Pic</p>
+      </div>
+    </form>
 
     <h1>{{ business.name }}</h1>
     <p class="category">{{ business.category }}</p>
@@ -81,102 +100,137 @@
     </div>
   </main>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-  const uploadDiv = document.querySelector('.profile-pic-upload');
-  if (!uploadDiv) return;
+  <div id="cropModal" class="hidden">
+    <div class="crop-modal-content">
+      <h3>Adjust your business profile picture</h3>
+      <div class="cropper-wrapper">
+        <img id="cropperImage" alt="Crop Preview" />
+      </div>
+      <button type="button" id="cropSaveBtn">Save</button>
+      <button type="button" id="cropCancelBtn">Cancel</button>
+    </div>
+  </div>
 
-  const businessId = uploadDiv.dataset.businessId;
-  const fileInput = document.getElementById('profilePicInput');
-  const previewImg = document.getElementById('profilePicPreview');
-  const plusIcon = document.querySelector('.plus-icon');
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const uploadDiv = document.querySelector('.profile-pic-upload');
+      if (!uploadDiv) return;
 
-  fileInput.addEventListener('change', function () {
-    const file = this.files[0];
-    if (!file) return;  
+      const fileInput = document.getElementById('profilePicInput');
+      const previewImg = document.getElementById('profilePicPreview');
+      const plusIcon = document.querySelector('.plus-icon');
+      const form = document.getElementById('profilePicForm');
 
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      previewImg.src = e.target.result;
-      previewImg.style.display = 'block';
-      plusIcon.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+      const modal = document.getElementById('cropModal');
+      const cropperImage = document.getElementById('cropperImage');
+      const saveBtn = document.getElementById('cropSaveBtn');
+      const cancelBtn = document.getElementById('cropCancelBtn');
 
-    const formData = new FormData();
-    formData.append('profile_pic', file);
+      let cropper;
 
-    fetch(`/upload_profile_pic/${businessId}`, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          console.log("Upload successful:", data.url);
-        } else {
-          alert("Upload failed: " + data.error);
-        }
-      })
-      .catch(err => {
-        console.error("Upload error:", err);
-        alert("Upload failed.");
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          cropperImage.src = event.target.result;
+          modal.classList.remove('hidden');
+
+          cropperImage.onload = () => {
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(cropperImage, {
+              aspectRatio: 1,
+              viewMode: 1,
+              background: false,
+              dragMode: 'move',
+              autoCropArea: 1,
+            });
+          };
+        };
+        reader.readAsDataURL(file);
       });
-  });
-});
 
-</script>
-<script>
-function setupAutocomplete(inputId, listId, formId) {
-  const input = document.getElementById(inputId);
-  const list = document.getElementById(listId);
-  const form = document.getElementById(formId);
+      saveBtn.addEventListener('click', () => {
+        if (!cropper) return;
 
-  if (!input || !list || !form) return;
+        cropper.getCroppedCanvas({
+          width: 300,
+          height: 300,
+          imageSmoothingQuality: 'high'
+        }).toBlob((blob) => {
+          const croppedFile = new File([blob], 'cropped.png', { type: 'image/png' });
 
-  input.addEventListener('input', async () => {
-    const query = input.value.trim();
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(croppedFile);
+          fileInput.files = dataTransfer.files;
 
-    if (query.length < 2) {
-      list.innerHTML = '';
-      list.classList.add('hidden');
-      return;
-    }
+          modal.classList.add('hidden');
 
-    try {
-      const res = await fetch(`/search/autocomplete?q=${encodeURIComponent(query)}`);
-      const suggestions = await res.json();
-
-      list.innerHTML = '';
-      suggestions.forEach(name => {
-        const li = document.createElement('li');
-        li.textContent = name;
-        li.addEventListener('click', () => {
-          input.value = name;
-          list.innerHTML = '';
           form.submit();
         });
-        list.appendChild(li);
       });
 
-      list.classList.remove('hidden');
-    } catch (err) {
-      console.error('Autocomplete fetch failed', err);
+      cancelBtn.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+        fileInput.value = '';
+      });
+    });
+  </script>
+
+  <script>
+    function setupAutocomplete(inputId, listId, formId) {
+      const input = document.getElementById(inputId);
+      const list = document.getElementById(listId);
+      const form = document.getElementById(formId);
+
+      if (!input || !list || !form) return;
+
+      input.addEventListener('input', async () => {
+        const query = input.value.trim();
+
+        if (query.length < 2) {
+          list.innerHTML = '';
+          list.classList.add('hidden');
+          return;
+        }
+
+        try {
+          const res = await fetch(`/search/autocomplete?q=${encodeURIComponent(query)}`);
+          const suggestions = await res.json();
+
+          list.innerHTML = '';
+          suggestions.forEach(name => {
+            const li = document.createElement('li');
+            li.textContent = name;
+            li.addEventListener('click', () => {
+              input.value = name;
+              list.innerHTML = '';
+              form.submit();
+            });
+            list.appendChild(li);
+          });
+
+          list.classList.remove('hidden');
+        } catch (err) {
+          console.error('Autocomplete fetch failed', err);
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !list.contains(e.target)) {
+          list.innerHTML = '';
+          list.classList.add('hidden');
+        }
+      });
     }
-  });
 
-  document.addEventListener('click', (e) => {
-    if (!input.contains(e.target) && !list.contains(e.target)) {
-      list.innerHTML = '';
-      list.classList.add('hidden');
-    }
-  });
-}
-
-setupAutocomplete('q', 'autocomplete-list', 'search-form');
-setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
-</script>
-
-
+    setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
+  </script>
 </body>
 </html>
