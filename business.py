@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app, jsonify
 from flask_login import login_required, current_user
 from datetime import datetime
 import json
+from werkzeug.utils import secure_filename
+from urllib.parse import urlparse
+import uuid
 from extensions import mail
 from flask_mail import Message
 from datetime import datetime
@@ -173,7 +176,54 @@ def view_business(business_id):
     else:
         flash("Business not found.", "error")
         return redirect(url_for('business.dashboard'))
-    
+
+@business_bp.route('/upload_business_profile_pic/<int:business_id>', methods=['POST'])
+@login_required
+def upload_business_profile_pic(business_id):
+    supabase = current_app.supabase
+
+    business_resp = supabase.table('businesses').select('user_id, profile_image_url').eq('id', business_id).single().execute()
+    if not business_resp.data or str(business_resp.data['user_id']) != str(current_user.id):
+        flash("Unauthorized to edit this business.", "error")
+        return redirect(url_for('business.dashboard'))
+
+    file = request.files.get('profile_pic')
+    if not file or not file.filename:
+        flash("No file selected.", "error")
+        return redirect(url_for('business.edit_business', business_id=business_id))
+
+    bucket_name = 'business-profile-pics'
+    old_url = business_resp.data.get('profile_image_url')
+
+    if old_url:
+        try:
+            parsed_url = urlparse(old_url)
+            old_filename = parsed_url.path.split('/')[-1]
+            delete_resp = supabase.storage.from_(bucket_name).remove([old_filename])
+            current_app.logger.info(f"Deleted old image: {old_filename}")
+        except Exception as e:
+            current_app.logger.error(f"Error deleting old image: {e}")
+
+    filename = secure_filename(file.filename)
+    unique_filename = f"{uuid.uuid4().hex}_{filename}"
+    file_bytes = file.read()
+
+    upload_resp = supabase.storage.from_(bucket_name).upload(
+        unique_filename,
+        file_bytes,
+        file_options={
+            "content-type": file.content_type,
+            "x-upsert": "true"
+        }
+    )
+    current_app.logger.info(f"Upload response: {upload_resp}")
+
+    public_url = supabase.storage.from_(bucket_name).get_public_url(unique_filename)
+
+    supabase.table('businesses').update({'profile_image_url': public_url}).eq('id', business_id).execute()
+
+    return redirect(url_for('business.view_business', business_id=business_id))
+
 @business_bp.route('/edit_business/<int:business_id>', methods=['GET', 'POST'])
 @login_required
 def edit_business(business_id):

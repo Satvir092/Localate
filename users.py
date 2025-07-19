@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+from urllib.parse import urlparse
+import uuid
 import os
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
@@ -60,14 +62,38 @@ def upload_profile_pic():
         flash("No file selected.", "error")
         return redirect(url_for('business.dashboard'))
 
+    bucket_name = "user-profile-pics"
+
+    user_resp = supabase.table('users').select('profile_image_url').eq('id', current_user.id).single().execute()
+    old_url = None
+    if user_resp.data:
+        old_url = user_resp.data.get('profile_image_url')
+        print("Old profile image URL:", old_url)
+    if old_url:
+        try:
+            parsed_url = urlparse(old_url)
+            old_filename = parsed_url.path.split('/')[-1]
+            delete_resp = supabase.storage.from_(bucket_name).remove([old_filename])
+            print("Delete response:", delete_resp)
+        except Exception as e:
+            print("Error deleting old image:", e)
+
     filename = secure_filename(file.filename)
-    upload_folder = os.path.join(current_app.root_path, 'static', 'uploads')
-    os.makedirs(upload_folder, exist_ok=True)
-    filepath = os.path.join(upload_folder, filename)
-    file.save(filepath)
+    unique_filename = f"{uuid.uuid4().hex}_{filename}"
+    file_bytes = file.read()
 
-    profile_image_url = url_for('static', filename=f'uploads/{filename}', _external=True)
+    upload_resp = supabase.storage.from_(bucket_name).upload(
+        unique_filename,
+        file_bytes,
+        file_options={
+            "content-type": file.content_type,
+            "x-upsert": "true"
+        }
+    )
+    print("Upload response:", upload_resp)
 
-    supabase.table('users').update({'profile_image_url': profile_image_url}).eq('id', current_user.id).execute()
+    public_url = supabase.storage.from_(bucket_name).get_public_url(unique_filename)
+
+    supabase.table('users').update({'profile_image_url': public_url}).eq('id', current_user.id).execute()
 
     return redirect(url_for('business.dashboard'))
