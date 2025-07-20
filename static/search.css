@@ -236,6 +236,29 @@ body {
   margin: 0 auto;   
 }
 
+.star-rating {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 1.1rem;
+}
+
+.star {
+  color: #f5c518; 
+  margin-right: 2px;
+}
+
+.star.empty {
+  color: #ccc;
+}
+
+.review-count {
+  color: #aaa;
+  font-size: 0.95rem;
+  margin-left: 6px;
+}
+
+
 @media (max-width: 800px) {
   .business-card {
     grid-template-columns: 60px 1fr 120px;

@@ -9,39 +9,40 @@
 <body>
 
   <nav class="navbar">
-  <div class="nav-logo">
-    Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
-  </div>
-  <form id="navbar-search-form" method="GET" action="{{ url_for('search.search') }}" class="navbar-search-form" role="search" autocomplete="off" style="max-width: 600px; min-width: 300px; position: relative; overflow: visible;">
-  <div class="search-input-wrapper" style="position: relative; width: 200%; margin-left: -30%;">
-    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
-         style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 1em; height: 1em; color: #888;">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"/>
-    </svg>
-    <input
-      type="search"
-      id="navbar-q"
-      name="q"
-      placeholder="Search for a business or city"
-      value="{{ request.args.get('q', '') }}"
-      aria-label="Search businesses"
-      class="search-input"
-      style="width: 75%; padding: 0.5em 0.5em 0.5em 2.2em; border-radius: 25px; border: none; background-color: #1e1e1e; color: #eee; font-size: 1rem;"
-    />
-    <ul id="navbar-autocomplete-list" class="autocomplete-suggestions hidden" style="top: 110%; left: 0; width: 75%;"></ul>
-  </div>
-</form>
-  <input type="checkbox" id="nav-toggle" class="nav-toggle">
-  <ul class="nav-links">
-    <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
-    <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
-    <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
-  </ul>
-  <label for="nav-toggle" class="nav-toggle-label">
-    <span></span>
-  </label>
-</nav>
+    <div class="nav-logo">
+      Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
+    </div>
+    <form id="navbar-search-form" method="GET" action="{{ url_for('search.search') }}" class="navbar-search-form" role="search" autocomplete="off" style="max-width: 600px; min-width: 300px; position: relative; overflow: visible;">
+      <div class="search-input-wrapper" style="position: relative; width: 200%; margin-left: -30%;">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
+             style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 1em; height: 1em; color: #888;">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"/>
+        </svg>
+        <input
+          type="search"
+          id="navbar-q"
+          name="q"
+          placeholder="Search for a business or city"
+          value="{{ request.args.get('q', '') }}"
+          aria-label="Search businesses"
+          class="search-input"
+          style="width: 75%; padding: 0.5em 0.5em 0.5em 2.2em; border-radius: 25px; border: none; background-color: #1e1e1e; color: #eee; font-size: 1rem;"
+        />
+        <ul id="navbar-autocomplete-list" class="autocomplete-suggestions hidden" style="top: 110%; left: 0; width: 75%;"></ul>
+      </div>
+    </form>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <ul class="nav-links">
+      <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
+      <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+      <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
+    </ul>
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+  </nav>
+
   <main class="business-card">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -51,7 +52,7 @@
         {% endfor %}
       </div>
     {% endif %}
-  {% endwith %}
+    {% endwith %}
 
     <div class="business-card-header">
       <div class="business-details-left">
@@ -61,14 +62,14 @@
         <p class="description">{{ business.description }}</p>
       </div>
       <div class="business-image-wrapper">
-    {% if business.profile_image_url %}
-      <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
-    {% else %}
-      <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" style="width:120px; height:120px; color:#888;">
-        <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
-    </svg>
-  {% endif %}
-</div>
+        {% if business.profile_image_url %}
+          <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
+        {% else %}
+          <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" style="width:120px; height:120px; color:#888;">
+            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
+          </svg>
+        {% endif %}
+      </div>
     </div>
 
     <div class="business-meta">
@@ -80,29 +81,59 @@
     <div class="action-buttons">
       <a href="{{ url_for('search.search', q=q, category=category, city=city, state=state) }}" class="btn secondary">← Back to Search</a>
       <button class="btn primary" onclick="openBookingModal()">Book Appointment</button>
+
+      {% if current_user.is_authenticated %}
+        <button class="btn primary" id="openReviewModal">Leave a Review</button>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn primary">Log in to Review</a>
+      {% endif %}
     </div>
   </main>
 
   <div id="bookingModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#1e1e1e; padding:1em; border-radius:12px; color:#eee; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:1000;">
-  <h3>Book an Appointment</h3>
+    <h3>Book an Appointment</h3>
 
-  <form method="POST" action="{{ url_for('search.book_appointment') }}">
-    <input type="hidden" name="business_id" value="{{ business.id }}">
+    <form method="POST" action="{{ url_for('search.book_appointment') }}">
+      <input type="hidden" name="business_id" value="{{ business.id }}">
 
-    <div id="bookingModalContent">
-      <label for="date">Date:</label>
-      <select name="selected_date" id="date-select" required></select>
+      <div id="bookingModalContent">
+        <label for="date">Date:</label>
+        <select name="selected_date" id="date-select" required></select>
 
-      <label for="time">Time:</label>
-      <select name="selected_time" id="time-select" required></select>
+        <label for="time">Time:</label>
+        <select name="selected_time" id="time-select" required></select>
+      </div>
+
+      <div style="margin-top:1em;">
+        <button type="submit" class="btn primary">Confirm</button>
+        <button type="button" class="btn secondary" onclick="closeBookingModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="reviewModalTitle" aria-describedby="reviewModalDesc" style="display:none;">
+    <div class="modal-content">
+      <button type="button" class="close" id="closeReviewModal" aria-label="Close review form">&times;</button>
+      <h2 id="reviewModalTitle">Leave a Review</h2>
+      <form method="POST" action="{{ url_for('business.submit_review', business_id=business.id) }}" class="review-form" novalidate>
+        <input type="hidden" name="business_id" value="{{ business.id }}">
+
+        <label for="ratingInput">Rating:</label>
+        <div class="star-rating" role="radiogroup" aria-labelledby="reviewModalTitle" aria-describedby="reviewModalDesc">
+          {% for i in range(1, 6) %}
+            <span class="star" data-value="{{ i }}" role="radio" aria-checked="false" tabindex="0" aria-label="{{ i }} Star">&#9733;</span>
+          {% endfor %}
+          <input type="hidden" name="rating" id="ratingInput" required aria-required="true" />
+        </div>
+
+        <label for="comment">Comment (optional):</label>
+        <textarea name="comment" id="comment" rows="4" placeholder="Write your thoughts..."></textarea>
+
+        <button type="submit" class="btn primary" style="margin-top: 1em;">Submit Review</button>
+      </form>
     </div>
-
-    <div style="margin-top:1em;">
-      <button type="submit" class="btn primary">Confirm</button>
-      <button type="button" class="btn secondary" onclick="closeBookingModal()">Cancel</button>
-    </div>
-  </form>
-</div>
+  </div>
 
 <script>
 const openDays = JSON.parse('{{ business.open_days | tojson | safe }}');
@@ -205,9 +236,82 @@ function restoreModalContent() {
     modalContent.innerHTML = modalContent.originalContent;
   }
 }
-</script>
 
-<script>
+// Review modal open/close and star rating logic
+const openReviewBtn = document.getElementById('openReviewModal');
+const reviewModal = document.getElementById('reviewModal');
+const closeReviewBtn = document.getElementById('closeReviewModal');
+
+if (openReviewBtn) {
+  openReviewBtn.onclick = () => {
+    reviewModal.style.display = 'block';
+    resetStarRating();
+  };
+}
+
+if (closeReviewBtn) {
+  closeReviewBtn.onclick = () => reviewModal.style.display = 'none';
+}
+
+window.onclick = (e) => {
+  if (e.target === reviewModal) {
+    reviewModal.style.display = 'none';
+  }
+};
+
+const stars = reviewModal ? reviewModal.querySelectorAll('.star-rating .star') : [];
+
+let selectedRating = 0;
+
+function highlightStars(rating) {
+  stars.forEach((star, i) => {
+    if (i < rating) {
+      star.classList.add('selected');
+      star.setAttribute('aria-checked', 'true');
+    } else {
+      star.classList.remove('selected');
+      star.setAttribute('aria-checked', 'false');
+    }
+  });
+}
+
+function resetStarRating() {
+  selectedRating = 0;
+  highlightStars(0);
+  const ratingInput = document.getElementById('ratingInput');
+  if (ratingInput) ratingInput.value = '';
+}
+
+stars.forEach((star) => {
+  const value = parseInt(star.getAttribute('data-value'));
+
+  star.addEventListener('mouseover', () => {
+    highlightStars(value);
+  });
+
+  star.addEventListener('mouseout', () => {
+    highlightStars(selectedRating);
+  });
+
+  star.addEventListener('click', () => {
+    selectedRating = value;
+    const ratingInput = document.getElementById('ratingInput');
+    if (ratingInput) ratingInput.value = value;
+    highlightStars(value);
+  });
+
+  // Keyboard accessibility: Enter or Space sets rating
+  star.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      selectedRating = value;
+      const ratingInput = document.getElementById('ratingInput');
+      if (ratingInput) ratingInput.value = value;
+      highlightStars(value);
+    }
+  });
+});
+
 function setupAutocomplete(inputId, listId, formId) {
   const input = document.getElementById(inputId);
   const list = document.getElementById(listId);
@@ -257,4 +361,6 @@ function setupAutocomplete(inputId, listId, formId) {
 setupAutocomplete('q', 'autocomplete-list', 'search-form');
 setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
 </script>
+
 </body>
+</html>
