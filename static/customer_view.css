@@ -420,6 +420,126 @@ body {
   color: white;
 }
 
+#reviewModal {
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1e1e;
+  color: #eee;
+  padding: 1.5em 2em;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.7);
+  z-index: 1100;
+  max-width: 400px;
+  width: 90%;
+  display: none;
+}
+
+#reviewModal .modal-content {
+  position: relative;
+}
+
+#reviewModal h2 {
+  margin-top: 0;
+  margin-bottom: 1em;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+#reviewModal .close {
+  position: absolute;
+  top: 0.5em;
+  right: 0.75em;
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  color: #bbb;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#reviewModal .close:hover,
+#reviewModal .close:focus {
+  color: #fff;
+  outline: none;
+}
+
+.review-form label {
+  display: block;
+  margin-bottom: 0.3em;
+  font-weight: 600;
+}
+
+.review-form textarea {
+  width: 100%;
+  padding: 0.6em;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2b2b2b;
+  color: #eee;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.review-form textarea::placeholder {
+  color: #777;
+}
+
+.review-form button[type="submit"] {
+  width: 100%;
+  padding: 0.75em 1em;
+  margin-top: 1em;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background-color: #f5a623;
+  color: #1e1e1e;
+  transition: background-color 0.3s ease;
+}
+
+.review-form button[type="submit"]:hover,
+.review-form button[type="submit"]:focus {
+  background-color: #d18e1f;
+  outline: none;
+}
+
+.star-rating {
+  display: flex;
+  gap: 0.25em;
+  font-size: 2rem;
+  cursor: pointer;
+  user-select: none;
+  justify-content: center;
+  margin-bottom: 0.6em;
+}
+
+.star-rating .star {
+  color: #ccc;
+  transition: color 0.3s ease;
+}
+
+.star-rating .star.selected {
+  color: #f5a623;
+}
+
+.star-rating .star:focus {
+  outline: none;
+}
+
+.star-rating input[type="hidden"] {
+  display: none;
+}
+
+button:focus {
+  outline: none;
+}
+
+
 @media (max-width: 768px) {
   .business-card {
     padding: 3rem 2rem;

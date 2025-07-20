@@ -415,3 +415,57 @@ def confirm_appointment():
     mail.send(msg)
 
     return "Appointment confirmed and email sent", 200
+
+@business_bp.route('/submit_review/<int:business_id>', methods=['POST'])
+@login_required
+def submit_review(business_id):
+    rating = request.form.get('rating')
+    comment = request.form.get('comment', '').strip()
+
+    try:
+        rating = int(rating)
+        if rating < 1 or rating > 5:
+            flash("Invalid rating. Please choose a number between 1 and 5.", "error")
+            return redirect(url_for('search.customer_view', business_id=business_id))
+    except ValueError:
+        flash("Rating must be a number.", "error")
+        return redirect(url_for('search.customer_view', business_id=business_id))
+
+    supabase = current_app.supabase
+
+
+    existing_review = supabase.table('reviews')\
+        .select('*')\
+        .eq('user_id', str(current_user.id))\
+        .eq('business_id', business_id)\
+        .execute()
+
+    if existing_review.data:
+
+        review_id = existing_review.data[0]['id']  
+        response = supabase.table('reviews')\
+            .update({
+                "rating": rating,
+                "comment": comment
+            })\
+            .eq('id', review_id)\
+            .execute()
+
+        if response.data:
+            flash("Your review has been updated!", "success")
+        else:
+            flash("Failed to update your review. Please try again.", "error")
+    else:
+        response = supabase.table('reviews').insert({
+            "user_id": str(current_user.id),
+            "business_id": business_id,
+            "rating": rating,
+            "comment": comment
+        }).execute()
+
+        if response.data:
+            flash("Review submitted successfully!", "success")
+        else:
+            flash("Something went wrong. Please try again.", "error")
+
+    return redirect(url_for('search.customer_view', business_id=business_id))
