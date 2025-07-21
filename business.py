@@ -469,3 +469,91 @@ def submit_review(business_id):
             flash("Something went wrong. Please try again.", "error")
 
     return redirect(url_for('search.customer_view', business_id=business_id))
+
+@business_bp.route('/business/<int:business_id>/reviews')
+def view_reviews(business_id):
+    supabase = current_app.supabase
+
+    business_response = supabase.table('businesses')\
+        .select('id, name')\
+        .eq('id', business_id)\
+        .single()\
+        .execute()
+    reviews_response = supabase.table('reviews')\
+        .select('rating, comment, created_at, users(username)')\
+        .eq('business_id', business_id)\
+        .order('created_at', desc=True)\
+        .execute()
+
+    reviews = reviews_response.data
+
+    review_count = len(reviews)
+    if review_count > 0:
+        avg_rating = sum([r['rating'] for r in reviews]) / review_count
+    else:
+        avg_rating = 0
+
+    print("DEBUG: q =", request.args.get('q'))
+    print("DEBUG: category =", request.args.get('category'))
+    print("DEBUG: city =", request.args.get('city'))
+    print("DEBUG: state =", request.args.get('state'))
+
+    return render_template(
+    'view_reviews.html',
+    business=business_response.data,
+    reviews=reviews,
+    avg_rating=round(avg_rating, 1),
+    review_count=review_count,
+    q=request.args.get('q', ''),
+    category=request.args.get('category', ''),
+    city=request.args.get('city', ''),
+    state=request.args.get('state', '')
+)
+
+@business_bp.route('/upload_business_images/<int:business_id>', methods=['POST'])
+@login_required
+def upload_business_images(business_id):
+    supabase = current_app.supabase
+
+    business_resp = supabase.table('businesses').select('user_id').eq('id', business_id).single().execute()
+    if not business_resp.data or str(business_resp.data['user_id']) != str(current_user.id):
+        flash("Unauthorized to edit this business.", "error")
+        return redirect(url_for('business.dashboard'))
+
+    files = request.files.getlist('business_images')
+    if not files or len(files) == 0:
+        flash("No images selected.", "error")
+        return redirect(url_for('business.edit_business', business_id=business_id))
+
+    if len(files) > 5:
+        flash("You can upload a maximum of 5 images.", "error")
+        return redirect(url_for('business.edit_business', business_id=business_id))
+
+    bucket_name = 'business_images'
+    uploaded_urls = []
+
+    for file in files:
+        if file and file.filename:
+            filename = secure_filename(file.filename)
+            unique_filename = f"{uuid.uuid4().hex}_{filename}"
+            file_bytes = file.read()
+
+            upload_resp = supabase.storage.from_(bucket_name).upload(
+                unique_filename,
+                file_bytes,
+                file_options={
+                    "content-type": file.content_type,
+                    "x-upsert": "true"
+                }
+            )
+
+            current_app.logger.info(f"Uploaded image: {unique_filename}")
+            public_url = supabase.storage.from_(bucket_name).get_public_url(unique_filename)
+            uploaded_urls.append(public_url)
+
+    supabase.table('businesses').update({
+        'business_image_urls': uploaded_urls
+    }).eq('id', business_id).execute()
+
+    flash("Images uploaded successfully.", "success")
+    return redirect(url_for('business.view_business', business_id=business_id))

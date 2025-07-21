@@ -16,7 +16,6 @@ def search():
     supabase = current_app.supabase
     query = request.args.get('q', '').strip()
     category = request.args.get('category', '').strip()
-
     state = request.args.get('state', '').strip()
 
     if not query and not category and not state:
@@ -34,6 +33,30 @@ def search():
 
         response = business_query.execute()
         businesses = response.data or []
+
+        business_ids = [b['id'] for b in businesses]
+        if business_ids:
+            reviews_response = supabase.table('reviews')\
+                .select('rating, business_id')\
+                .in_('business_id', business_ids)\
+                .execute()
+            reviews = reviews_response.data or []
+        else:
+            reviews = []
+
+        from collections import defaultdict
+        review_map = defaultdict(list)
+        for review in reviews:
+            review_map[review['business_id']].append(review['rating'])
+
+        for business in businesses:
+            ratings = review_map[business['id']]
+            if ratings:
+                business['avg_rating'] = round(sum(ratings) / len(ratings), 1)
+                business['review_count'] = len(ratings)
+            else:
+                business['avg_rating'] = 0
+                business['review_count'] = 0
 
     return render_template('search.html', businesses=businesses)
 
