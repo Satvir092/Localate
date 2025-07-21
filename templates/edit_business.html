@@ -127,6 +127,10 @@
         <option value="120" {% if business.interval == "120" %}selected{% endif %}>120 minutes</option>
       </select>
 
+      <label for="social_url">Photo Showcase URL (reccomended)</label>
+      <input type="social" id="social_url" name="social_url" value="{{ business.social_url }}"/>
+
+
       <button type="submit">Update Business</button>
     </form>
   </main>

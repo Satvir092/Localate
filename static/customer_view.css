@@ -8,7 +8,7 @@ body {
 }
 
 .business-card {
-  max-width: 900px;
+  max-width: 1150px;
   width: 100%;
   margin: 4rem auto;
   padding: 4rem 4rem 3rem;
@@ -50,10 +50,9 @@ body {
 }
 
 .business-details-left:hover {
-  box-shadow:
-    0 0 12px 3px rgba(138, 110, 248, 0.3),
-    inset 0 3px 12px rgba(255 255 255 / 0.08),
-    inset 0 -3px 10px rgba(0 0 0 / 0.6);
+
+  background: linear-gradient(135deg, #303030, #232323);
+
 }
 
 .business-image-wrapper {
@@ -301,7 +300,6 @@ body {
 #bookingModal button.btn.secondary:hover {
   background-color: #444;
   border-color: #666;
-  box-shadow: 0 3px 8px rgba(68, 68, 68, 0.5);
 }
 
 .action-buttons > * {
@@ -537,6 +535,30 @@ body {
 
 button:focus {
   outline: none;
+}
+
+.instagram-btn {
+  display: inline-block;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  cursor: pointer;
+  text-decoration: none;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: white;
+  border: none;
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+
+.instagram-btn i {
+  margin-right: 0.5rem;
+}
+
+.instagram-btn:hover {
+  opacity: 0.9;
+  text-decoration: none;
 }
 
 
