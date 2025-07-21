@@ -1,0 +1,118 @@
+body {
+  background-color: #121212;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.reviews-container {
+  max-width: 900px;
+  margin: 100px auto 40px auto;
+  padding: 0 20px;
+}
+
+.reviews-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #f5f5f5;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-card {
+  background-color: #1e1e1e;
+  border: 1px solid #2d2d2d;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.stars .star {
+  font-size: 1.1rem;
+  color: #888;
+  margin-right: 2px;
+}
+
+.stars .star.filled {
+  color: #ffc107;
+}
+
+.review-comment {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  color: #ddd;
+}
+
+.review-date {
+  font-size: 0.9rem;
+  color: #aaa;
+  text-align: right;
+}
+
+.no-reviews {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+  margin-top: 2rem;
+}
+
+.back-btn-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn-back {
+  display: inline-block;
+  background-color: transparent;
+  border: 1.5px solid #888;
+  color: #ccc;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #444;
+  color: #eee;
+  border-color: #aaa;
+}
+
+@media (max-width: 600px) {
+  .reviews-container {
+    padding: 0 10px;
+  }
+
+  .review-card {
+    padding: 1rem;
+  }
+
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .review-date {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+
+  .btn-back {
+    width: 100%;
+    padding: 0.75rem;
+  }
+}

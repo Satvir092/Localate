@@ -236,28 +236,56 @@ body {
   margin: 0 auto;   
 }
 
-.star-rating {
-  display: flex;
+
+.star-display {
+  text-decoration: none;
+  color: #FFEB3B; 
+  font-size: 1rem;       
+  display: inline-flex;  
   align-items: center;
-  margin-top: 4px;
-  font-size: 1.1rem;
+  gap: 0.2em;            
+  cursor: pointer;
+  white-space: nowrap;   
 }
 
 .star {
-  color: #f5c518; 
-  margin-right: 2px;
-}
-
-.star.empty {
+  font-size: 1.1rem;     
   color: #ccc;
+  transition: transform 0.15s ease;
+  line-height: 1;
+  user-select: none;
 }
 
-.review-count {
+.star.filled {
+  color: #FFEB3B; 
+}
+
+.star-display:hover .star {
+  transform: scale(1.1);
+}
+
+.rating-score {
+  color: #eee;
+  font-weight: 600;
+  margin-left: 0.3em;
+  font-size: 0.9rem; 
+  user-select: none;
+}
+
+.rating-count {
   color: #aaa;
-  font-size: 0.95rem;
-  margin-left: 6px;
+  font-size: 0.85rem;
+  margin-left: 0.2em;
+  user-select: none;
 }
 
+.business-rating {
+  margin-top: 0.3em;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
 
 @media (max-width: 800px) {
   .business-card {
@@ -308,6 +336,20 @@ body {
   .view-profile-btn {
     width: 110px;
     font-size: 1rem;
+  }
+
+  .star-display {
+    font-size: 0.9rem;
+    gap: 0.15em;
+  }
+  .star {
+    font-size: 1rem;
+  }
+  .rating-score {
+    font-size: 0.85rem;
+  }
+  .rating-count {
+    font-size: 0.75rem;
   }
 }
 

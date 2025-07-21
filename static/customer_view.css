@@ -524,7 +524,7 @@ body {
 }
 
 .star-rating .star.selected {
-  color: #f5a623;
+  color: #FFD93B; 
 }
 
 .star-rating .star:focus {
