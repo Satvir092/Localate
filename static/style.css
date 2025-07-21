@@ -16,10 +16,13 @@ body {
   margin-right: 0.6rem;
   vertical-align: middle; 
   cursor: pointer;
-}
+  transition: transform 0.25s ease-in-out;
+  display: inline-block;
+}    
+
 
 .nav-icon:hover {
-  transform: rotate(-5deg) scale(1.08);
+  transform: translateY(-3px) rotate(-3deg) scale(1.06);
 }
 
 .nav-logo {
@@ -264,9 +267,10 @@ body {
 .more-info,
 .business-info {
   background-color: #181818;
-  padding: 3.5rem 1.5rem;
+  padding: 4rem 2rem;
   color: #eee;
   text-align: center;
+  font-family: 'Inter', sans-serif;
 }
 
 .info-container {
@@ -277,10 +281,11 @@ body {
 
 .info-container h2,
 .business-info h2 {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   color: #ffffff;
-  margin-bottom: 2rem;
-  letter-spacing: 0.5px;
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.5px;
+  font-weight: 600;
 }
 
 .info-columns {
@@ -292,31 +297,48 @@ body {
 
 .info-block {
   flex: 1 1 280px;
-  background-color: #202020;
-  padding: 2rem 1.5rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #1f1f1f;
+  border-radius: 14px;
+  padding: 2.2rem 2rem;
+  color: #e5e5e5;
+  transition: transform 0.2s ease, background-color 0.2s ease;
   min-height: 240px;
   text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 💜 Top pill accent */
+.info-block::before {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  left: 2rem;
+  height: 6px;
+  width: 50px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #a78bfa, #60a5fa);
 }
 
 .info-block:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transform: scale(1.015);
+  background-color: #232323;
 }
 
 .info-block h3 {
-  color: #a78bfa;
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  letter-spacing: 0.3px;
+  color: #ffffff;
+  font-size: 1.3rem;
+  margin-top: 2rem; /* Space below pill */
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.2px;
 }
 
 .info-block p {
-  color: #d1d1d1;
-  font-size: 1rem;
-  line-height: 1.6;
+  color: #cccccc;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin: 0;
 }
 
 .hero-cta-button::before {
