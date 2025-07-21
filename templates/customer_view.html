@@ -5,6 +5,7 @@
   <title>Business Profile</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='customer_view.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -87,6 +88,12 @@
       {% else %}
         <a href="{{ url_for('auth.login') }}" class="btn primary">Log in to Review</a>
       {% endif %}
+
+      {% if business.social_url %}
+     <a href="{{ business.social_url }}" class="btn instagram-btn" target="_blank" rel="noopener noreferrer">
+     <i class="fab fa-instagram"></i> View on Instagram
+      </a>
+     {% endif %}
     </div>
   </main>
 

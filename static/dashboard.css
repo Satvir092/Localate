@@ -437,6 +437,23 @@ body {
   color: #eee;
 }
 
+.dashboard-card {
+  position: relative;
+  padding-top: 5rem; 
+}
+
+.card-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-65%);
+  font-size: 1.9rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 8px 8px 0 0;
+  z-index: 1;
+}
+
 
 @media (max-width: 768px) {
   .dashboard-card {

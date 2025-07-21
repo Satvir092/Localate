@@ -170,6 +170,7 @@
 
   <main class="dashboard-content">
     <section class="dashboard-card">
+        <div class="card-label">My Profile</div>
       <div class="profile-section">
         <form method="POST" action="{{ url_for('user.upload_profile_pic') }}" enctype="multipart/form-data" id="profilePicForm">
           <label for="profilePicInput" class="profile-circle" aria-label="Upload Profile Picture">
@@ -214,7 +215,7 @@
 
     <div class="main-boxes-container">
       <section class="business-section">
-        <h2>Your Appointments</h2>
+        <h2>My Appointments</h2>
         <div class="business-list">
           {% if appointments %}
           {% for appt in appointments %}
@@ -245,7 +246,7 @@
       </section>
 
       <section class="your-business-section">
-        <h2>Your Businesses</h2>
+        <h2>My Businesses</h2>
         <div class="your-business-list">
           {% if businesses %}
           {% for biz in businesses %}

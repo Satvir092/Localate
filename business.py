@@ -13,7 +13,10 @@ import pytz
 
 business_bp = Blueprint('business', __name__)
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @business_bp.route('/')
 def index():
@@ -69,6 +72,7 @@ def create_business():
         interval = request.form.get('interval')
         days_list = request.form.getlist('weekdays')
         state = request.form.get('state')
+        social_url = request.form.get('social_url')
         timezone = request.form.get('timezone')
 
         if not name:
@@ -131,6 +135,7 @@ def create_business():
             "interval": interval,  
             "state": state,
             "timezone": timezone,
+            "social_url": social_url,
             "closing_time": closing_time
         }).execute()
 
@@ -217,7 +222,6 @@ def upload_business_profile_pic(business_id):
         }
     )
     current_app.logger.info(f"Upload response: {upload_resp}")
-
     public_url = supabase.storage.from_(bucket_name).get_public_url(unique_filename)
 
     supabase.table('businesses').update({'profile_image_url': public_url}).eq('id', business_id).execute()
@@ -247,6 +251,7 @@ def edit_business(business_id):
         interval = request.form.get('interval')
         days_list = request.form.getlist('weekdays')
         state = request.form.get('state')
+        social_url = request.form.get('social_url')
         timezone = request.form.get('timezone')
 
         if not name:
@@ -300,6 +305,7 @@ def edit_business(business_id):
             "interval": interval,
             "open_days": days_list,
             "timezone": timezone,
+            "social_url": social_url,
             "state": state
         }
 
@@ -509,51 +515,3 @@ def view_reviews(business_id):
     city=request.args.get('city', ''),
     state=request.args.get('state', '')
 )
-
-@business_bp.route('/upload_business_images/<int:business_id>', methods=['POST'])
-@login_required
-def upload_business_images(business_id):
-    supabase = current_app.supabase
-
-    business_resp = supabase.table('businesses').select('user_id').eq('id', business_id).single().execute()
-    if not business_resp.data or str(business_resp.data['user_id']) != str(current_user.id):
-        flash("Unauthorized to edit this business.", "error")
-        return redirect(url_for('business.dashboard'))
-
-    files = request.files.getlist('business_images')
-    if not files or len(files) == 0:
-        flash("No images selected.", "error")
-        return redirect(url_for('business.edit_business', business_id=business_id))
-
-    if len(files) > 5:
-        flash("You can upload a maximum of 5 images.", "error")
-        return redirect(url_for('business.edit_business', business_id=business_id))
-
-    bucket_name = 'business_images'
-    uploaded_urls = []
-
-    for file in files:
-        if file and file.filename:
-            filename = secure_filename(file.filename)
-            unique_filename = f"{uuid.uuid4().hex}_{filename}"
-            file_bytes = file.read()
-
-            upload_resp = supabase.storage.from_(bucket_name).upload(
-                unique_filename,
-                file_bytes,
-                file_options={
-                    "content-type": file.content_type,
-                    "x-upsert": "true"
-                }
-            )
-
-            current_app.logger.info(f"Uploaded image: {unique_filename}")
-            public_url = supabase.storage.from_(bucket_name).get_public_url(unique_filename)
-            uploaded_urls.append(public_url)
-
-    supabase.table('businesses').update({
-        'business_image_urls': uploaded_urls
-    }).eq('id', business_id).execute()
-
-    flash("Images uploaded successfully.", "success")
-    return redirect(url_for('business.view_business', business_id=business_id))
