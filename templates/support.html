@@ -3,13 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Email Confirmed - Localate</title>
+  <title>Support Us - Localate</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='about.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+  <style>
+  .donate-section {
+    text-align: center;
+    margin-top: 4rem;
+    background-color: #181818;
+    padding: 3rem 1.5rem;
+    border-radius: 16px;
+    border: 1px solid #2a2a2a;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .donate-section h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1.2rem;
+    color: #ffffff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .donate-section p {
+    font-size: 1.05rem;
+    color: #cccccc;
+    margin-bottom: 2.2rem;
+    line-height: 1.7;
+  }
+
+  .donate-button {
+    background-color: #0070ba;
+    color: #ffffff;
+    padding: 0.75rem 2.25rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .donate-button:hover {
+    background-color: #289be9;
+    transform: translateY(-1.5px);
+  }
+  .founder-photo {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.founder-photo img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #444;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.photo-caption {
+  margin-top: 0.75rem;
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+  @media (max-width: 600px) {
+    .donate-section {
+      padding: 2rem 1rem;
+    }
+
+    .donate-button {
+      width: 100%;
+    }
+  }
+</style>
 </head>
 <body>
-  <nav class="navbar">
+
+   <nav class="navbar">
   <div class="nav-logo">
     Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
   </div>
@@ -54,9 +132,21 @@
   </label>
 </nav>
 
-  <section class="auth-section">
-    <h2>Email Confirmed</h2>
-    <p>{{ message }}</p>
+
+<div class="donate-section">
+  <h2>Support Our Mission</h2>
+  <p>
+    If you like what we're building, consider donating to help us grow and keep the platform free for small businesses. 
+    Donations help cover website maintenance costs, including server hosting and database management. Thank you :D !
+  </p>
+  <div class="founder-photo">
+  <img src="{{ url_for('static', filename='satvir.png') }}" alt="Satvir Hundal" />
+  <p class="photo-caption">Satvir Hundal – Founder of Localate</p>
+</div>
+      <a href="https://paypal.me/SatvirHundal" target="_blank" rel="noopener noreferrer" class="donate-button">
+        Donate with PayPal
+      </a>
+    </div>
   </section>
 
   <script>
@@ -109,6 +199,7 @@ function setupAutocomplete(inputId, listId, formId) {
 setupAutocomplete('q', 'autocomplete-list', 'search-form');
 setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
 </script>
+
 
 </body>
 </html>

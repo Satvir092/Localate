@@ -308,7 +308,6 @@ body {
   overflow: hidden;
 }
 
-/* 💜 Top pill accent */
 .info-block::before {
   content: '';
   position: absolute;
@@ -328,7 +327,7 @@ body {
 .info-block h3 {
   color: #ffffff;
   font-size: 1.3rem;
-  margin-top: 2rem; /* Space below pill */
+  margin-top: 2rem; 
   margin-bottom: 0.75rem;
   font-weight: 600;
   letter-spacing: -0.2px;
@@ -351,6 +350,20 @@ body {
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   color: #fff;
+}
+.support-link:hover .fas.fa-heart {
+  animation: pulseHeart 1.5s infinite;
+  transform-origin: center;
+  display: inline-block;
+}
+
+@keyframes pulseHeart {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
 }
 
 @media (max-width: 768px) {

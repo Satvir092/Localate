@@ -6,6 +6,7 @@
   <title>Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
     rel="stylesheet"
@@ -162,6 +163,11 @@
           ><img src="{{ url_for('static', filename='logout.svg') }}" alt="Logout Icon" name="logout-icon" class="nav-icon-small" /> Logout</a
         >
       </li>
+      <li>
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
+        <i class="fas fa-heart"></i> Support Us
+      </a>
+    </li>
     </ul>
     <label for="nav-toggle" class="nav-toggle-label">
       <span></span>

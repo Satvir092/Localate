@@ -22,9 +22,9 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
-@business_bp.route('/about')
-def about():
-    return render_template('about.html')
+@business_bp.route('/support')
+def support():
+    return render_template('support.html')
 
 @business_bp.route('/dashboard', methods=['GET', 'POST'])
 @login_required
