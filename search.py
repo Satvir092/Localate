@@ -17,6 +17,7 @@ def search():
     query = request.args.get('q', '').strip()
     category = request.args.get('category', '').strip()
     state = request.args.get('state', '').strip()
+    popularity = request.args.get('popularity', '').strip()
 
     if not query and not category and not state:
         businesses = None
@@ -58,7 +59,12 @@ def search():
                 business['avg_rating'] = 0
                 business['review_count'] = 0
 
-    return render_template('search.html', businesses=businesses)
+        if popularity == 'most':
+            businesses.sort(key=lambda b: b['review_count'], reverse=True)
+        elif popularity == 'least':
+            businesses.sort(key=lambda b: b['review_count'])
+
+    return render_template('search.html', businesses=businesses, popularity=popularity)
 
 @search_bp.route('/customer_view/<int:business_id>')
 @login_required
