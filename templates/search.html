@@ -78,6 +78,12 @@
               <option value="{{ abbr }}" {% if request.args.get('state') == abbr %}selected{% endif %}>{{ full }}</option>
             {% endfor %}
           </select>
+
+          <select name="popularity" aria-label="Sort by Popularity">
+          <option value="">Popularity</option>
+          <option value="most" {% if popularity == 'most' %}selected{% endif %}>Most</option>
+          <option value="least" {% if popularity == 'least' %}selected{% endif %}>Least</option>
+        </select>
         </div>
       </form>
     </section>
