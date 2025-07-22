@@ -8,6 +8,11 @@ import os
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'svg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @user_bp.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -60,6 +65,10 @@ def upload_profile_pic():
     file = request.files.get('profile_pic')
     if not file or not file.filename:
         flash("No file selected.", "error")
+        return redirect(url_for('business.dashboard'))
+
+    if not allowed_file(file.filename):
+        flash("Unsupported file type. Allowed types: png, jpg, jpeg, gif.", "error")
         return redirect(url_for('business.dashboard'))
 
     bucket_name = "user-profile-pics"

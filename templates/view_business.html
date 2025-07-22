@@ -10,6 +10,7 @@
 </head>
 <body>
   <nav class="navbar">
+
     <div class="nav-logo">
       Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon" />
     </div>
@@ -64,6 +65,15 @@
   </nav>
 
   <main class="view-business-container" style="position: relative;">
+     {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash-message flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
     <form id="profilePicForm" method="POST" enctype="multipart/form-data" action="{{ url_for('business.upload_business_profile_pic', business_id=business.id) }}">
       <div class="profile-pic-upload" data-business-id="{{ business.id }}">
         <label for="profilePicInput" class="upload-circle" style="cursor:pointer;">

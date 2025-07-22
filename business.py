@@ -195,7 +195,11 @@ def upload_business_profile_pic(business_id):
     file = request.files.get('profile_pic')
     if not file or not file.filename:
         flash("No file selected.", "error")
-        return redirect(url_for('business.edit_business', business_id=business_id))
+        return redirect(url_for('business.view_business', business_id=business_id))
+
+    if not allowed_file(file.filename):
+        flash("Invalid file type! Allowed types: png, jpg, jpeg, gif, svg.", "error")
+        return redirect(url_for('business.view_business', business_id=business_id))
 
     bucket_name = 'business-profile-pics'
     old_url = business_resp.data.get('profile_image_url')
