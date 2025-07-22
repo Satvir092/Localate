@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='view_bus.css') }}" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <nav class="navbar">
@@ -58,6 +59,11 @@
       <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small" /> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename='dash_svg.svg') }}" alt="Dash Icon" class="nav-icon-small" /> Dashboard</a></li>
       <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename='logout.svg') }}" alt="Logout Icon" class="nav-icon-small" /> Logout</a></li>
+      <li>
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
+        <i class="fas fa-heart"></i> Support Us
+      </a>
+    </li>
     </ul>
     <label for="nav-toggle" class="nav-toggle-label">
       <span></span>

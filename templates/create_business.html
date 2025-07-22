@@ -6,6 +6,7 @@
   <title>Create Business</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='create_business.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
@@ -38,6 +39,11 @@
     <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
     <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
+    <li>
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
+        <i class="fas fa-heart"></i> Support Us
+      </a>
+    </li>
   </ul>
   <label for="nav-toggle" class="nav-toggle-label">
     <span></span>
@@ -150,7 +156,6 @@
 
       <textarea name="description" placeholder="Describe your business..." rows="5"></textarea>
 
-      <!-- Weekday Selection -->
       <div class="weekday-section">
         <label class="section-label">Select Open Days</label>
         <div class="weekday-options">

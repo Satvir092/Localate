@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
@@ -40,6 +41,11 @@
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
       <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename = 'login.svg') }}" alt ="Login Icon" name="login-icon" class="nav-icon-small"> Login</a></li>
       <li><a href="{{ url_for('auth.signup') }}"><img src="{{ url_for('static', filename = 'sign.svg') }}" alt ="Sign Up Icon" name="sign-icon" class="nav-icon-small"> Sign Up</a></li>
+      <li>
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
+        <i class="fas fa-heart"></i> Support Us
+      </a>
+    </li>
     </ul>
     <label for="nav-toggle" class="nav-toggle-label">
       <span></span>
