@@ -103,7 +103,7 @@
 
 .auth-form button.cta-button:hover,
 .auth-form button.cta-button:focus {
-  /* New hover style: subtle gray fill */
+
   background-color: rgba(255, 255, 255, 0.1);
   border-color:     rgba(255, 255, 255, 0.2);
   color: #fff;
@@ -112,7 +112,7 @@
   box-shadow: none;
 }
 
-/* Keep your paragraph and link styles as-is */
+
 .auth-section p {
   margin-top: 1rem;
   color: #bbb;
@@ -181,6 +181,7 @@
   color: #444;
   user-select: none;
 }
+
 @media (max-width: 480px) {
   .auth-section {
     margin: 2rem 1rem;

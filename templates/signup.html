@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://www.google.com/recaptcha/api.js?render=6LeECIwrAAAAAMgqhoUHsFx96VcQ3o_tK3itb0KR"></script>
 </head>
 <body>
 
@@ -65,9 +66,11 @@
     {% endif %}
   {% endwith %}
 
-  <form method="POST" class="auth-form">
+  <form id="signup-form" method="POST" class="auth-form">
     <input name="username" placeholder="Username" required minlength="3" maxlength="30" />
     <input name="email" type="email" placeholder="Email" required maxlength="100" />
+
+    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
     
     <input id="password" name="password" type="password" placeholder="Password" required minlength="8" />
     
@@ -81,6 +84,21 @@
 
     <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log In</a></p>
   </section>
+
+  <script>
+  grecaptcha.ready(function() {
+    const form = document.getElementById('signup-form');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); 
+      grecaptcha.execute('6LeECIwrAAAAAMgqhoUHsFx96VcQ3o_tK3itb0KR', {action: 'signup'}).then(function(token) {
+        document.getElementById('g-recaptcha-response').value = token;
+
+        form.submit();
+      });
+    });
+  });
+</script>
+
 
 <script>
 function setupAutocomplete(inputId, listId, formId) {

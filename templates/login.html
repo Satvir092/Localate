@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://www.google.com/recaptcha/api.js?render=6LeECIwrAAAAAMgqhoUHsFx96VcQ3o_tK3itb0KR"></script>
 </head>
 <body>
 
@@ -66,6 +67,7 @@
     <form method="POST" class="auth-form">
       <input name="username_or_email" placeholder="Username or Email" required />
       <input name="password" type="password" placeholder="Password" required />
+      <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
       <button type="submit" class="cta-button">→</button>
        <p style="margin-top: 1rem; text-align: center;">
     </form>
@@ -75,6 +77,19 @@
       Forgot password?
     </a>
   </section>
+
+  <script>
+  grecaptcha.ready(function() {
+    const form = document.querySelector('.auth-form'); 
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();  
+      grecaptcha.execute('6LeECIwrAAAAAMgqhoUHsFx96VcQ3o_tK3itb0KR', {action: 'login'}).then(function(token) {
+        document.getElementById('g-recaptcha-response').value = token;
+        form.submit(); 
+      });
+    });
+  });
+</script>
 
   <script>
 function setupAutocomplete(inputId, listId, formId) {
