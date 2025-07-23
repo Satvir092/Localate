@@ -7,6 +7,7 @@ from itsdangerous import URLSafeTimedSerializer
 from extensions import mail
 from flask_mail import Message
 from datetime import datetime
+import requests
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -30,9 +31,30 @@ def confirm_reset_token(token, expiration=3600):
         return False
     return email
 
+def verify_recaptcha(token):
+    secret_key = "6LeECIwrAAAAABgwlcfrq1rr3CFJKTmOs-qJRmhc"  
+    url = "https://www.google.com/recaptcha/api/siteverify"
+    data = {
+        'secret': secret_key,
+        'response': token
+    }
+    try:
+        response = requests.post(url, data=data)
+        result = response.json()
+        print("reCAPTCHA result:", result)  
+        return result.get("success", False) and result.get("score", 0) >= 0.5
+    except Exception as e:
+        print("reCAPTCHA error:", e)
+        return False
+
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
+
+        recaptcha_token = request.form.get('g-recaptcha-response', '')
+        if not recaptcha_token or not verify_recaptcha(recaptcha_token):
+            flash('reCAPTCHA verification failed. Please try again.', 'error')
+            return redirect(url_for('auth.signup'))
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '')
@@ -105,6 +127,10 @@ def confirm_email(token):
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        recaptcha_token = request.form.get('g-recaptcha-response', '')
+        if not recaptcha_token or not verify_recaptcha(recaptcha_token):
+            flash('reCAPTCHA verification failed. Please try again.', 'error')
+            return redirect(url_for('auth.login'))
         username_or_email = request.form.get('username_or_email')
         password = request.form.get('password')
 

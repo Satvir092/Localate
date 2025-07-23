@@ -438,7 +438,7 @@ def submit_review(business_id):
             flash("Invalid rating. Please choose a number between 1 and 5.", "error")
             return redirect(url_for('search.customer_view', business_id=business_id))
     except ValueError:
-        flash("Rating must be a number.", "error")
+        flash("Please select a star rating.", "error")
         return redirect(url_for('search.customer_view', business_id=business_id))
 
     supabase = current_app.supabase

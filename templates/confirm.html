@@ -2,24 +2,84 @@
 <html>
 <head>
   <title>Confirm your Localate account</title>
-</head>
-<body style="font-family: Arial, sans-serif; color: #333;">
-  <h2>Welcome to Localate!</h2>
-  <p>Thank you for signing up. Please confirm your email address by clicking the button below:</p>
-  <p>
-    <a href="{{ confirm_url }}" style="
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121217;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: white;
+    }
+
+    .container {
+      background-color: #2e2e3e; 
+      padding: 2.5rem 3rem;
+      border-radius: 12px;
+      max-width: 480px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      text-align: left;
+    }
+
+    h2 {
+      color: #ffffff;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+      color: white;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    a.confirm-btn {
       display: inline-block;
-      padding: 10px 20px;
-      background-color: #000000;
+      padding: 12px 28px;
+      background-color: #6a54c1;
       color: white;
       text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;">
-      Confirm your email
-    </a>
-  </p>
-  <p>If the button doesn't work, copy and paste the link below into your browser:</p>
-  <p><a href="{{ confirm_url }}">{{ confirm_url }}</a></p>
-  <p>Thanks,<br>The Localate Team</p>
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 10px rgba(106, 84, 193, 0.6);
+      transition: background-color 0.3s ease;
+    }
+
+    a.confirm-btn:hover,
+    a.confirm-btn:focus {
+      background-color: #7f6de8;
+      outline: none;
+    }
+
+    a.fallback-link {
+      color: #b285ff;
+      word-break: break-word;
+    }
+
+    p.signature {
+      margin-top: 3rem;
+      font-style: italic;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Welcome to Localate!</h2>
+    <p>Thank you for signing up. Please confirm your email address by clicking the button below:</p>
+    <p>
+      <a href="{{ confirm_url }}" class="confirm-btn" target="_blank" rel="noopener noreferrer">
+        Confirm your email
+      </a>
+    </p>
+    <p>If the button doesn't work, copy and paste the link below into your browser:</p>
+    <p><a href="{{ confirm_url }}" class="fallback-link" target="_blank" rel="noopener noreferrer">{{ confirm_url }}</a></p>
+    <p class="signature">Thanks,<br>The Localate Team</p>
+  </div>
 </body>
 </html>
