@@ -374,7 +374,7 @@ body {
     order: 2;
     width: 100%;
     max-width: 600px;
-    margin: 0  auto 1rem auto; /* centers horizontally */
+    margin: 0  auto 1rem auto; 
     display: block;
     text-align: center;
   }
@@ -382,7 +382,7 @@ body {
   .search-input-wrapper {
     width: 100% !important;
     max-width: 600px;
-    margin: 0 auto !important; /* center wrapper */
+    margin: 0 auto !important; 
   }
 
   .search-input {
