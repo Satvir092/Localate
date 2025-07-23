@@ -67,14 +67,14 @@ body {
   overflow: hidden;
   position: relative;
   padding: 3px;  
-  background: linear-gradient(135deg, #7b2cbf, #9d4edd);
-  box-shadow: 0 0 5px rgba(138, 110, 248, 0.15);
+  background: linear-gradient(135deg, #2e2a4a, #3b3a6d, #5a4d8a, #3c2f61);
+  box-shadow: 0 0 10px rgba(90, 70, 150, 0.5);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .profile-circle:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(138, 110, 248, 0.35);
+  box-shadow: 0 0 18px rgba(110, 90, 200, 0.7);
 }
 
 .profile-circle img {
@@ -87,8 +87,8 @@ body {
 }
 
 .profile-circle:hover img {
-  border-color: #8a6ef8;
-  box-shadow: 0 0 6px 2px rgba(138, 110, 248, 0.5);
+  border-color: #7c6eb8;
+  box-shadow: 0 0 10px 2px rgba(124, 110, 184, 0.6);
 }
 
 .plus-only {
@@ -616,12 +616,7 @@ h1:hover, h2:hover, h3:hover {
   border-radius: 4px;
 }
 
-.business-section h2:hover,
-.your-business-section h2:hover {
-  letter-spacing: 1.1px;
-  transform: translateY(-0.6px);
-  color: #d9e8ff;
-}
+
 
 
 .business-card h3 {
@@ -703,12 +698,19 @@ h1:hover, h2:hover, h3:hover {
   }
 
   .action-btn {
-    width: auto;
-    flex: 1 1 180px;  
+    flex: 1 1 140px;        
+    min-width: 140px;       
+    max-width: 45%;        
     font-size: 1.1rem;
     padding: 0.85rem 1rem;
-    min-width: 180px; 
-    max-width: 360px; 
     box-sizing: border-box;
+  }
+}
+
+@media (max-width: 668px) {
+  .action-btn {
+    min-width: 100%;     
+    max-width: 100%;
+    flex-basis: 100%;
   }
 }
