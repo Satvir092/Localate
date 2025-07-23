@@ -1,6 +1,6 @@
 import os
 import unittest
-from app import create_app
+from localate import create_app
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
