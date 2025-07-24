@@ -182,4 +182,86 @@ setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
 
 
 </body>
+<div id="cookie-banner">
+  <p>We use cookies to improve your experience on our site. By using our site, you consent to cookies.</p>
+  <button id="accept-cookies">Got it</button>
+</div>
+
+<style>
+  #cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #2e2e3e;
+    color: #ddd;
+    font-family: Arial, sans-serif;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+    z-index: 10000;
+  }
+
+  #cookie-banner.show {
+    transform: translateY(0);
+  }
+
+  #cookie-banner p {
+    margin: 0;
+    font-size: 1rem;
+    max-width: 70%;
+    color: #ddd;
+  }
+
+  #cookie-banner button {
+    background: #7e57c2;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.3rem;
+    border-radius: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+
+  #cookie-banner button:hover {
+    background: #9c77d9;
+  }
+
+  @media (max-width: 600px) {
+    #cookie-banner {
+      flex-direction: column;
+      padding: 1rem;
+      text-align: center;
+      gap: 1rem;
+    }
+
+    #cookie-banner p {
+      max-width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const banner = document.getElementById("cookie-banner");
+    const acceptBtn = document.getElementById("accept-cookies");
+
+    if (!localStorage.getItem("cookiesAccepted")) {
+      setTimeout(() => banner.classList.add("show"), 500);
+    }
+
+    acceptBtn.addEventListener("click", () => {
+      localStorage.setItem("cookiesAccepted", "true");
+      banner.classList.remove("show");
+    });
+  });
+</script>
+
 </html>
