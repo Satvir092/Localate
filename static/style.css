@@ -365,9 +365,8 @@ body {
   }
 
   .nav-logo {
-    margin-bottom: 1rem;
+    margin-bottom: 0;  
     justify-content: center;
-    order: 1;
   }
 
   .navbar-search-form {
@@ -410,6 +409,18 @@ body {
     max-height: 400px;
   }
 
+.nav-toggle-label {
+  display: flex;
+  padding: 0.7rem 0.5rem; 
+  border: 2px solid #666; 
+  border-radius: 8px;
+  background-color: #2a2a2a;
+  margin: -2.0rem 1rem 1rem;
+  width: auto;
+  align-self: flex-start;
+  line-height: 1;
+  box-sizing: border-box;
+}
   .nav-links li {
     text-align: center;
     margin: 0.5rem 0;
