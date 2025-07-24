@@ -183,14 +183,21 @@
 }
 
 @media (max-width: 480px) {
-  .auth-section {
-    margin: 2rem 1rem;
-    padding: 1.5rem;
+ .auth-section {
+    margin: 1rem auto;
+    padding: 1rem;
+    max-width: calc(100vw - 2rem); 
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .auth-form input,
   .auth-form button.cta-button {
-    font-size: 1rem;
-    padding: 0.65rem 1rem;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.85rem;
+  }
+
+  .auth-form {
+    gap: 0.75rem;
   }
 }
