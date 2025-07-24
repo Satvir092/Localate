@@ -209,7 +209,7 @@ def book_appointment():
 
     except Exception as e:
         current_app.logger.error(f"Error booking appointment: {e}")
-        flash("Error booking appointment. Please try again or update your profile.", "error")
+        flash("Please update your profile on the dashboard before booking appointments. :D", "error")
 
     return redirect(request.referrer or url_for('search.customer_view', business_id=business_id))
 
@@ -222,8 +222,9 @@ def autocomplete():
         return jsonify([])
 
     response = supabase.table('businesses') \
-        .select('name') \
+        .select('name, review_count') \
         .ilike('name', f'%{query}%') \
+        .order('review_count', desc=True) \
         .limit(10) \
         .execute()
 

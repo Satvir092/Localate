@@ -102,26 +102,32 @@
     </div>
   </main>
 
-  <div id="bookingModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#1e1e1e; padding:1em; border-radius:12px; color:#eee; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:1000;">
-    <h3>Book an Appointment</h3>
+<div id="bookingModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#1e1e1e; padding:1em; border-radius:12px; color:#eee; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:1000;">
+  <h3>Book an Appointment</h3>
 
-    <form method="POST" action="{{ url_for('search.book_appointment') }}">
-      <input type="hidden" name="business_id" value="{{ business.id }}">
+  <form method="POST" action="{{ url_for('search.book_appointment') }}">
+    <input type="hidden" name="business_id" value="{{ business.id }}">
 
-      <div id="bookingModalContent">
+    <div id="bookingModalContent">
+      {% if business.interval %}
         <label for="date">Date:</label>
         <select name="selected_date" id="date-select" required></select>
 
         <label for="time">Time:</label>
         <select name="selected_time" id="time-select" required></select>
-      </div>
+      {% else %}
+        <p style="text-align:center; margin:2em 0;">This business does not accept appointments.</p>
+      {% endif %}
+    </div>
 
-      <div style="margin-top:1em;">
+    <div style="margin-top:1em; text-align:center;">
+      {% if business.interval %}
         <button type="submit" class="btn primary">Confirm</button>
-        <button type="button" class="btn secondary" onclick="closeBookingModal()">Cancel</button>
-      </div>
-    </form>
-  </div>
+      {% endif %}
+      <button type="button" class="btn secondary" onclick="closeBookingModal()">Close</button>
+    </div>
+  </form>
+</div>
 
   <!-- Review Modal -->
   <div id="reviewModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="reviewModalTitle" aria-describedby="reviewModalDesc" style="display:none;">
@@ -249,7 +255,6 @@ function restoreModalContent() {
   }
 }
 
-// Review modal open/close and star rating logic
 const openReviewBtn = document.getElementById('openReviewModal');
 const reviewModal = document.getElementById('reviewModal');
 const closeReviewBtn = document.getElementById('closeReviewModal');
@@ -312,7 +317,6 @@ stars.forEach((star) => {
     highlightStars(value);
   });
 
-  // Keyboard accessibility: Enter or Space sets rating
   star.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();

@@ -72,7 +72,7 @@
 
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
     
-    <input id="password" name="password" type="password" placeholder="Password" required minlength="8" />
+    <input id="password" name="password" type="password" placeholder="Password" required minlength="8" maxlength="30"/>
     
    <div id="password-strength-container" style="display:none;">
   <div id="password-strength-bar"></div>
@@ -81,6 +81,15 @@
 
     <button type="submit" class="cta-button">Sign Up</button>
   </form>
+  {% if show_resend_button %}
+    <div class="resend-container">
+      <p class="resend-message">Didn’t get the email?</p>
+      <form method="POST" action="{{ url_for('auth.resend_verification') }}">
+        <input type="hidden" name="email" value="{{ email }}">
+        <button type="submit" class="cta-button resend-button">Resend Email</button>
+      </form>
+    </div>
+  {% endif %}
 
     <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log In</a></p>
   </section>
