@@ -577,7 +577,7 @@ button:focus {
 
   .nav-toggle-label {
     justify-content: flex-start;
-    margin-left: -4rem;
+    margin-left: -1rem;
   }
 
 }

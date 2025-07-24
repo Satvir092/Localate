@@ -115,8 +115,8 @@ def create_business():
             flash("Business name must be under 50 characters.", "error")
             return redirect(url_for('business.create_business'))
 
-        if description and len(description) > 500:
-            flash("Description must be under 500 characters.", "error")
+        if description and len(description) > 1000:
+            flash("Description must be under 1000 characters.", "error")
             return redirect(url_for('business.create_business'))
 
         if len(city) > 50:
@@ -503,7 +503,7 @@ def view_reviews(business_id):
     supabase = current_app.supabase
 
     page = int(request.args.get('page', 1))
-    per_page = 1
+    per_page = 20
     offset = (page - 1) * per_page
 
 

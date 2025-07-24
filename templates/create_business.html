@@ -64,7 +64,7 @@
     {% endwith %}
 
     <form method="POST" enctype="multipart/form-data" class="create-business-form">
-      <input type="text" name="name" placeholder="Business Name" required />
+      <input type="text" name="name" placeholder="Business Name" required maxlength="50" />
       <select name="category" id="category" required>
           <option value="" disabled selected>Select a category</option>
           <option value="Beauty and Personal Care">Beauty and Personal Care</option>
@@ -88,7 +88,7 @@
           <option value="Moving and Delivery">Moving and Delivery</option>
           <option value="Food and Beverage">Food and Beverage</option>
         </select>
-      <input type="text" name="city" placeholder="City" required/>
+      <input type="text" name="city" placeholder="City" required maxlength="50"/>
 
       <select name="state" id="state" required>
         <option value="" disabled selected>Select State</option>
@@ -154,7 +154,7 @@
       <option value="Pacific/Honolulu">Hawaii Time</option>
       </select>
 
-      <textarea name="description" placeholder="Describe your business..." rows="5"></textarea>
+      <textarea name="description" placeholder="Describe your business..." rows="6" maxlength="1000"></textarea>
 
       <div class="weekday-section">
         <label class="section-label">Select Open Days</label>
@@ -200,7 +200,7 @@
       </select>
 
       <label for="social_url">Show Off Your Business (reccomended)</label>
-      <input type="social" id="social_url" name="social_url" placeholder="Instagram or Facebook URL"/>
+      <input type="social" id="social_url" name="social_url" placeholder="Instagram or Facebook URL" maxlength="200"/>
 
       <button type="submit">Create Business</button>
     </form>

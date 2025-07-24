@@ -432,3 +432,86 @@ body {
     padding: 0.5rem 0;
   }
 }
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 1.5rem 1rem 1.5rem 1rem;
+    min-height: auto;
+  }
+
+  .hero-container {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 0;
+  }
+
+  .hero-left,
+  .hero-right {
+    padding: 1.5rem 1rem;
+    flex: 1 1 100%;
+  }
+
+  .hero-left h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-right h2 {
+    font-size: 1.4rem;
+    text-align: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .subheading {
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .hero-benefits {
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-benefits li {
+    margin-bottom: 0.6rem;
+    gap: 0.5rem;
+  }
+
+  .hero-cta-button {
+    font-size: 1rem;
+    padding: 0.7rem 1.8rem;
+    margin-top: 1.5rem;
+  }
+
+  .more-info,
+  .business-info {
+    padding: 2rem 1rem;
+  }
+
+  .info-container h2,
+  .business-info h2 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .info-columns {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .info-block {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .info-block h3 {
+    font-size: 1.1rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-block p {
+    font-size: 0.9rem;
+  }
+}

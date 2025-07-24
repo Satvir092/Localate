@@ -63,13 +63,13 @@
 {% endwith %}
   <form method="POST" enctype="multipart/form-data" class="edit-profile-form">
     <label>Full Name</label>
-    <input type="text" name="full_name" value="{{ user.full_name or '' }}" required>
+    <input type="text" name="full_name" value="{{ user.full_name or '' }}" required maxlength="150">
 
     <label>Age</label>
-    <input type="number" name="age" value="{{ user.age or '' }}">
+    <input type="number" name="age" value="{{ user.age or '' }}"  min="0" max="120" step="1">
 
     <label>Phone Number</label>
-    <input type="tel" name="phone_number" value="{{ user.phone_number or '' }}" placeholder="(532)111-9999">
+    <input type="tel" name="phone_number" value="{{ user.phone_number or '' }}" placeholder="(532) 111-9999" required maxlength="15">
 
     <button type="submit">Update Profile</button>
   </form>

@@ -8,8 +8,12 @@ from extensions import mail
 from flask_mail import Message
 from datetime import datetime
 import requests
+from flask import session
+from datetime import datetime, timedelta
 
 auth_bp = Blueprint('auth', __name__)
+
+RESEND_COOLDOWN = timedelta(minutes=5)
 
 def send_confirmation_email(user_email):
     token = generate_confirmation_token(user_email)
@@ -97,10 +101,57 @@ def signup():
         if not current_app.config.get('TESTING'):
             send_confirmation_email(email)
 
+        session['unverified_email'] = email
+        session['show_resend_button'] = True
+
         flash('Signup successful! A confirmation email has been sent. Please check your inbox.')
         return redirect(url_for('auth.signup'))
+    
+    show_resend_button = session.pop('show_resend_button', False)
+    unverified_email = session.pop('unverified_email', None)
 
-    return render_template('signup.html')
+    return render_template('signup.html',
+        show_resend_button=show_resend_button,
+        email=unverified_email)
+
+@auth_bp.route('/resend_verification', methods=['POST'])
+def resend_verification():
+    email = request.form.get('email')
+    if not email:
+        flash('Session expired. Please sign up again.', 'error')
+        return redirect(url_for('auth.signup'))
+
+    user = get_user_by_username_or_email(email)
+    if not user:
+        flash('User not found.', 'error')
+        return redirect(url_for('auth.signup'))
+
+    if user.confirmed:
+        flash('Email already verified. Please log in.', 'info')
+        return redirect(url_for('auth.login'))
+
+    last_sent_str = session.get('last_verification_sent')
+    now = datetime.utcnow()
+
+    if last_sent_str:
+        last_sent = datetime.fromisoformat(last_sent_str)
+        if now - last_sent < RESEND_COOLDOWN:
+            remaining = RESEND_COOLDOWN - (now - last_sent)
+            minutes = remaining.seconds // 60
+            seconds = remaining.seconds % 60
+            flash(f'Please wait {minutes}m {seconds}s before resending again.', 'warning')
+            session['show_resend_button'] = True
+            session['unverified_email'] = email
+            return redirect(url_for('auth.signup'))
+
+    send_confirmation_email(email)
+    session['last_verification_sent'] = now.isoformat()
+
+    flash('Verification email resent. Please check your inbox.', 'success')
+    session['show_resend_button'] = True
+    session['unverified_email'] = email
+
+    return redirect(url_for('auth.signup'))
 
 @auth_bp.route('/confirm/<token>')
 def confirm_email(token):
@@ -121,6 +172,8 @@ def confirm_email(token):
             "confirmed_on": datetime.utcnow().isoformat()
         }).eq('email', email).execute()
         message = "You have confirmed your account and may now login."
+        session.pop('unverified_email', None)
+        session.pop('show_resend_button', None)
 
     return render_template('confirm_result.html', message=message)
 
