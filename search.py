@@ -4,12 +4,15 @@ from datetime import datetime
 from flask_mail import Message
 from itsdangerous import URLSafeTimedSerializer
 from extensions import mail
+from math import ceil
 from datetime import datetime, date
 import pytz
 from flask import jsonify
+from collections import defaultdict
 
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
+
 
 @search_bp.route('/', methods=['GET'])
 def search():
@@ -18,53 +21,43 @@ def search():
     category = request.args.get('category', '').strip()
     state = request.args.get('state', '').strip()
     popularity = request.args.get('popularity', '').strip()
+    page = int(request.args.get('page', 1))
+    per_page = 5
+    offset = (page - 1) * per_page
 
-    if not query and not category and not state:
-        businesses = None
-    else:
-        business_query = supabase.table('businesses').select('*')
-        if query:
-            business_query = business_query.or_(
-                f"name.ilike.%{query}%,city.ilike.%{query}%"
-            )
-        if category:
-            business_query = business_query.eq('category', category)
-        if state:
-            business_query = business_query.eq('state', state)
+    filters = supabase.table('businesses').select('*', count='exact')
 
-        response = business_query.execute()
-        businesses = response.data or []
+    if query:
+        filters = filters.or_(
+            f"name.ilike.%{query}%,city.ilike.%{query}%"
+        )
+    if category:
+        filters = filters.eq('category', category)
+    if state:
+        filters = filters.eq('state', state)
 
-        business_ids = [b['id'] for b in businesses]
-        if business_ids:
-            reviews_response = supabase.table('reviews')\
-                .select('rating, business_id')\
-                .in_('business_id', business_ids)\
-                .execute()
-            reviews = reviews_response.data or []
-        else:
-            reviews = []
+    if popularity == 'most':
+        filters = filters.order('review_count', desc=True)
+    elif popularity == 'least':
+        filters = filters.order('review_count', desc=False)
 
-        from collections import defaultdict
-        review_map = defaultdict(list)
-        for review in reviews:
-            review_map[review['business_id']].append(review['rating'])
+    response = filters.range(offset, offset + per_page - 1).execute()
 
-        for business in businesses:
-            ratings = review_map[business['id']]
-            if ratings:
-                business['avg_rating'] = round(sum(ratings) / len(ratings), 1)
-                business['review_count'] = len(ratings)
-            else:
-                business['avg_rating'] = 0
-                business['review_count'] = 0
+    businesses = response.data or []
+    total_count = response.count or 0
 
-        if popularity == 'most':
-            businesses.sort(key=lambda b: b['review_count'], reverse=True)
-        elif popularity == 'least':
-            businesses.sort(key=lambda b: b['review_count'])
+    total_pages = ceil(total_count / per_page)
 
-    return render_template('search.html', businesses=businesses, popularity=popularity)
+    return render_template(
+        'search.html',
+        businesses=businesses,
+        popularity=popularity,
+        page=page,
+        total_pages=total_pages,
+        query=query,
+        category=category,
+        state=state
+    )
 
 @search_bp.route('/customer_view/<int:business_id>')
 @login_required

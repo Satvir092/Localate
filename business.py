@@ -443,7 +443,6 @@ def submit_review(business_id):
 
     supabase = current_app.supabase
 
-
     existing_review = supabase.table('reviews')\
         .select('*')\
         .eq('user_id', str(current_user.id))\
@@ -452,7 +451,7 @@ def submit_review(business_id):
 
     if existing_review.data:
 
-        review_id = existing_review.data[0]['id']  
+        review_id = existing_review.data[0]['id']
         response = supabase.table('reviews')\
             .update({
                 "rating": rating,
@@ -466,6 +465,7 @@ def submit_review(business_id):
         else:
             flash("Failed to update your review. Please try again.", "error")
     else:
+
         response = supabase.table('reviews').insert({
             "user_id": str(current_user.id),
             "business_id": business_id,
@@ -478,44 +478,68 @@ def submit_review(business_id):
         else:
             flash("Something went wrong. Please try again.", "error")
 
+    ratings_resp = supabase.table('reviews')\
+        .select('rating')\
+        .eq('business_id', business_id)\
+        .execute()
+
+    ratings = [r['rating'] for r in ratings_resp.data]
+    if ratings:
+        avg_rating = sum(ratings) / len(ratings)
+        review_count = len(ratings)
+
+        supabase.table('businesses')\
+            .update({
+                "avg_rating": round(avg_rating, 2),
+                "review_count": review_count
+            })\
+            .eq('id', business_id)\
+            .execute()
+
     return redirect(url_for('search.customer_view', business_id=business_id))
 
 @business_bp.route('/business/<int:business_id>/reviews')
 def view_reviews(business_id):
     supabase = current_app.supabase
 
+    page = int(request.args.get('page', 1))
+    per_page = 1
+    offset = (page - 1) * per_page
+
+
     business_response = supabase.table('businesses')\
         .select('id, name')\
         .eq('id', business_id)\
         .single()\
         .execute()
+
     reviews_response = supabase.table('reviews')\
-        .select('rating, comment, created_at, users(username)')\
+        .select('rating, comment, created_at, users(username)', count='exact')\
         .eq('business_id', business_id)\
         .order('created_at', desc=True)\
+        .range(offset, offset + per_page - 1)\
         .execute()
 
     reviews = reviews_response.data
+    total_reviews = reviews_response.count or 0
 
-    review_count = len(reviews)
-    if review_count > 0:
-        avg_rating = sum([r['rating'] for r in reviews]) / review_count
-    else:
-        avg_rating = 0
+    avg_rating = (
+        sum([r['rating'] for r in reviews]) / len(reviews)
+        if reviews else 0
+    )
 
-    print("DEBUG: q =", request.args.get('q'))
-    print("DEBUG: category =", request.args.get('category'))
-    print("DEBUG: city =", request.args.get('city'))
-    print("DEBUG: state =", request.args.get('state'))
+    total_pages = (total_reviews + per_page - 1) // per_page
 
     return render_template(
-    'view_reviews.html',
-    business=business_response.data,
-    reviews=reviews,
-    avg_rating=round(avg_rating, 1),
-    review_count=review_count,
-    q=request.args.get('q', ''),
-    category=request.args.get('category', ''),
-    city=request.args.get('city', ''),
-    state=request.args.get('state', '')
-)
+        'view_reviews.html',
+        business=business_response.data,
+        reviews=reviews,
+        avg_rating=round(avg_rating, 1),
+        review_count=total_reviews,
+        page=page,
+        total_pages=total_pages,
+        q=request.args.get('q', ''),
+        category=request.args.get('category', ''),
+        city=request.args.get('city', ''),
+        state=request.args.get('state', '')
+    )
