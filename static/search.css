@@ -287,6 +287,65 @@ body {
   gap: 0.5em;
 }
 
+.pagination-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.pagination {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pagination a {
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  background-color: #1f1f1f;
+  color: #eee;
+  text-decoration: none;
+  font-size: 0.95rem;
+  border: 1px solid #2e2e2e;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pagination a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.pagination a.active {
+  background-color: #0077ff;
+  border-color: #0077ff;
+  color: white;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.pagination .current-page {
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  background-color: #0077ff;
+  color: white;
+  font-weight: bold;
+  border: 1px solid #0077ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination .ellipsis {
+  padding: 0.5rem 0.9rem;
+  color: #888;
+  user-select: none;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 @media (max-width: 700px) {
   .business-card {
     display: flex;

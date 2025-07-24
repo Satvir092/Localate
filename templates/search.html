@@ -150,6 +150,54 @@
         {% endif %}
       </section>
     {% endif %}
+  </div>
+</section>
+
+<section class="pagination-section">
+  {% if total_pages > 1 %}
+  <div class="pagination">
+    {% if page > 1 %}
+      <a href="{{ url_for('search.search', page=page-1, q=query, category=category, state=state, popularity=popularity) }}">&laquo;</a>
+    {% endif %}
+
+    {% if page == 1 %}
+      <span class="current-page">1</span>
+    {% else %}
+      <a href="{{ url_for('search.search', page=1, q=query, category=category, state=state, popularity=popularity) }}">1</a>
+    {% endif %}
+
+    {% if page > 4 %}
+      <span class="ellipsis">...</span>
+    {% endif %}
+
+    {% for p in range(page-2, page+3) %}
+      {% if p > 1 and p < total_pages %}
+        {% if p == page %}
+          <span class="current-page">{{ p }}</span>
+        {% else %}
+          <a href="{{ url_for('search.search', page=p, q=query, category=category, state=state, popularity=popularity) }}">{{ p }}</a>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% if page < total_pages - 3 %}
+      <span class="ellipsis">...</span>
+    {% endif %}
+
+    {% if total_pages > 1 %}
+      {% if page == total_pages %}
+        <span class="current-page">{{ total_pages }}</span>
+      {% else %}
+        <a href="{{ url_for('search.search', page=total_pages, q=query, category=category, state=state, popularity=popularity) }}">{{ total_pages }}</a>
+      {% endif %}
+    {% endif %}
+
+    {% if page < total_pages %}
+      <a href="{{ url_for('search.search', page=page+1, q=query, category=category, state=state, popularity=popularity) }}">&raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
 
   </main>
 
