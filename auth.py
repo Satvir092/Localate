@@ -4,24 +4,56 @@ from flask_login import login_user, logout_user, login_required
 from models import get_user_by_username_or_email
 from utils import generate_confirmation_token, confirm_token
 from itsdangerous import URLSafeTimedSerializer
-from extensions import mail
-from flask_mail import Message
 from datetime import datetime
 import requests
 from flask import session
 from datetime import datetime, timedelta
+from flask import render_template, url_for, current_app
+from itsdangerous import URLSafeTimedSerializer
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 
 auth_bp = Blueprint('auth', __name__)
 
 RESEND_COOLDOWN = timedelta(minutes=5)
 
+RESET_COOLDOWN = timedelta(hours=0)
+
+def generate_confirmation_token(email):
+    serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt='email-confirmation-salt')
+
 def send_confirmation_email(user_email):
     token = generate_confirmation_token(user_email)
     confirm_url = url_for('auth.confirm_email', token=token, _external=True)
-    html = render_template('confirm.html', confirm_url=confirm_url)
+    html_content = render_template('confirm.html', confirm_url=confirm_url)
     subject = "Please confirm your email"
-    msg = Message(subject, recipients=[user_email], html=html)
-    mail.send(msg)
+
+    # Configure Brevo SDK with API key from app config
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+    sender = {
+        "email": current_app.config['MAIL_DEFAULT_SENDER'],
+        "name": current_app.config.get('MAIL_DEFAULT_SENDER', 'Localate') 
+    }
+
+    to = [{"email": user_email}]
+    
+    send_email = sib_api_v3_sdk.SendSmtpEmail(
+        to=to,
+        html_content=html_content,
+        sender=sender,
+        subject=subject
+    )
+
+    try:
+        api_instance.send_transac_email(send_email)
+        print(f"Confirmation email sent to {user_email}")
+    except ApiException as e:
+        print(f"Failed to send confirmation email: {e}")
 
 def generate_reset_token(email):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
@@ -104,7 +136,7 @@ def signup():
         session['unverified_email'] = email
         session['show_resend_button'] = True
 
-        flash('Signup successful! A confirmation email has been sent. Please check your inbox.')
+        flash('Signup successful! A confirmation email has been sent. Please check your inbox and spam folder.')
         return redirect(url_for('auth.signup'))
     
     show_resend_button = session.pop('show_resend_button', False)
@@ -214,16 +246,34 @@ def forgot_password():
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
         user = get_user_by_username_or_email(email)
+
+        now = datetime.utcnow()
+        last_reset_str = session.get('last_password_reset_sent')
+        if last_reset_str:
+            last_reset = datetime.fromisoformat(last_reset_str)
+            if now - last_reset < RESET_COOLDOWN:
+                remaining = RESET_COOLDOWN - (now - last_reset)
+                minutes = remaining.seconds // 60
+                seconds = remaining.seconds % 60
+                flash(f'Please wait {minutes}m {seconds}s before requesting another reset.', 'warning')
+                return redirect(url_for('auth.forgot_password'))
+
         if user:
             token = generate_reset_token(email)
             reset_url = url_for('auth.reset_password', token=token, _external=True)
             subject = "Reset Your Password"
-            msg = Message(
-                subject=subject,
-                sender=current_app.config['MAIL_DEFAULT_SENDER'],
-                recipients=[email]
-            )
-            msg.html = f"""
+
+            configuration = sib_api_v3_sdk.Configuration()
+            configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
+            api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+            sender = {
+                "email": current_app.config['MAIL_DEFAULT_SENDER'],
+                "name": current_app.config.get('MAIL_SENDER_NAME', 'Localate')
+            }
+            to = [{"email": email}]
+
+            html_content = f"""
             <div style="background-color:#1f1f1f; color:#b37bff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 2em; border-radius: 10px; max-width: 600px; margin: auto;">
                 <h2 style="color:#d4b3ff; margin-bottom: 0.5em;">Password Reset Request 🔐</h2>
                 <p>Hi,</p>
@@ -235,10 +285,24 @@ def forgot_password():
                 <p style="margin-top: 1.5em;">Thanks,<br>Your Friendly Team</p>
             </div>
             """
-            mail.send(msg)
-            flash('Password reset instructions have been sent to your email.', 'info')
+
+            send_email = sib_api_v3_sdk.SendSmtpEmail(
+                to=to,
+                html_content=html_content,
+                sender=sender,
+                subject=subject
+            )
+
+            try:
+                api_instance.send_transac_email(send_email)
+                session['last_password_reset_sent'] = now.isoformat()
+                flash('Password reset instructions have been sent to your email. Please check spam folder just in case.', 'info')
+            except ApiException as e:
+                print(f"Error sending reset email: {e}")
+                flash('There was a problem sending the reset email. Please try again later.', 'error')
         else:
             flash('Email address not found.', 'error')
+
         return redirect(url_for('auth.forgot_password'))
 
     return render_template('forgot_password.html')

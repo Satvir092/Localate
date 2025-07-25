@@ -5,8 +5,13 @@ import json
 from werkzeug.utils import secure_filename
 from urllib.parse import urlparse
 import uuid
-from extensions import mail
-from flask_mail import Message
+from flask import request, current_app
+from flask_login import login_required, current_user
+from sib_api_v3_sdk import Configuration, ApiClient
+from sib_api_v3_sdk.api import TransactionalEmailsApi
+from sib_api_v3_sdk.models import SendSmtpEmail
+from sib_api_v3_sdk.rest import ApiException
+from datetime import datetime
 from datetime import datetime
 from datetime import datetime, date
 import pytz
@@ -394,7 +399,6 @@ def confirm_appointment():
         return "Unauthorized", 403
 
     business_name = business_resp.data['name']
-
     supabase.table('appointments').update({'confirmed': True}).eq('id', appt_id).execute()
 
     date_str = appointment['date']
@@ -402,15 +406,10 @@ def confirm_appointment():
     date_obj = datetime.strptime(date_str, "%Y-%m-%d")
     time_obj = datetime.strptime(time_str, "%H:%M:%S")
 
-    formatted_date = date_obj.strftime("%B %d, %Y")  
-    formatted_time = time_obj.strftime("%I:%M %p").lstrip("0")  
+    formatted_date = date_obj.strftime("%B %d, %Y")
+    formatted_time = time_obj.strftime("%I:%M %p").lstrip("0")
 
-    msg = Message(
-        subject=f"Your Appointment with {business_name} is Confirmed",
-        sender=current_app.config['MAIL_DEFAULT_SENDER'],
-        recipients=[appointment['email']]
-    )
-    msg.html = f"""
+    html_content = f"""
     <div style="background-color:#1f1f1f; color:#e0d4ff; font-family:sans-serif; padding:1.5em; border-radius:8px;">
         <h2 style="color:#b37bff;">Appointment Confirmed 🎉</h2>
         <p>Hi <strong>{appointment['name']}</strong>,</p>
@@ -422,9 +421,32 @@ def confirm_appointment():
         <p style="margin-top:1em;">We look forward to seeing you!</p>
     </div>
     """
-    mail.send(msg)
 
-    return "Appointment confirmed and email sent", 200
+    try:
+        configuration = Configuration()
+        configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
+
+        api_client = ApiClient(configuration)
+        api_instance = TransactionalEmailsApi(api_client)
+
+        send_smtp_email = SendSmtpEmail(
+            to=[{"email": appointment['email'], "name": appointment['name']}],
+            subject=f"Your Appointment with {business_name} is Confirmed",
+            html_content=html_content,
+            sender={"name": "Localate", "email": current_app.config['MAIL_DEFAULT_SENDER']}
+        )
+
+        api_instance.send_transac_email(send_smtp_email)
+
+        return "Appointment confirmed and email sent", 200
+
+    except ApiException as api_err:
+        current_app.logger.error(f"Brevo email sending failed: {api_err}")
+        return "Appointment confirmed, but failed to send confirmation email.", 500
+
+    except Exception as e:
+        current_app.logger.error(f"Unexpected error in email confirmation: {e}")
+        return "Appointment confirmed, but an unexpected error occurred.", 500
 
 @business_bp.route('/submit_review/<int:business_id>', methods=['POST'])
 @login_required
