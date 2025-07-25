@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Business</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -199,7 +200,7 @@
         <option value="180">3 hour</option>
       </select>
 
-      <label for="social_url">Show Off Your Business (reccomended)</label>
+      <label for="social_url">Show Off Your Business (recommended)</label>
       <input type="social" id="social_url" name="social_url" placeholder="Instagram or Facebook URL" maxlength="200"/>
 
       <button type="submit">Create Business</button>
