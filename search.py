@@ -1,14 +1,15 @@
 from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash
 from flask_login import login_required, current_user
 from datetime import datetime
-from flask_mail import Message
-from itsdangerous import URLSafeTimedSerializer
 from extensions import mail
 from math import ceil
 from datetime import datetime, date
 import pytz
 from flask import jsonify
-from collections import defaultdict
+from sib_api_v3_sdk import Configuration, ApiClient
+from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
+from sib_api_v3_sdk.models.send_smtp_email import SendSmtpEmail
+from sib_api_v3_sdk.rest import ApiException
 
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
@@ -128,7 +129,7 @@ def book_appointment():
         if existing.data:
             flash("This time slot is already booked. Please choose another.", "error")
             return redirect(request.referrer or url_for('search.customer_view', business_id=business_id))
-        
+
         supabase.table('appointments').insert({
             'user_id': current_user.id,
             'business_id': int(business_id),
@@ -146,7 +147,7 @@ def book_appointment():
             .eq('id', int(business_id)) \
             .single() \
             .execute()
-        
+
         owner_id = business_info.data['user_id']
         business_name = business_info.data['name']
 
@@ -158,13 +159,9 @@ def book_appointment():
 
         owner_email = owner_info.data['email']
 
-        msg = Message(
-            subject=f"New Appointment for {business_name}",
-            sender=current_app.config['MAIL_DEFAULT_SENDER'],
-            recipients=[owner_email]
-        )
         formatted_time = time_obj.strftime("%I:%M %p").lstrip("0")
-        msg.html = f"""
+
+        html_content = f"""
             <!DOCTYPE html>
             <html>
             <body style="background-color: #1e1e1e; color: #e0e0e0; font-family: Arial, sans-serif; padding: 20px;">
@@ -201,13 +198,31 @@ def book_appointment():
                 </table>
             </body>
             </html>
-            """
+        """
+            # Brevo API setup
+        configuration = Configuration()
+        configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
 
-        mail.send(msg)
+        api_client = ApiClient(configuration)
+        api_instance = TransactionalEmailsApi(api_client)
+
+        send_smtp_email = SendSmtpEmail(
+            to=[{"email": owner_email}],
+            subject=f"New Appointment for {business_name}",
+            html_content=html_content,
+            sender={"name": "Localate", "email": current_app.config['MAIL_DEFAULT_SENDER']}
+        )
+
+        api_instance.send_transac_email(send_smtp_email)
 
         flash("Appointment booked successfully. Confirmation pending from owner!", "success")
 
+    except ApiException as api_err:
+            current_app.logger.error(f"Failed to send email via Brevo: {api_err}")
+            flash("Appointment booked but failed to send confirmation email.", "warning")
+
     except Exception as e:
+        print(e)
         current_app.logger.error(f"Error booking appointment: {e}")
         flash("Please update your profile on the dashboard before booking appointments. :D", "error")
 
