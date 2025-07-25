@@ -255,6 +255,10 @@
               <span style="color: #f44336; font-weight: bold;">Pending</span>
               {% endif %}
             </p>
+            <form action="{{ url_for('search.cancel_appointment') }}" method="POST" onsubmit="return confirmCancel();" style="margin-top: 1rem;">
+            <input type="hidden" name="appointment_id" value="{{ appt.id }}">
+            <button type="submit" class="cancel-btn">Cancel Appointment</button>
+            </form>
           </div>
           {% endfor %}
           {% else %}
@@ -282,6 +286,12 @@
       </section>
     </div>
   </main>
+
+  <script>
+  function confirmCancel() {
+    return confirm("Are you sure you want to cancel this appointment?");
+  }
+</script>
 
   <script>
     function setupAutocomplete(inputId, listId, formId) {
