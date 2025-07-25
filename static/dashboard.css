@@ -617,7 +617,7 @@ h1:hover, h2:hover, h3:hover {
 }
 
 
-  .cancel-btn {
+.cancel-btn {
     background-color: #b00020;
     color: white;
     border: none;
@@ -627,7 +627,7 @@ h1:hover, h2:hover, h3:hover {
     cursor: pointer;
   }
 
-  .cancel-btn:hover {
+.cancel-btn:hover {
     background-color: #a0001b;
   }
 
