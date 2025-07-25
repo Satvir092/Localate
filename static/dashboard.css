@@ -618,18 +618,18 @@ h1:hover, h2:hover, h3:hover {
 
 
 .cancel-btn {
-    background-color: #b00020;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
+  background-color: #b00020;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
 
 .cancel-btn:hover {
-    background-color: #a0001b;
-  }
+  background-color: #a0001b;
+}
 
 .business-card h3 {
   font-size: 1.4rem;
