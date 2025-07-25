@@ -228,6 +228,114 @@ def book_appointment():
 
     return redirect(request.referrer or url_for('search.customer_view', business_id=business_id))
 
+@search_bp.route('/cancel_appointment', methods=['POST'])
+@login_required
+def cancel_appointment():
+    supabase = current_app.supabase
+    appointment_id = request.form.get('appointment_id')
+
+    if not appointment_id:
+        flash("Missing appointment ID.", "error")
+        return redirect(request.referrer or url_for('search.search'))
+
+    try:
+        appt_resp = supabase.table('appointments') \
+            .select('*') \
+            .eq('id', appointment_id) \
+            .single() \
+            .execute()
+
+        appointment = appt_resp.data
+        if not appointment:
+            return redirect(request.referrer or url_for('search.search'))
+
+        if appointment['user_id'] != current_user.id:
+            return redirect(request.referrer or url_for('search.search'))
+
+        business_resp = supabase.table('businesses') \
+            .select('user_id, name') \
+            .eq('id', appointment['business_id']) \
+            .single() \
+            .execute()
+
+        business = business_resp.data
+        owner_id = business['user_id']
+        business_name = business['name']
+        owner_resp = supabase.table('users') \
+            .select('email') \
+            .eq('id', owner_id) \
+            .single() \
+            .execute()
+
+        owner_email = owner_resp.data['email']
+
+        formatted_time = datetime.strptime(appointment['time'], "%H:%M:%S").strftime("%I:%M %p").lstrip("0")
+
+        supabase.table('appointments').delete().eq('id', appointment_id).execute()
+
+        configuration = Configuration()
+        configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
+        api_client = ApiClient(configuration)
+        api_instance = TransactionalEmailsApi(api_client)
+
+        html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <body style="background-color: #1e1e1e; color: #e0e0e0; font-family: Arial, sans-serif; padding: 20px;">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background-color: #2b2b2b; border-radius: 8px;">
+                <tr>
+                    <td style="padding: 30px;">
+                    <h2 style="color: #ff6b6b; margin-top: 0;">Appointment Canceled for {business_name}</h2>
+
+                    <p style="font-size: 16px; line-height: 1.6;">
+                        A user has canceled their appointment:
+                    </p>
+
+                    <hr style="border: 1px solid #444;" />
+
+                    <p style="font-size: 16px;">
+                        <strong>Name:</strong> {appointment['name']}<br>
+                        <strong>Email:</strong> {appointment['email']}<br>
+                        <strong>Phone:</strong> {appointment['phone']}<br>
+                        <strong>Date:</strong> {appointment['date']}<br>
+                        <strong>Time:</strong> {formatted_time}
+                    </p>
+
+                    <hr style="border: 1px solid #444;" />
+
+                    <p style="font-size: 16px;">
+                        You may now reopen this slot if needed.
+                    </p>
+
+                    <p style="margin-top: 30px; font-size: 14px; color: #999;">
+                        — Localate Team
+                    </p>
+                    </td>
+                </tr>
+                </table>
+            </body>
+            </html>
+        """
+
+        send_smtp_email = SendSmtpEmail(
+            to=[{"email": owner_email}],
+            subject=f"Appointment Canceled for {business_name}",
+            html_content=html_content,
+            sender={"name": "Localate", "email": current_app.config['MAIL_DEFAULT_SENDER']}
+        )
+
+        api_instance.send_transac_email(send_smtp_email)
+
+
+    except ApiException as api_err:
+        current_app.logger.error(f"Brevo API error: {api_err}")
+
+    except Exception as e:
+        current_app.logger.error(f"Error canceling appointment: {e}")
+
+    return redirect(url_for('business.dashboard'))
+
+
 @search_bp.route('/autocomplete')
 def autocomplete():
     supabase = current_app.supabase

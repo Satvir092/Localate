@@ -617,7 +617,19 @@ h1:hover, h2:hover, h3:hover {
 }
 
 
+  .cancel-btn {
+    background-color: #b00020;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
 
+  .cancel-btn:hover {
+    background-color: #a0001b;
+  }
 
 .business-card h3 {
   font-size: 1.4rem;
@@ -712,5 +724,28 @@ h1:hover, h2:hover, h3:hover {
     min-width: 100%;     
     max-width: 100%;
     flex-basis: 100%;
+  }
+}
+@media (max-width: 350px) {
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .action-btn {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.75rem;           
+    padding: 0.5rem 0.6rem;       
+    box-sizing: border-box;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.2;
+    white-space: normal;         
+    overflow: visible;           
+    word-break: break-word; 
   }
 }
