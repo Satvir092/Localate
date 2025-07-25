@@ -127,10 +127,14 @@
 
       <label for="interval">Appointment Interval</label>
       <select name="interval" id="interval" required>
+        <option value="" disabled {% if not business.interval %}selected{% endif %}>Select Appointment Interval</option>
+        <option value="none" {% if business.interval == "none" %}selected{% endif %}>We don't do appointments</option>
         <option value="15" {% if business.interval == "15" %}selected{% endif %}>15 minutes</option>
         <option value="30" {% if business.interval == "30" %}selected{% endif %}>30 minutes</option>
-        <option value="60" {% if business.interval == "60" %}selected{% endif %}>60 minutes</option>
-        <option value="120" {% if business.interval == "120" %}selected{% endif %}>120 minutes</option>
+        <option value="60" {% if business.interval == "60" %}selected{% endif %}>1 hour</option>
+        <option value="90" {% if business.interval == "90" %}selected{% endif %}>1.5 hour</option>
+        <option value="120" {% if business.interval == "120" %}selected{% endif %}>2 hour</option>
+        <option value="180" {% if business.interval == "180" %}selected{% endif %}>3 hour</option>
       </select>
 
       <label for="social_url">Photo Showcase URL (reccomended)</label>
