@@ -189,14 +189,14 @@
       <input type="time" id="end_time" name="end_time" required />
 
       <select name="interval" required>
-        <option value="" disabled selected>Select Appointment Interval</option>
-        <option value="none">We don't do appointments</option>
-        <option value="15">15 minutes</option>
-        <option value="30">30 minutes</option>
-        <option value="60">1 hour</option>
-        <option value="90">1.5 hour</option>
-        <option value="120">2 hour</option>
-        <option value="180">3 hour</option>
+         <option value="" disabled {% if not business.interval %}selected{% endif %}>Select Appointment Interval</option>
+          <option value="none" {% if business.interval == "none" %}selected{% endif %}>We don't do appointments</option>
+          <option value="15" {% if business.interval == "15" %}selected{% endif %}>15 minutes</option>
+          <option value="30" {% if business.interval == "30" %}selected{% endif %}>30 minutes</option>
+          <option value="60" {% if business.interval == "60" %}selected{% endif %}>1 hour</option>
+          <option value="90" {% if business.interval == "90" %}selected{% endif %}>1.5 hour</option>
+          <option value="120" {% if business.interval == "120" %}selected{% endif %}>2 hour</option>
+          <option value="180" {% if business.interval == "180" %}selected{% endif %}>3 hour</option>
       </select>
 
       <label for="social_url">Show Off Your Business (reccomended)</label>
