@@ -279,9 +279,18 @@ def edit_business(business_id):
             flash("Please select at least one open day.", "error")
             return redirect(request.url)
 
-        if not interval:
-            flash("Please select an appointment interval.", "error")
-            return redirect(request.url)
+        if interval == 'none':
+            interval = None
+        elif interval:
+            try:
+                interval = int(interval)
+            except (ValueError, TypeError):
+                flash("Invalid appointment interval selected.", "error")
+                return redirect(url_for('business.create_business'))
+        else:
+            flash("Please select an appointment interval", "error")
+            return redirect(url_for('business.create_business'))
+
         
         if not timezone:
             flash("Please select a timezone", "error")
