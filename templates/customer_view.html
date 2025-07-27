@@ -38,7 +38,6 @@
     <ul class="nav-links">
       <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
-      <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
       <li>
       <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
         <i class="fas fa-heart"></i> Support Us
@@ -92,7 +91,7 @@
       {% if current_user.is_authenticated %}
         <button class="btn primary" id="openReviewModal">Leave a Review</button>
       {% else %}
-        <a href="{{ url_for('auth.login') }}" class="btn primary">Log in to Review</a>
+        <a href="{{ url_for('auth.login') }}" class="btn primary login-btn">Log in to Review</a>
       {% endif %}
 
       {% if business.social_url %}
