@@ -22,6 +22,7 @@ def create_app():
 
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
+    login_manager.login_message = "You must be logged in to access this feature."
     mail.init_app(app)
 
     SUPABASE_URL = os.getenv('SUPABASE_URL')

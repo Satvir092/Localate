@@ -29,7 +29,6 @@ def send_confirmation_email(user_email):
     html_content = render_template('confirm.html', confirm_url=confirm_url)
     subject = "Please confirm your email"
 
-    # Configure Brevo SDK with API key from app config
     configuration = sib_api_v3_sdk.Configuration()
     configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
 

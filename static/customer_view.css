@@ -572,6 +572,23 @@ button:focus {
   text-decoration: none;
 }
 
+a.btn.primary.login-btn {
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+  border: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+}
+
+a.btn.primary.login-btn:hover {
+  background: linear-gradient(135deg, #9d4edd, #c77dff);
+}
+
 
 @media (max-width: 1075px) {
 

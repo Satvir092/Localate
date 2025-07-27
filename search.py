@@ -61,7 +61,6 @@ def search():
     )
 
 @search_bp.route('/customer_view/<int:business_id>')
-@login_required
 def customer_view(business_id):
     supabase = current_app.supabase
     response = supabase.table('businesses').select('*').eq('id', business_id).single().execute()
@@ -199,7 +198,6 @@ def book_appointment():
             </body>
             </html>
         """
-            # Brevo API setup
         configuration = Configuration()
         configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
 
@@ -224,7 +222,7 @@ def book_appointment():
     except Exception as e:
         print(e)
         current_app.logger.error(f"Error booking appointment: {e}")
-        flash("Please update your profile on the dashboard before booking appointments. :D", "error")
+        flash("Please update your profile on the dashboard before booking appointments.", "error")
 
     return redirect(request.referrer or url_for('search.customer_view', business_id=business_id))
 
@@ -304,7 +302,7 @@ def cancel_appointment():
                     <hr style="border: 1px solid #444;" />
 
                     <p style="font-size: 16px;">
-                        You may now reopen this slot if needed.
+                        This slot is now reopened automatically.
                     </p>
 
                     <p style="margin-top: 30px; font-size: 14px; color: #999;">
