@@ -12,7 +12,7 @@ Localate is a full-stack web platform that helps users discover and book appoint
 - ✨ **Business Owner Dashboard** — Manage availability, upload images, and track bookings.
 - 📝 **Customer Reviews** — Submit star ratings and feedback for businesses.
 - 📧 **Email Verification** — Confirm accounts via email using Brevo (Sendinblue) API.
-- 🔐 **Secure Authentication** — Traditional login and Google OAuth 2.0 support.
+- 🔐 **Secure Authentication** — Traditional login and Google OAuth 2.0 support coming soon.
 - ☁️ **Supabase Integration** — PostgreSQL database and storage with full API support.
 
 ---
