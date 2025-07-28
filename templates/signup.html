@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://www.google.com/recaptcha/api.js?render=6LeECIwrAAAAAMgqhoUHsFx96VcQ3o_tK3itb0KR"></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LfBN5ErAAAAAF-F2RHljBWOe8RmKypO8CaPu5g8"></script>
 </head>
 <body>
 
@@ -100,7 +100,7 @@
     const form = document.getElementById('signup-form');
     form.addEventListener('submit', function(event) {
       event.preventDefault(); 
-      grecaptcha.execute('6LeECIwrAAAAAMgqhoUHsFx96VcQ3o_tK3itb0KR', {action: 'signup'}).then(function(token) {
+      grecaptcha.execute('6LfBN5ErAAAAAF-F2RHljBWOe8RmKypO8CaPu5g8', {action: 'signup'}).then(function(token) {
         document.getElementById('g-recaptcha-response').value = token;
 
         form.submit();
