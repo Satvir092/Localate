@@ -22,7 +22,7 @@ Localate is a full-stack web platform that helps users discover and book appoint
 | Frontend   | Backend        | Auth & DB      | APIs/Tools       |
 |------------|----------------|----------------|------------------|
 | HTML, CSS, JS | Flask (Python) | Flask-Login, Supabase | Brevo Email API |
-| Jinja2     | SQLAlchemy      | Google OAuth2.0 | Flask-Dance or Authlib |
+| Jinja2     | postgreSQL      | Google OAuth2.0 | Flask-Dance or Authlib |
 | Responsive Design | Flask Blueprints | Supabase Storage | Gunicorn for Production |
 
 ---
