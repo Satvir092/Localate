@@ -7,6 +7,7 @@ from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime
 import requests
 from flask import session
+import os
 from datetime import datetime, timedelta
 from flask import render_template, url_for, current_app
 from itsdangerous import URLSafeTimedSerializer
@@ -67,19 +68,20 @@ def confirm_reset_token(token, expiration=3600):
     return email
 
 def verify_recaptcha(token):
-    secret_key = "6LeECIwrAAAAABgwlcfrq1rr3CFJKTmOs-qJRmhc"  
+    secret_key = os.getenv("RECAPTCHA_SECRET_KEY")
     url = "https://www.google.com/recaptcha/api/siteverify"
     data = {
         'secret': secret_key,
         'response': token
     }
+    
     try:
         response = requests.post(url, data=data)
         result = response.json()
         print("reCAPTCHA result:", result)  
         return result.get("success", False) and result.get("score", 0) >= 0.5
-    except Exception as e:
-        print("reCAPTCHA error:", e)
+    except Exception:
+        print("reCAPTCHA error:")
         return False
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
