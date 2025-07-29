@@ -8,7 +8,7 @@ body {
 }
 
 .business-card {
-  max-width: 1150px;
+  max-width: 1320px;
   width: 100%;
   margin: 4rem auto;
   padding: 4rem 4rem 3rem;
@@ -324,14 +324,14 @@ body {
   font-weight: 700;
   font-size: 1.15rem;
   cursor: pointer;
-  color: #fff;
-  background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+  color: #f0f0f0;
+  background: linear-gradient(135deg, #3b6eea, #4d7ef0, #6a81e6, #5486f7);
   border: none;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.4s ease;
 }
 
 .action-buttons button.btn.primary:hover {
-  background: linear-gradient(135deg, #9d4edd, #c77dff);
+  background: linear-gradient(135deg, #5486f7, #6a81e6, #4d7ef0, #3b6eea);
 }
 
 .flash-messages-inside {
@@ -578,19 +578,61 @@ a.btn.primary.login-btn {
   font-weight: 700;
   font-size: 1.15rem;
   cursor: pointer;
-  color: #fff;
-  background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+  color: #f0f0f0;
+  background: linear-gradient(135deg, #3b6eea, #4d7ef0, #6a81e6, #5486f7);
   border: none;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  text-decoration: none;
+  transition: background 0.4s ease;
+  text-decoration: None;
 }
 
 a.btn.primary.login-btn:hover {
-  background: linear-gradient(135deg, #9d4edd, #c77dff);
+  background: linear-gradient(135deg, #5486f7, #6a81e6, #4d7ef0, #3b6eea);
 }
 
 
-@media (max-width: 1075px) {
+.action-buttons > .share-btn {
+  display: inline-flex; 
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #007bff, #3399ff);
+  border: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  vertical-align: middle; 
+}
+
+
+.action-buttons > .share-btn:hover {
+  background: linear-gradient(135deg, #3399ff, #66b2ff);
+}
+
+.action-buttons > .share-btn i {
+  font-size: 1.1rem;
+}
+
+#copy-toast {
+  display: none;
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+
+@media (max-width: 1320px) {
 
   .nav-toggle-label {
     justify-content: flex-start;
@@ -599,7 +641,32 @@ a.btn.primary.login-btn:hover {
 
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 639px) {
+  .action-buttons .btn {
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 0.75rem;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1320px) {
+  .action-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .action-buttons .btn {
+    flex: 1 1 300px;  
+    max-width: 350px;
+    min-width: 250px; 
+    box-sizing: border-box;
+    margin-bottom: 0.75rem;
+  }
+}
+
+@media (max-width: 1320px) {
   .business-card {
     padding: 4rem 2.5rem;
     margin: 2rem 1rem;
