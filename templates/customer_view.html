@@ -99,6 +99,10 @@
      <i class="fab fa-instagram"></i> See Business
       </a>
      {% endif %}
+     <button class="share-btn" onclick="copyProfileLink()">
+      <i class="fas fa-share-alt"></i> Share
+    </button>
+     <div id="copy-toast">Link copied to clipboard!</div>
     </div>
   </main>
 
@@ -124,7 +128,6 @@
       {% if business.interval %}
         <button type="submit" class="btn primary">Confirm</button>
       {% endif %}
-      <button type="button" class="btn secondary" onclick="closeBookingModal()">Close</button>
     </div>
   </form>
 </div>
@@ -152,6 +155,22 @@
       </form>
     </div>
   </div>
+
+<script>
+  function copyProfileLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const toast = document.getElementById('copy-toast');
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.opacity = 1;
+      }, 10);
+      setTimeout(() => {
+        toast.style.opacity = 0;
+        setTimeout(() => toast.style.display = 'none', 300);
+      }, 2000);
+    });
+  }
+</script>
 
 <script>
 const openDays = JSON.parse('{{ business.open_days | tojson | safe }}');
