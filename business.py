@@ -527,7 +527,7 @@ def submit_review(business_id):
             .eq('id', business_id)\
             .execute()
 
-    return redirect(url_for('search.customer_view', business_id=business_id))
+    return redirect(request.referrer or url_for('search.customer_view', business_id=business_id))
 
 @business_bp.route('/business/<int:business_id>/reviews')
 def view_reviews(business_id):
