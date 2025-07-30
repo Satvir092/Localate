@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='about.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+    <link rel="preload" href="https://www.instagram.com/localate_org?igsh=bm5ieWluZmMxY2sx&utm_source=qr" as="document">
+    <link rel="preload" href="https://paypal.me/SatvirHundal" as="document">
   <style>
   .donate-section {
     text-align: center;
@@ -79,6 +81,18 @@
   .founder-photo {
   margin-top: 2rem;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.founder-photo .founder-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .founder-photo img {
@@ -88,6 +102,10 @@
   object-fit: cover;
   border: 2px solid #444;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.founder-photo .founder-item:nth-child(2) img {
+  object-position: center 100%;
 }
 
 .photo-caption {
@@ -165,9 +183,16 @@
     Contact: (530) 812-7455
   </p>
   <div class="founder-photo">
-  <img src="{{ url_for('static', filename='satvir.png') }}" alt="Satvir Hundal" />
-  <p class="photo-caption">Satvir Hundal – Founder of Localate</p>
-</div>
+    <div class="founder-item">
+      <img src="{{ url_for('static', filename='satvir.png') }}" alt="Satvir Hundal" />
+      <p class="photo-caption">Satvir Hundal – Founder of Localate</p>
+    </div>
+    
+    <div class="founder-item">
+      <img src="{{ url_for('static', filename='munneth.png') }}" alt="Munneth Gill" />
+      <p class="photo-caption">Munneth Gill – Developer @ Localate</p>
+    </div>
+  </div>
       <a href="https://paypal.me/SatvirHundal" target="_blank" rel="noopener noreferrer" class="donate-button">
         <i class="fab fa-paypal"></i> Donate with PayPal
       </a>
