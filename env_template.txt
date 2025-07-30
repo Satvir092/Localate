@@ -1,0 +1,15 @@
+# Flask Configuration
+SECRET_KEY=your_secret_key_here
+
+# Email Configuration (Brevo/Sendinblue)
+MAIL_USERNAME=your_email@example.com
+MAIL_PASSWORD=your_email_password
+MAIL_DEFAULT_SENDER=your_email@example.com
+BREVO_API_KEY=your_brevo_api_key
+
+# Supabase Configuration
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# reCAPTCHA Configuration (optional)
+RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key 
