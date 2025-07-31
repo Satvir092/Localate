@@ -10,6 +10,13 @@ from sib_api_v3_sdk import Configuration, ApiClient
 from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
 from sib_api_v3_sdk.models.send_smtp_email import SendSmtpEmail
 from sib_api_v3_sdk.rest import ApiException
+#gcal imports
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+import os.path
 
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
