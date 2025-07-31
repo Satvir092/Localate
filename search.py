@@ -21,7 +21,22 @@ import os.path
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
 
+def create_gcal_event(business_name, business_id, date, time, user_name, user_email, user_phone):
+    creds = Credentials.from_authorized_user_file('credentials.json', ['https://www.googleapis.com/auth/calendar'])
+    service = build('calendar', 'v3', credentials=creds)
 
+    event = {
+        'summary': f'Appointment with {business_name}',
+        'description': f'{user_name} has booked an appointment with {business_name} on {date} at {time}.',
+        'start': {
+            'dateTime': f'{date}T{time}:00',
+            'timeZone': 'America/New_York'
+        },
+        'end': {
+    }
+}
+    
+    
 @search_bp.route('/', methods=['GET'])
 def search():
     supabase = current_app.supabase
