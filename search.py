@@ -10,31 +10,48 @@ from sib_api_v3_sdk import Configuration, ApiClient
 from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
 from sib_api_v3_sdk.models.send_smtp_email import SendSmtpEmail
 from sib_api_v3_sdk.rest import ApiException
-#gcal imports
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 import os.path
 
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
 
 def create_gcal_event(business_name, business_id, date, time, user_name, user_email, user_phone):
-    creds = Credentials.from_authorized_user_file('credentials.json', ['https://www.googleapis.com/auth/calendar'])
-    service = build('calendar', 'v3', credentials=creds)
-
-    event = {
-        'summary': f'Appointment with {business_name}',
-        'description': f'{user_name} has booked an appointment with {business_name} on {date} at {time}.',
-        'start': {
-            'dateTime': f'{date}T{time}:00',
-            'timeZone': 'America/New_York'
-        },
-        'end': {
-    }
-}
+    """
+    Create a simple Google Calendar "Add Event" link
+    """
+    try:
+        # Calculate end time (1 hour after start time by default)
+        start_datetime = datetime.strptime(f'{date} {time}', '%Y-%m-%d %H:%M:%S')
+        end_datetime = start_datetime.replace(hour=(start_datetime.hour + 1) % 24)
+        
+        # Format dates for Google Calendar URL
+        start_date_str = start_datetime.strftime('%Y%m%dT%H%M%S')
+        end_date_str = end_datetime.strftime('%Y%m%dT%H%M%S')
+        
+        # Create event description
+        description = f"Appointment with {business_name}\n\nCustomer Information:\nName: {user_name}\nEmail: {user_email}\nPhone: {user_phone}\n\nBusiness: {business_name}"
+        
+        # Build Google Calendar "Add Event" URL
+        calendar_url = (
+            f"https://calendar.google.com/calendar/r/eventedit?"
+            f"action=TEMPLATE"
+            f"&text=Appointment with {business_name}"
+            f"&dates={start_date_str}/{end_date_str}"
+            f"&details={description.replace(' ', '%20').replace('\n', '%0A')}"
+            f"&location={business_name.replace(' ', '%20')}"
+            f"&sf=true"
+            f"&output=xml"
+        )
+        
+        return {
+            'calendar_url': calendar_url,
+            'start_time': start_datetime.strftime('%I:%M %p').lstrip('0'),
+            'end_time': end_datetime.strftime('%I:%M %p').lstrip('0')
+        }
+        
+    except Exception as e:
+        current_app.logger.error(f'Error creating Google Calendar link: {e}')
+        return None
     
     
 @search_bp.route('/', methods=['GET'])
@@ -182,6 +199,37 @@ def book_appointment():
 
         formatted_time = time_obj.strftime("%I:%M %p").lstrip("0")
 
+        # Create Google Calendar event link
+        calendar_event = create_gcal_event(
+            business_name=business_name,
+            business_id=int(business_id),
+            date=selected_date,
+            time=time_obj.strftime("%H:%M:%S"),
+            user_name=current_user.full_name,
+            user_email=current_user.email,
+            user_phone=current_user.phone_number
+        )
+
+        # Prepare calendar section for email
+        calendar_section = ""
+        if calendar_event:
+            calendar_section = f"""
+                    <hr style="border: 1px solid #444;" />
+                    
+                    <h3 style="color: #4CAF50; margin-top: 20px;">📅 Add to Calendar</h3>
+                    <p style="font-size: 16px;">
+                        Click the link below to add this appointment to your Google Calendar:
+                    </p>
+                    <p style="font-size: 16px;">
+                        <a href="{calendar_event['calendar_url']}" style="color: #4CAF50; text-decoration: none; font-weight: bold;">
+                            📅 Add to Google Calendar
+                        </a>
+                    </p>
+                    <p style="font-size: 14px; color: #999;">
+                        This will open Google Calendar with the appointment details pre-filled.
+                    </p>
+            """
+
         html_content = f"""
             <!DOCTYPE html>
             <html>
@@ -210,7 +258,7 @@ def book_appointment():
                     <p style="font-size: 16px;">
                         Please confirm this appointment or contact the user if the time is no longer available.
                     </p>
-
+                    {calendar_section}
                     <p style="margin-top: 30px; font-size: 14px; color: #999;">
                         — Localate Team
                     </p>
@@ -325,12 +373,6 @@ def cancel_appointment():
 
                     <p style="font-size: 16px;">
                         This slot is now reopened automatically.
-                    </p>
-
-                    <p style="font-size: 16px;">
-                        <a href="https://calendar.google.com/calendar/r/eventedit?action=TEMPLATE&dates=20230325T224500Z%2F20230326T001500Z&stz=Europe/Brussels&etz=Europe/Brussels&details=EVENT_DESCRIPTION_HERE&location=EVENT_LOCATION_HERE&text=EVENT_TITLE_HERE">
-                            📅 View in Google Calendar
-                        </a>
                     </p>
 
                     <p style="margin-top: 30px; font-size: 14px; color: #999;">
