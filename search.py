@@ -214,59 +214,49 @@ def book_appointment():
         calendar_section = ""
         if calendar_event:
             calendar_section = f"""
-                    <hr style="border: 1px solid #444;" />
-                    
-                    <h3 style="color: #4CAF50; margin-top: 20px;">📅 Add to Calendar</h3>
-                    <p style="font-size: 16px;">
-                        Click the link below to add this appointment to your Google Calendar:
-                    </p>
-                    <p style="font-size: 16px;">
-                        <a href="{calendar_event['calendar_url']}" style="color: #4CAF50; text-decoration: none; font-weight: bold;">
+                    <p style="font-size: 16px; margin-top: 20px;">
+                        <a href="{calendar_event['calendar_url']}" style="color: #0000EE; text-decoration: underline;">
                             📅 Add to Google Calendar
                         </a>
-                    </p>
-                    <p style="font-size: 14px; color: #999;">
-                        This will open Google Calendar with the appointment details pre-filled.
                     </p>
             """
 
         html_content = f"""
-            <!DOCTYPE html>
-            <html>
-            <body style="background-color: #1e1e1e; color: #e0e0e0; font-family: Arial, sans-serif; padding: 20px;">
-                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background-color: #2b2b2b; border-radius: 8px;">
-                <tr>
-                    <td style="padding: 30px;">
-                    <h2 style="color: #bb86fc; margin-top: 0;">New Appointment for {business_name}</h2>
-
-                    <p style="font-size: 16px; line-height: 1.6;">
-                        You have a new appointment booking:
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #333; margin-top: 0;">New Appointment for {business_name}</h2>
+                
+                <p style="font-size: 16px; line-height: 1.6;">
+                    You have a new appointment booking:
+                </p>
+                
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Name:</strong> {current_user.full_name}
                     </p>
-
-                    <hr style="border: 1px solid #444;" />
-
-                    <p style="font-size: 16px;">
-                        <strong>Name:</strong> {current_user.full_name}<br>
-                        <strong>Email:</strong> {current_user.email}<br>
-                        <strong>Phone:</strong> {current_user.phone_number}<br>
-                        <strong>Date:</strong> {selected_date}<br>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Email:</strong> {current_user.email}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Phone:</strong> {current_user.phone_number}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Date:</strong> {selected_date}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
                         <strong>Time:</strong> {formatted_time}
                     </p>
-
-                    <hr style="border: 1px solid #444;" />
-
-                    <p style="font-size: 16px;">
-                        Please confirm this appointment or contact the user if the time is no longer available.
-                    </p>
-                    {calendar_section}
-                    <p style="margin-top: 30px; font-size: 14px; color: #999;">
-                        — Localate Team
-                    </p>
-                    </td>
-                </tr>
-                </table>
-            </body>
-            </html>
+                </div>
+                
+                <p style="font-size: 16px;">
+                    Please confirm this appointment or contact the user if the time is no longer available.
+                </p>
+                
+                {calendar_section}
+                
+                <p style="margin-top: 30px; font-size: 14px; color: #666;">
+                    — Localate Team
+                </p>
+            </div>
         """
         configuration = Configuration()
         configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
@@ -347,42 +337,39 @@ def cancel_appointment():
         api_instance = TransactionalEmailsApi(api_client)
 
         html_content = f"""
-            <!DOCTYPE html>
-            <html>
-            <body style="background-color: #1e1e1e; color: #e0e0e0; font-family: Arial, sans-serif; padding: 20px;">
-                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background-color: #2b2b2b; border-radius: 8px;">
-                <tr>
-                    <td style="padding: 30px;">
-                    <h2 style="color: #ff6b6b; margin-top: 0;">Appointment Canceled for {business_name}</h2>
-
-                    <p style="font-size: 16px; line-height: 1.6;">
-                        A user has canceled their appointment:
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #d32f2f; margin-top: 0;">Appointment Canceled for {business_name}</h2>
+                
+                <p style="font-size: 16px; line-height: 1.6;">
+                    A user has canceled their appointment:
+                </p>
+                
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Name:</strong> {appointment['name']}
                     </p>
-
-                    <hr style="border: 1px solid #444;" />
-
-                    <p style="font-size: 16px;">
-                        <strong>Name:</strong> {appointment['name']}<br>
-                        <strong>Email:</strong> {appointment['email']}<br>
-                        <strong>Phone:</strong> {appointment['phone']}<br>
-                        <strong>Date:</strong> {appointment['date']}<br>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Email:</strong> {appointment['email']}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Phone:</strong> {appointment['phone']}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Date:</strong> {appointment['date']}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
                         <strong>Time:</strong> {formatted_time}
                     </p>
-
-                    <hr style="border: 1px solid #444;" />
-
-                    <p style="font-size: 16px;">
-                        This slot is now reopened automatically.
-                    </p>
-
-                    <p style="margin-top: 30px; font-size: 14px; color: #999;">
-                        — Localate Team
-                    </p>
-                    </td>
-                </tr>
-                </table>
-            </body>
-            </html>
+                </div>
+                
+                <p style="font-size: 16px;">
+                    This slot is now reopened automatically.
+                </p>
+                
+                <p style="margin-top: 30px; font-size: 14px; color: #666;">
+                    — Localate Team
+                </p>
+            </div>
         """
 
         send_smtp_email = SendSmtpEmail(
