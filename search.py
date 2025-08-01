@@ -327,6 +327,12 @@ def cancel_appointment():
                         This slot is now reopened automatically.
                     </p>
 
+                    <p style="font-size: 16px;">
+                        <a href="https://calendar.google.com/calendar/r/eventedit?action=TEMPLATE&dates=20230325T224500Z%2F20230326T001500Z&stz=Europe/Brussels&etz=Europe/Brussels&details=EVENT_DESCRIPTION_HERE&location=EVENT_LOCATION_HERE&text=EVENT_TITLE_HERE">
+                            📅 View in Google Calendar
+                        </a>
+                    </p>
+
                     <p style="margin-top: 30px; font-size: 14px; color: #999;">
                         — Localate Team
                     </p>
