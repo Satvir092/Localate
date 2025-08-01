@@ -149,7 +149,7 @@ body {
 .btn.secondary {
   background-color: #2a2a2a;
   color: #eee;
-  padding: 0.85rem 1.8rem;
+  padding: 0.8rem 1.6rem;
   border-radius: 999px;
   border: 1.5px solid rgba(255, 255, 255, 0.3);
   font-size: 1.1rem;
@@ -673,29 +673,29 @@ a.btn.primary.login-btn:hover {
   }
 }
 
-@media (min-width: 640px) and (max-width: 1320px) {
+@media (min-width: 640px) and (max-width: 1470px) {
   .action-buttons {
     justify-content: center;
     flex-wrap: wrap;
     gap: 1rem;
     text-align: center;
   }
-  
+
   .action-buttons .btn {
-    flex: 1 1 300px;  
+    flex: 1 1 300px;
     max-width: 350px;
-    min-width: 250px; 
-    box-sizing: border-box;
+    min-width: 250px;
     margin-bottom: 0.75rem;
+    box-sizing: border-box;
   }
 }
 
-@media (max-width: 1320px) {
+@media (max-width: 1470px) {
   .business-card {
-    padding: 4rem 2.5rem;
+    padding: 3rem 2rem;
     margin: 2rem 1rem;
-    width: auto; 
-    box-sizing: content-box; 
+    width: auto;
+    box-sizing: content-box;
   }
 
   .business-card-header {
@@ -706,7 +706,10 @@ a.btn.primary.login-btn:hover {
 
   .business-details-left {
     width: 100%;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    padding: 1rem 1.4rem;
+    line-height: 1.3;
+    margin-bottom: 1rem;
   }
 
   .business-image-wrapper {
@@ -718,6 +721,18 @@ a.btn.primary.login-btn:hover {
     height: 110px;
   }
 
+  .business-meta {
+    padding: 1rem 1.4rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .description {
+    font-size: 0.95rem;
+    line-height: 1.25;
+  }
+
   .action-buttons {
     justify-content: center;
     flex-wrap: wrap;
@@ -725,57 +740,42 @@ a.btn.primary.login-btn:hover {
     text-align: center;
   }
 
-  .btn.secondary {
-    width: 100%;
-    max-width: 350px;
-  }
-.business-card {
-    padding: 3rem 2rem; 
-    margin: 2rem 1rem;
-    width: auto;
-    box-sizing: content-box;
-  }
-
-  .business-details-left {
-    width: 100%;
-    font-size: 1.1rem;
-    padding: 1rem 1.4rem; 
-    line-height: 1.3;    
-    margin-bottom: 1rem; 
-  }
-
-  .business-meta {
-    padding: 1rem 1.4rem;      
-    margin-top: 1rem;          
-    font-size: 1rem;           
-    line-height: 1.3;          
-  }
-  .description {
-    font-size: 0.95rem;  
-    line-height: 1.25;   
-  }
-
-   .action-buttons {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    text-align: center;
-  }
-
-
   .action-buttons .btn {
     width: 100%;
     max-width: 350px;
     padding: 0.85rem 1.8rem;
     font-size: 1.15rem;
-    box-sizing: border-box;
     border-radius: 999px;
     font-weight: 600;
     cursor: pointer;
-    display: inline-block;
     text-align: center;
+    display: inline-block;
   }
 
-  
+  .btn.secondary {
+    width: 100%;
+    max-width: 350px;
+  }
+}
 
+@media (max-width: 639px) {
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem; 
+  }
+
+  .action-buttons .btn {
+    width: 100%;
+    max-width: 320px;      
+    font-size: 1rem !important;  
+    padding: 0.6rem 1.2rem !important; 
+    margin: 0; 
+    box-sizing: border-box;
+  }
+
+  .btn i {
+    font-size: 1rem !important;
+    margin-right: 0.4rem;
+  }
 }
