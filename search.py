@@ -28,6 +28,19 @@ def search():
 
     filters = supabase.table('businesses').select('*', count='exact')
 
+    if not query and not category and not state:
+        return render_template(
+            'search.html',
+            businesses=[],
+            popularity=popularity,
+            page=page,
+            total_pages=0,
+            query=query,
+            category=category,
+            state=state,
+            message="Please enter a search term or select a filter."
+        )
+
     if query:
         filters = filters.or_(
             f"name.ilike.%{query}%,city.ilike.%{query}%"
