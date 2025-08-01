@@ -8,7 +8,7 @@ body {
 }
 
 .business-card {
-  max-width: 1320px;
+  max-width: 1470px;
   width: 100%;
   margin: 4rem auto;
   padding: 4rem 4rem 3rem;
@@ -572,6 +572,30 @@ button:focus {
   text-decoration: none;
 }
 
+.website-btn {
+  display: inline-block;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  cursor: pointer;
+  text-decoration: none;
+  background: linear-gradient(45deg, #4a90e2 0%, #357ABD 50%, #2a5e9e 100%);
+  color: white;
+  border: none;
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+
+.website-btn i {
+  margin-right: 0.5rem;
+}
+
+.website-btn:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+
 a.btn.primary.login-btn {
   padding: 0.8rem 1.6rem;
   border-radius: 999px;
@@ -632,7 +656,7 @@ a.btn.primary.login-btn:hover {
 }
 
 
-@media (max-width: 1320px) {
+@media (max-width: 1470px) {
 
   .nav-toggle-label {
     justify-content: flex-start;

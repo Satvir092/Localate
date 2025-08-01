@@ -96,9 +96,14 @@
 
       {% if business.social_url %}
      <a href="{{ business.social_url }}" class="btn instagram-btn" target="_blank" rel="noopener noreferrer">
-     <i class="fab fa-instagram"></i> See Business
+     <i class="fab fa-instagram"></i> See Instagram
       </a>
-     {% endif %}
+      {% endif %}
+      {% if business.website_url %}
+      <a href="{{ business.website_url }}" class="website-btn" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-globe"></i> Website
+      </a>
+    {% endif %}
      <button class="share-btn" onclick="copyProfileLink()">
       <i class="fas fa-share-alt"></i> Share
     </button>
@@ -128,6 +133,7 @@
       {% if business.interval %}
         <button type="submit" class="btn primary">Confirm</button>
       {% endif %}
+      <button type="button" onclick="closeBookingModal()" class="btn secondary">Close</button>
     </div>
   </form>
 </div>
