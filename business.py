@@ -78,6 +78,7 @@ def create_business():
         days_list = request.form.getlist('weekdays')
         state = request.form.get('state')
         social_url = request.form.get('social_url')
+        website_url = request.form.get('website_url')
         timezone = request.form.get('timezone')
 
         if not name:
@@ -127,6 +128,14 @@ def create_business():
         if len(city) > 50:
             flash("City name must be under 50 characters.", "error")
             return redirect(url_for('business.create_business'))
+        
+        if len(social_url) > 2000:
+            flash("Social url must be less than 2000 characters")
+            return redirect(url_for('business.create_business'))
+        
+        if len(website_url) > 2000:
+            flash("Website url must be less than 2000 characters")
+            return redirect(url_for('business.create_business'))
 
         supabase = current_app.supabase
         response = supabase.table('businesses').insert({
@@ -141,6 +150,7 @@ def create_business():
             "state": state,
             "timezone": timezone,
             "social_url": social_url,
+            "website_url": website_url,
             "closing_time": closing_time
         }).execute()
 
@@ -261,6 +271,7 @@ def edit_business(business_id):
         days_list = request.form.getlist('weekdays')
         state = request.form.get('state')
         social_url = request.form.get('social_url')
+        website_url = request.form.get('website_url')
         timezone = request.form.get('timezone')
 
         if not name:
@@ -311,7 +322,14 @@ def edit_business(business_id):
         if len(city) > 50:
             flash("City name must be under 50 characters.", "error")
             return redirect(url_for('business.create_business'))
-
+        
+        if len(social_url) > 2000:
+            flash("Social url must be less than 2000 characters")
+            return redirect(url_for('business.create_business'))
+        
+        if len(website_url) > 2000:
+            flash("Website url must be less than 2000 characters")
+            return redirect(url_for('business.create_business'))
 
         update_data = {
             "name": name,
@@ -323,6 +341,7 @@ def edit_business(business_id):
             "interval": interval,
             "open_days": days_list,
             "timezone": timezone,
+            "website_url": website_url,
             "social_url": social_url,
             "state": state
         }
