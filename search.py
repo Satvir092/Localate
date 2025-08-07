@@ -10,11 +10,50 @@ from sib_api_v3_sdk import Configuration, ApiClient
 from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
 from sib_api_v3_sdk.models.send_smtp_email import SendSmtpEmail
 from sib_api_v3_sdk.rest import ApiException
+import os.path
 
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
 
-
+def create_gcal_event(business_name, business_id, date, time, user_name, user_email, user_phone):
+    """
+    Create a simple Google Calendar "Add Event" link
+    """
+    try:
+        # Calculate end time (1 hour after start time by default)
+        start_datetime = datetime.strptime(f'{date} {time}', '%Y-%m-%d %H:%M:%S')
+        end_datetime = start_datetime.replace(hour=(start_datetime.hour + 1) % 24)
+        
+        # Format dates for Google Calendar URL
+        start_date_str = start_datetime.strftime('%Y%m%dT%H%M%S')
+        end_date_str = end_datetime.strftime('%Y%m%dT%H%M%S')
+        
+        # Create event description
+        description = f"Appointment with {business_name}\n\nCustomer Information:\nName: {user_name}\nEmail: {user_email}\nPhone: {user_phone}\n\nBusiness: {business_name}"
+        
+        # Build Google Calendar "Add Event" URL
+        calendar_url = (
+            f"https://calendar.google.com/calendar/r/eventedit?"
+            f"action=TEMPLATE"
+            f"&text=Appointment with {business_name}"
+            f"&dates={start_date_str}/{end_date_str}"
+            f"&details={description.replace(' ', '%20').replace('\n', '%0A')}"
+            f"&location={business_name.replace(' ', '%20')}"
+            f"&sf=true"
+            f"&output=xml"
+        )
+        
+        return {
+            'calendar_url': calendar_url,
+            'start_time': start_datetime.strftime('%I:%M %p').lstrip('0'),
+            'end_time': end_datetime.strftime('%I:%M %p').lstrip('0')
+        }
+        
+    except Exception as e:
+        current_app.logger.error(f'Error creating Google Calendar link: {e}')
+        return None
+    
+    
 @search_bp.route('/', methods=['GET'])
 def search():
     supabase = current_app.supabase
@@ -173,43 +212,64 @@ def book_appointment():
 
         formatted_time = time_obj.strftime("%I:%M %p").lstrip("0")
 
-        html_content = f"""
-            <!DOCTYPE html>
-            <html>
-            <body style="background-color: #1e1e1e; color: #e0e0e0; font-family: Arial, sans-serif; padding: 20px;">
-                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background-color: #2b2b2b; border-radius: 8px;">
-                <tr>
-                    <td style="padding: 30px;">
-                    <h2 style="color: #bb86fc; margin-top: 0;">New Appointment for {business_name}</h2>
+        # Create Google Calendar event link
+        calendar_event = create_gcal_event(
+            business_name=business_name,
+            business_id=int(business_id),
+            date=selected_date,
+            time=time_obj.strftime("%H:%M:%S"),
+            user_name=current_user.full_name,
+            user_email=current_user.email,
+            user_phone=current_user.phone_number
+        )
 
-                    <p style="font-size: 16px; line-height: 1.6;">
-                        You have a new appointment booking:
+        # Prepare calendar section for email
+        calendar_section = ""
+        if calendar_event:
+            calendar_section = f"""
+                    <p style="font-size: 16px; margin-top: 20px;">
+                        <a href="{calendar_event['calendar_url']}" style="color: #0000EE; text-decoration: underline;">
+                            📅 Add to Google Calendar
+                        </a>
                     </p>
+            """
 
-                    <hr style="border: 1px solid #444;" />
-
-                    <p style="font-size: 16px;">
-                        <strong>Name:</strong> {current_user.full_name}<br>
-                        <strong>Email:</strong> {current_user.email}<br>
-                        <strong>Phone:</strong> {current_user.phone_number}<br>
-                        <strong>Date:</strong> {selected_date}<br>
+        html_content = f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #333; margin-top: 0;">New Appointment for {business_name}</h2>
+                
+                <p style="font-size: 16px; line-height: 1.6;">
+                    You have a new appointment booking:
+                </p>
+                
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Name:</strong> {current_user.full_name}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Email:</strong> {current_user.email}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Phone:</strong> {current_user.phone_number}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Date:</strong> {selected_date}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
                         <strong>Time:</strong> {formatted_time}
                     </p>
-
-                    <hr style="border: 1px solid #444;" />
-
-                    <p style="font-size: 16px;">
-                        Please confirm this appointment or contact the user if the time is no longer available.
-                    </p>
-
-                    <p style="margin-top: 30px; font-size: 14px; color: #999;">
-                        — Localate Team
-                    </p>
-                    </td>
-                </tr>
-                </table>
-            </body>
-            </html>
+                </div>
+                
+                <p style="font-size: 16px;">
+                    Please confirm this appointment or contact the user if the time is no longer available.
+                </p>
+                
+                {calendar_section}
+                
+                <p style="margin-top: 30px; font-size: 14px; color: #666;">
+                    — Localate Team
+                </p>
+            </div>
         """
         configuration = Configuration()
         configuration.api_key['api-key'] = current_app.config['BREVO_API_KEY']
@@ -290,42 +350,39 @@ def cancel_appointment():
         api_instance = TransactionalEmailsApi(api_client)
 
         html_content = f"""
-            <!DOCTYPE html>
-            <html>
-            <body style="background-color: #1e1e1e; color: #e0e0e0; font-family: Arial, sans-serif; padding: 20px;">
-                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: auto; background-color: #2b2b2b; border-radius: 8px;">
-                <tr>
-                    <td style="padding: 30px;">
-                    <h2 style="color: #ff6b6b; margin-top: 0;">Appointment Canceled for {business_name}</h2>
-
-                    <p style="font-size: 16px; line-height: 1.6;">
-                        A user has canceled their appointment:
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #d32f2f; margin-top: 0;">Appointment Canceled for {business_name}</h2>
+                
+                <p style="font-size: 16px; line-height: 1.6;">
+                    A user has canceled their appointment:
+                </p>
+                
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Name:</strong> {appointment['name']}
                     </p>
-
-                    <hr style="border: 1px solid #444;" />
-
-                    <p style="font-size: 16px;">
-                        <strong>Name:</strong> {appointment['name']}<br>
-                        <strong>Email:</strong> {appointment['email']}<br>
-                        <strong>Phone:</strong> {appointment['phone']}<br>
-                        <strong>Date:</strong> {appointment['date']}<br>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Email:</strong> {appointment['email']}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Phone:</strong> {appointment['phone']}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
+                        <strong>Date:</strong> {appointment['date']}
+                    </p>
+                    <p style="font-size: 16px; margin: 5px 0;">
                         <strong>Time:</strong> {formatted_time}
                     </p>
-
-                    <hr style="border: 1px solid #444;" />
-
-                    <p style="font-size: 16px;">
-                        This slot is now reopened automatically.
-                    </p>
-
-                    <p style="margin-top: 30px; font-size: 14px; color: #999;">
-                        — Localate Team
-                    </p>
-                    </td>
-                </tr>
-                </table>
-            </body>
-            </html>
+                </div>
+                
+                <p style="font-size: 16px;">
+                    This slot is now reopened automatically.
+                </p>
+                
+                <p style="margin-top: 30px; font-size: 14px; color: #666;">
+                    — Localate Team
+                </p>
+            </div>
         """
 
         send_smtp_email = SendSmtpEmail(
