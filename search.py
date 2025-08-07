@@ -32,12 +32,13 @@ def create_gcal_event(business_name, business_id, date, time, user_name, user_em
         description = f"Appointment with {business_name}\n\nCustomer Information:\nName: {user_name}\nEmail: {user_email}\nPhone: {user_phone}\n\nBusiness: {business_name}"
         
         # Build Google Calendar "Add Event" URL
+        details_encoded = description.replace(' ', '%20').replace('\n', '%0A')
         calendar_url = (
             f"https://calendar.google.com/calendar/r/eventedit?"
             f"action=TEMPLATE"
             f"&text=Appointment with {business_name}"
             f"&dates={start_date_str}/{end_date_str}"
-            f"&details={description.replace(' ', '%20').replace('\n', '%0A')}"
+            f"&details={details_encoded}"
             f"&location={business_name.replace(' ', '%20')}"
             f"&sf=true"
             f"&output=xml"
