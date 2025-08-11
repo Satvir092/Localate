@@ -653,16 +653,24 @@ a.btn.primary.login-btn:hover {
 
 .nav-toggle-label {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-  width: 40px;
-  height: 40px;
+  padding: 0.5rem;            
+  border: 0.5px solid rgb(92, 92, 92); 
+  border-radius: 6px;          
+  background-color: transparent; 
+  margin: -2rem 1rem 1rem;
+  width: 34px;                 
+  height: 34px;
+  align-self: flex-start;
+  line-height: 1;
   box-sizing: border-box;
   cursor: pointer;
+  justify-content: center;
+  align-items: center;
   user-select: none;
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), border-color 0.3s ease;
 }
+
 
 }
 
