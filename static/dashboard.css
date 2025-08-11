@@ -243,7 +243,7 @@ body {
   padding: 0.65rem 1.2rem;
   font-size: 0.95rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 999px;
   color: #fff;
   text-decoration: none;
   background: linear-gradient(145deg, #6b50e0, #5a3acc);

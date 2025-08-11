@@ -103,7 +103,7 @@ body {
   height: 3px;
   width: 25px;
   background-color: #eee;
-  border-radius: 3px;
+  border-radius: 1px;
   display: block;
   transition: 0.3s ease;
 }
@@ -226,22 +226,33 @@ body {
   padding: 0.85rem 2.8rem;
   font-weight: 700;
   font-size: 1.15rem;
-  border: 1px solid rgba(177, 177, 177, 0.3); 
-  background-color: transparent;
+  border: 2px solid #8a6ef8;
+  background-color: #8a6ef8;
   color: #fff;
-  border-radius: 10px;
+  border-radius: 8px;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
   user-select: none;
   text-align: center;
   max-width: 280px;
   width: 100%;
   font-family: 'Segoe UI', sans-serif;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   box-shadow: none;
-  overflow: hidden;
   outline: none;
+}
+
+.hero-cta-button:hover {
+  background-color: #7a5de6;
+  border-color: #7a5de6;
+  transform: translateY(-2px);
+}
+
+.hero-cta-button:active {
+  background-color: #6b50e0;
+  border-color: #6b50e0;
+  transform: translateY(0);
 }
 
 .more-info,
@@ -324,13 +335,6 @@ body {
   display: none;
 }
 
-.hero-cta-button:hover,
-.hero-cta-button:focus {
-  background-color: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  color: #fff;
-}
 .support-link:hover .fas.fa-heart {
   animation: pulseHeart 1.5s infinite;
   transform-origin: center;
@@ -411,15 +415,32 @@ body {
 
 .nav-toggle-label {
   display: flex;
-  padding: 0.7rem 0.5rem; 
-  border: 2px solid #666; 
-  border-radius: 8px;
-  background-color: #2a2a2a;
-  margin: -2.0rem 1rem 1rem;
-  width: auto;
+  padding: 0.5rem;            
+  border: 1px solid rgb(92, 92, 92); 
+  border-radius: 6px;          
+  background-color: transparent; 
+  margin: -2rem 1rem 1rem;
+  width: 40px;                 
+  height: 40px;
   align-self: flex-start;
   line-height: 1;
   box-sizing: border-box;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), border-color 0.3s ease;
+}
+
+.nav-toggle-label:active {
+  transform: scale(0.9) rotate(15deg); 
+  border-color: rgba(0, 0, 0, 0.6); 
+  transition: transform 0.15s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.nav-toggle-label:hover {
+  border-color: rgba(0, 0, 0, 0.5); /* subtle glow effect on hover */
 }
   .nav-links li {
     text-align: center;
