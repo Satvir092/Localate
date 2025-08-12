@@ -86,17 +86,17 @@
 
     <div class="action-buttons">
       <a href="{{ url_for('search.search', q=q, category=category, city=city, state=state) }}" class="btn secondary">← Back to Search</a>
-      <button class="btn primary" onclick="openBookingModal()">Book Appointment</button>
+      <button class="btn primary" onclick="openBookingModal()">📅 Book Appointment</button>
 
       {% if current_user.is_authenticated %}
-        <button class="btn primary" id="openReviewModal">Leave a Review</button>
+        <button class="btn primary" id="openReviewModal">⭐ Review</button>
       {% else %}
-        <a href="{{ url_for('auth.login') }}" class="btn primary login-btn">Log in to Review</a>
+        <a href="{{ url_for('auth.login') }}" class="btn primary login-btn">⭐ Review</a>
       {% endif %}
 
       {% if business.social_url %}
      <a href="{{ business.social_url }}" class="btn instagram-btn" target="_blank" rel="noopener noreferrer">
-     <i class="fab fa-instagram"></i> See Instagram
+     <i class="fab fa-instagram"></i>Instagram
       </a>
       {% endif %}
       {% if business.website_url %}
