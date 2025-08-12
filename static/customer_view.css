@@ -658,8 +658,6 @@ a.btn.primary.login-btn {
   border: none;
   transition: background 0.3s ease, transform 0.15s ease;
   text-decoration: none;
-  display: inline-block;
-  text-align: center;
 }
 
 a.btn.primary.login-btn:hover {
