@@ -40,19 +40,45 @@ body {
   font-size: 1.3rem;
   line-height: 1.6;
   color: #ddd;
-  background: linear-gradient(135deg, #282828, #1e1e1e);
+  background: linear-gradient(135deg, #1f1f1f, #121212);
   padding: 2rem 2.5rem;
   border-radius: 20px;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.7), inset 0 -2px 6px rgba(255 255 255 / 0.05);
-  transition: box-shadow 0.3s ease;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
-  border: 1px solid #2c2c2c;
+  border: 1px solid #2e2e2e;
+  box-shadow:
+    inset 0 4px 8px rgba(255, 255, 255, 0.07),
+    0 6px 15px rgba(0, 0, 0, 0.6),
+    0 0 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+  transition: background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+  overflow: hidden;
+}
+
+.business-details-left::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 20px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255 255 255 / 0.1) 0%, transparent 80%);
+  mix-blend-mode: screen;
+  transition: background 0.35s ease;
+  z-index: 1;
 }
 
 .business-details-left:hover {
+  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+  border-color: #555;
+  box-shadow:
+    inset 0 4px 12px rgba(255, 255, 255, 0.12),
+    0 8px 25px rgba(0, 0, 0, 0.85),
+    0 0 25px rgba(40, 40, 40, 0.5);
+  color: #f0f0f0;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.85);
+}
 
-  background: linear-gradient(135deg, #303030, #232323);
-
+.business-details-left:hover::before {
+  background: linear-gradient(180deg, rgba(255 255 255 / 0.15) 0%, transparent 70%);
 }
 
 .business-image-wrapper {
@@ -92,17 +118,43 @@ body {
   font-size: 1.15rem;
   background: linear-gradient(135deg, #262626, #1c1c1c);
   padding: 1.5rem 2rem;
-  border-radius: 16px;
-  border: 1px solid #333;
+  border-radius: 20px;
+  border: 1px solid #2e2e2e;
   font-weight: 600;
   letter-spacing: 0.02em;
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-  transition: background-color 0.3s ease;
+  box-shadow:
+    inset 0 4px 8px rgba(255, 255, 255, 0.07),
+    0 6px 15px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  transition: background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+}
+
+.business-meta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 80%);
+  mix-blend-mode: screen;
+  z-index: 0;
+  transition: background 0.35s ease;
 }
 
 .business-meta:hover {
-  background: linear-gradient(135deg, #303030, #232323);
+  background: linear-gradient(135deg, #2f2f2f, #1f1f1f);
+  border-color: #555;
+  box-shadow:
+    inset 0 6px 12px rgba(255, 255, 255, 0.10),
+    0 8px 22px rgba(0, 0, 0, 0.6);
+  color: #e6e6e6;
+}
+
+.business-meta:hover::before {
+  background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 70%);
 }
 
 .business-meta p {
@@ -318,13 +370,14 @@ body {
   font-size: 1.15rem;
   cursor: pointer;
   color: #f0f0f0;
-  background: linear-gradient(135deg, #3b6eea, #4d7ef0, #6a81e6, #5486f7);
+  background: linear-gradient(135deg, #2b2b2b, #3a3a3a, #2b2b2b);
   border: none;
-  transition: background 0.4s ease;
+  transition: background 0.3s ease, transform 0.15s ease;
 }
 
 .action-buttons button.btn.primary:hover {
-  background: linear-gradient(135deg, #5486f7, #6a81e6, #4d7ef0, #3b6eea);
+  background: linear-gradient(135deg, #3a3a3a, #4a4a4a, #3a3a3a);
+  transform: translateY(-1px);
 }
 
 .flash-messages-inside {
@@ -573,11 +626,16 @@ button:focus {
   font-size: 1.15rem;
   cursor: pointer;
   text-decoration: none;
-  background: linear-gradient(45deg, #4a90e2 0%, #357ABD 50%, #2a5e9e 100%);
-  color: white;
+  color: #f0f0f0;
+  background: linear-gradient(135deg, #2b2b2b, #3a3a3a, #2b2b2b);
   border: none;
   text-align: center;
-  transition: opacity 0.3s ease;
+  transition: background 0.3s ease, transform 0.15s ease;
+}
+
+.website-btn:hover {
+  background: linear-gradient(135deg, #3a3a3a, #4a4a4a, #3a3a3a);
+  transform: translateY(-1px);
 }
 
 .website-btn i {
@@ -596,19 +654,22 @@ a.btn.primary.login-btn {
   font-size: 1.15rem;
   cursor: pointer;
   color: #f0f0f0;
-  background: linear-gradient(135deg, #3b6eea, #4d7ef0, #6a81e6, #5486f7);
+  background: linear-gradient(135deg, #2b2b2b, #3a3a3a, #2b2b2b);
   border: none;
-  transition: background 0.4s ease;
-  text-decoration: None;
+  transition: background 0.3s ease, transform 0.15s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
 }
 
 a.btn.primary.login-btn:hover {
-  background: linear-gradient(135deg, #5486f7, #6a81e6, #4d7ef0, #3b6eea);
+  background: linear-gradient(135deg, #3a3a3a, #4a4a4a, #3a3a3a);
+  transform: translateY(-1px);
 }
 
 
 .action-buttons > .share-btn {
-  display: inline-flex; 
+  display: inline-flex;
   align-items: center;
   gap: 0.4em;
   padding: 0.8rem 1.6rem;
@@ -616,16 +677,16 @@ a.btn.primary.login-btn:hover {
   font-weight: 700;
   font-size: 1.15rem;
   cursor: pointer;
-  color: #fff;
-  background: linear-gradient(135deg, #007bff, #3399ff);
+  color: #f0f0f0;
+  background: linear-gradient(135deg, #2b2b2b, #3a3a3a, #2b2b2b);
   border: none;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-  vertical-align: middle; 
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
+  vertical-align: middle;
 }
 
-
 .action-buttons > .share-btn:hover {
-  background: linear-gradient(135deg, #3399ff, #66b2ff);
+  background: linear-gradient(135deg, #3a3a3a, #4a4a4a, #3a3a3a);
+  transform: translateY(-1px);
 }
 
 .action-buttons > .share-btn i {
@@ -670,14 +731,12 @@ a.btn.primary.login-btn:hover {
 
   transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), border-color 0.3s ease;
 }
-
-
 }
 
 @media (max-width: 639px) {
   .action-buttons .btn {
     width: 100%;
-    max-width: 350px;
+    max-width: 200px;
     margin-bottom: 0.75rem;
   }
 }
@@ -691,9 +750,9 @@ a.btn.primary.login-btn:hover {
   }
 
   .action-buttons .btn {
-    flex: 1 1 300px;
-    max-width: 350px;
-    min-width: 250px;
+    flex: 1 1 200px;
+    max-width: 200px;
+    min-width: 120px;
     margin-bottom: 0.75rem;
     box-sizing: border-box;
   }
@@ -751,7 +810,7 @@ a.btn.primary.login-btn:hover {
 
   .action-buttons .btn {
     width: 100%;
-    max-width: 350px;
+    max-width: 250px;
     padding: 0.85rem 1.8rem;
     font-size: 1.15rem;
     border-radius: 999px;
@@ -763,7 +822,7 @@ a.btn.primary.login-btn:hover {
 
   .btn.secondary {
     width: 100%;
-    max-width: 350px;
+    max-width: 250px;
   }
 }
 
@@ -779,7 +838,7 @@ a.btn.primary.login-btn:hover {
 
   .action-buttons .btn {
     width: 100%;
-    max-width: 320px;
+    max-width: 200px;
     font-size: 1rem !important;
     padding: 0.6rem 1.2rem !important;
     margin: 0;
@@ -800,5 +859,52 @@ a.btn.primary.login-btn:hover {
     font-size: 1rem !important;
     margin-right: 0.4rem;
     line-height: 1;
+  }
+}
+
+@media (max-width: 639px) {
+  .action-buttons .btn,
+  .website-btn,
+  .action-buttons > .share-btn {
+    width: 100%;
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0.75rem;
+    font-size: 1rem !important;
+    padding: 0.6rem 1.2rem !important;
+    box-sizing: border-box;
+    white-space: nowrap;
+    border-radius: 9999px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  .action-buttons .btn i,
+  .website-btn i,
+  .action-buttons > .share-btn i {
+    font-size: 1rem !important;
+    margin-right: 0.4rem;
+    line-height: 1;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1470px) {
+  .action-buttons .btn,
+  .website-btn,
+  .action-buttons > .share-btn {
+    flex: 1 1 200px;
+    max-width: 200px;
+    min-width: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0.75rem;
+    box-sizing: border-box;
   }
 }

@@ -349,27 +349,37 @@ body {
 @media (max-width: 700px) {
   .business-card {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    flex-direction: column; 
+    gap: 0.75rem;
     padding: 1rem 1.5rem;
     max-width: 100%;
   }
 
+  .business-top-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+
   .business-image {
+    flex: 0 0 70px;
     width: 70px;
     height: 70px;
     border-radius: 50%;
     border: 2px solid #fff;
-    flex-shrink: 0;
+    object-fit: cover;
   }
 
   .business-info-left {
-    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
     overflow: visible;
+    white-space: normal;
   }
 
   .business-name {
@@ -382,31 +392,33 @@ body {
   .business-category {
     font-size: 1rem;
     white-space: normal;
+    color: #bbb;
   }
 
   .business-info-center {
-    width: 100%;
     font-size: 1rem;
     color: #aaa;
-    text-align: left;
     white-space: normal;
+    margin-top: 0.25rem;
+    text-align: left;
   }
 
+  /* Place the button and star ratings on their own row below */
   .business-info-right {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
     gap: 1rem;
-    flex-wrap: wrap;
+    width: 100%;
   }
 
   .view-profile-btn {
-    width: auto;
-    min-width: 120px;
+    white-space: nowrap;
     font-size: 1rem;
     padding: 0.7rem 1.2rem;
-    white-space: nowrap;
+    min-width: 120px;
+    flex-shrink: 0;
   }
 
   .star-display {
@@ -424,6 +436,7 @@ body {
     font-size: 0.8rem;
   }
 }
+
 
 @media (max-width: 400px) {
   .search-input {
