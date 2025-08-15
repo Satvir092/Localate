@@ -49,7 +49,111 @@
     </label>
   </nav>
 
-  <main class="business-card">
+<!-- Custom styling for business customizations -->
+<style>
+{% if business.card_background or business.text_color %}
+.business-card {
+  {% if business.card_background %}background: {{ business.card_background }} !important;{% endif %}
+  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
+}
+{% endif %}
+
+{% if business.small_card_bg or business.text_color %}
+.business-details-left {
+  {% if business.small_card_bg %}background: {{ business.small_card_bg }} !important;{% endif %}
+  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
+}
+
+.business-details-left::before {
+  background: transparent !important;
+}
+
+.business-details-left:hover {
+  {% if business.small_card_bg %}background: {{ business.small_card_bg }} !important;{% endif %}
+}
+{% endif %}
+
+/* Apply font only to specific text elements, not the containers */
+{% if business.font_family %}
+.business-details-left h1,
+.business-details-left .category,
+.business-details-left .location,
+.business-details-left .description {
+  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
+  font-family: {{ business.font_family }} !important;
+}
+{% endif %}
+
+{% if business.small_card_bg or business.text_color %}
+.business-meta {
+  {% if business.small_card_bg %}background: {{ business.small_card_bg }} !important;{% endif %}
+  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
+}
+
+.business-meta::before {
+  background: transparent !important;
+}
+
+.business-meta:hover {
+  {% if business.small_card_bg %}background: {{ business.small_card_bg }} !important;{% endif %}
+}
+{% endif %}
+
+/* Apply font only to specific text elements in business-meta */
+{% if business.font_family %}
+.business-meta p {
+  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
+  font-family: {{ business.font_family }} !important;
+}
+{% endif %}
+
+{% if business.button_color or business.text_color %}
+.btn.primary,
+.btn.secondary,
+.instagram-btn,
+.website-btn,
+.share-btn,
+a.btn.primary.login-btn,
+.action-buttons > .share-btn,
+.action-buttons button.btn.primary {
+  {% if business.button_color %}background: {{ business.button_color }} !important; border-color: {{ business.button_color }} !important;{% endif %}
+  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
+  /* Force buttons to use system default font instead of inheriting custom font */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+}
+
+.btn.primary:hover,
+.btn.secondary:hover,
+.instagram-btn:hover,
+.website-btn:hover,
+.share-btn:hover,
+a.btn.primary.login-btn:hover,
+.action-buttons > .share-btn:hover,
+.action-buttons button.btn.primary:hover {
+  {% if business.button_color %}background: {{ business.button_color }} !important; border-color: {{ business.button_color }} !important;{% endif %}
+}
+
+#bookingModal .btn.primary,
+#bookingModal .btn.secondary,
+#reviewModal .btn.primary {
+  {% if business.button_color %}background: {{ business.button_color }} !important; border-color: {{ business.button_color }} !important;{% endif %}
+  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
+  /* Force modal buttons to use system default font too */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+}
+{% endif %}
+
+{% if business.card_background or business.text_color or business.font_family %}
+#bookingModal,
+#reviewModal .modal-content {
+  {% if business.card_background %}background: {{ business.card_background }} !important;{% endif %}
+  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
+  {% if business.font_family %}font-family: {{ business.font_family }} !important;{% endif %}
+}
+{% endif %}
+</style>
+
+<main class="business-card">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div class="flash-messages">
@@ -99,11 +203,13 @@
      <i class="fab fa-instagram"></i>Instagram
       </a>
       {% endif %}
+      
       {% if business.website_url %}
       <a href="{{ business.website_url }}" class="website-btn" target="_blank" rel="noopener noreferrer">
         <i class="fas fa-globe"></i> Website
       </a>
     {% endif %}
+    
      <button class="share-btn" onclick="copyProfileLink()">
       <i class="fas fa-share-alt"></i> Share
     </button>
@@ -111,7 +217,7 @@
     </div>
   </main>
 
-<div id="bookingModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#1e1e1e; padding:1em; border-radius:12px; color:#eee; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:1000;">
+<div id="bookingModal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); padding:1em; border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.5); z-index:1000;">
   <h3>Book an Appointment</h3>
 
   <form method="POST" action="{{ url_for('search.book_appointment') }}">

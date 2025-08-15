@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Customize Business</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='create_business.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='customize_business.css')}}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-logo">
+    Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
+  </div>
+  <form id="navbar-search-form" method="GET" action="{{ url_for('search.search') }}" class="navbar-search-form" role="search" autocomplete="off" style="max-width: 600px; min-width: 300px; position: relative; overflow: visible;">
+    <div class="search-input-wrapper" style="position: relative; width: 200%; margin-left: -30%;">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"
+           style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 1em; height: 1em; color: #888;">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"/>
+      </svg>
+      <input
+        type="search"
+        id="navbar-q"
+        name="q"
+        placeholder="Search businesses"
+        value="{{ request.args.get('q', '') }}"
+        aria-label="Search for a business or city"
+        class="search-input"
+        style="width: 75%; padding: 0.5em 0.5em 0.5em 2.2em; border-radius: 25px; border: none; background-color: #1e1e1e; color: #eee; font-size: 1rem;"
+      />
+      <ul id="navbar-autocomplete-list" class="autocomplete-suggestions hidden" style="top: 110%; left: 0; width: 75%;"></ul>
+    </div>
+  </form>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle">
+  <ul class="nav-links">
+    <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
+    <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+    <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
+    <li>
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
+        <i class="fas fa-heart"></i> Support Us
+      </a>
+    </li>
+  </ul>
+  <label for="nav-toggle" class="nav-toggle-label">
+    <span></span>
+  </label>
+</nav>
+
+<main class="create-business-container">
+  <h2>Customize Your Business Page</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flash-messages">
+        {% for category, message in messages %}
+          <li class="flash-{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" class="create-business-form">
+
+    {% set colors = [
+        ("White","#FFFFFF"), ("Warm Beige","#FDF4E7"), ("Peach","#FFDAB9"), ("Soft Gray","#F3F4F6"),
+        ("Slate Gray","#64748B"), ("Charcoal","#1F2937"), ("Dark Slate","#2F4F4F"), ("Black","#000000"),
+        ("Coffee Brown","#451A03"), ("Deep Navy","#1E293B"), ("Electric Blue","#007FFF"), ("Ocean Blue","#3B82F6"),
+        ("Sky Blue","#0EA5E9"), ("Turquoise","#40E0D0"), ("Cyan","#00FFFF"), ("Deep Blue","#1E40AF"),
+        ("Teal","#008080"), ("Mint Green","#06D6A0"), ("Emerald Green","#10B981"), ("Forest Green","#14532D"),
+        ("Lime Green","#32CD32"), ("Olive","#808000"), ("Coral Red","#EF4444"), ("Bright Red","#FF0000"),
+        ("Ruby Red","#DC2626"), ("Rose Pink","#EC4899"), ("Deep Pink","#FF1493"), ("Magenta","#FF00FF"),
+        ("Royal Purple","#8B5CF6"), ("Lavender","#A855F7"), ("Orchid","#DA70D6"), ("Indigo","#4B0082"),
+        ("Golden Yellow","#EAB308"), ("Sunset Orange","#F59E0B"), ("Amber","#FFBF00"), ("Orange","#FFA500")
+    ] %}
+
+    <div class="color-section">
+      <label>Button Color</label>
+      <div class="color-controls">
+        <button type="button" class="default-btn" data-target="button_color">Default</button>
+        <button type="button" class="custom-color-btn" data-target="button_color">
+          <span>🎨</span> Custom Color
+        </button>
+      </div>
+      <div class="color-picker" id="button_color_picker">
+        {% for color, hex in colors %}
+        <div class="color-option {% if business.button_color == hex %}selected{% endif %}" 
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);" 
+             data-value="{{ hex }}" title="{{ color }}"></div>
+        {% endfor %}
+        <div class="custom-color-display" id="button_color_custom" style="display: none;">
+          <div class="selected-color-preview" data-target="button_color">
+            <div class="color-preview-swatch" style="background-color: #000000;"></div>
+            <span class="color-label">Selected Color</span>
+          </div>
+          <input type="color" class="hidden-color-input" data-target="button_color" value="#000000">
+        </div>
+      </div>
+      <input type="hidden" name="button_color" id="button_color" value="{{ business.button_color or '' }}">
+    </div>
+
+    <div class="color-section">
+      <label>Main Card Background</label>
+      <div class="color-controls">
+        <button type="button" class="default-btn" data-target="card_background">Default</button>
+        <button type="button" class="custom-color-btn" data-target="card_background">
+          <span>🎨</span> Custom Color
+        </button>
+      </div>
+      <div class="color-picker" id="card_background_picker">
+        {% for color, hex in colors %}
+        <div class="color-option {% if business.card_background == hex %}selected{% endif %}" 
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);" 
+             data-value="{{ hex }}" title="{{ color }}"></div>
+        {% endfor %}
+        <div class="custom-color-display" id="card_background_custom" style="display: none;">
+          <div class="selected-color-preview" data-target="card_background">
+            <div class="color-preview-swatch" style="background-color: #000000;"></div>
+            <span class="color-label">Selected Color</span>
+          </div>
+          <input type="color" class="hidden-color-input" data-target="card_background" value="#000000">
+        </div>
+      </div>
+      <input type="hidden" name="card_background" id="card_background" value="{{ business.card_background or '' }}">
+    </div>
+
+    <div class="color-section">
+      <label>Small Card Background</label>
+      <div class="color-controls">
+        <button type="button" class="default-btn" data-target="small_card_bg">Default</button>
+        <button type="button" class="custom-color-btn" data-target="small_card_bg">
+          <span>🎨</span> Custom Color
+        </button>
+      </div>
+      <div class="color-picker" id="small_card_bg_picker">
+        {% for color, hex in colors %}
+        <div class="color-option {% if business.small_card_bg == hex %}selected{% endif %}" 
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);" 
+             data-value="{{ hex }}" title="{{ color }}"></div>
+        {% endfor %}
+        <div class="custom-color-display" id="small_card_bg_custom" style="display: none;">
+          <div class="selected-color-preview" data-target="small_card_bg">
+            <div class="color-preview-swatch" style="background-color: #000000;"></div>
+            <span class="color-label">Selected Color</span>
+          </div>
+          <input type="color" class="hidden-color-input" data-target="small_card_bg" value="#000000">
+        </div>
+      </div>
+      <input type="hidden" name="small_card_bg" id="small_card_bg" value="{{ business.small_card_bg or '' }}">
+    </div>
+
+    <div class="color-section">
+      <label>Text Color</label>
+      <div class="color-controls">
+        <button type="button" class="default-btn" data-target="text_color">Default</button>
+        <button type="button" class="custom-color-btn" data-target="text_color">
+          <span>🎨</span> Custom Color
+        </button>
+      </div>
+      <div class="color-picker" id="text_color_picker">
+        {% for color, hex in colors %}
+        <div class="color-option {% if business.text_color == hex %}selected{% endif %}" 
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);" 
+             data-value="{{ hex }}" title="{{ color }}"></div>
+        {% endfor %}
+        <div class="custom-color-display" id="text_color_custom" style="display: none;">
+          <div class="selected-color-preview" data-target="text_color">
+            <div class="color-preview-swatch" style="background-color: #000000;"></div>
+            <span class="color-label">Selected Color</span>
+          </div>
+          <input type="color" class="hidden-color-input" data-target="text_color" value="#000000">
+        </div>
+      </div>
+      <input type="hidden" name="text_color" id="text_color" value="{{ business.text_color or '' }}">
+    </div>
+
+<div>
+  <label for="font_family">Font</label>
+  <select name="font_family" id="font_family">
+    <option value="" {% if not business.font_family %}selected{% endif %}>Default</option>
+    {% for font in [
+        "Inter, system-ui, sans-serif", "Roboto, Arial, sans-serif", "Open Sans, sans-serif",
+        "Lato, sans-serif", "Poppins, sans-serif", "Montserrat, sans-serif",
+        "Source Sans Pro, sans-serif", "Nunito Sans, sans-serif", "Work Sans, sans-serif",
+        "Raleway, sans-serif", "Oswald, sans-serif", "Ubuntu, sans-serif",
+        "Fira Sans, sans-serif", "Cabin, sans-serif", "Muli, sans-serif",
+        "Quicksand, sans-serif", "Exo 2, sans-serif", "Hind, sans-serif",
+        "Josefin Sans, sans-serif", "Karla, sans-serif",
+
+        "Playfair Display, serif", "Merriweather, serif", "Crimson Text, serif",
+        "Arvo, serif", "Bitter, serif", "Vollkorn, serif",
+        "PT Serif, serif", "Georgia, serif", "Times New Roman, serif",
+        "Libre Baskerville, serif", "Cormorant Garamond, serif", "Cardo, serif",
+
+        "Courier New, monospace", "Fira Code, monospace", "Roboto Mono, monospace",
+        "Inconsolata, monospace", "Source Code Pro, monospace", "IBM Plex Mono, monospace",
+
+        "Pacifico, cursive", "Dancing Script, cursive", "Lobster, cursive",
+        "Comic Neue, cursive", "Amatic SC, cursive", "Great Vibes, cursive",
+        "Sacramento, cursive", "Satisfy, cursive", "Kaushan Script, cursive"
+    ] %}
+    <option value="{{ font }}" style="font-family: {{ font }}" {% if business.font_family == font %}selected{% endif %}>
+      {{ font.split(',')[0] }}
+    </option>
+    {% endfor %}
+  </select>
+</div>
+
+    <button type="submit" class="btn save-btn">Save Customizations</button>
+  </form>
+
+  <a href="{{ url_for('business.view_business', business_id=business.id) }}" class="btn secondary">Back</a>
+</main>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.color-picker').forEach(picker => {
+    picker.querySelectorAll('.color-option').forEach(option => {
+      option.addEventListener('click', () => {
+        picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+        picker.querySelector('.custom-color-display')?.classList.remove('active');
+        picker.parentElement.querySelector('.custom-color-btn')?.classList.remove('active');
+        
+        option.classList.add('selected');
+
+        const inputId = picker.id.replace('_picker','');
+        const selectedColor = option.dataset.value;
+        document.getElementById(inputId).value = selectedColor;
+        
+        updateSelectedColorDisplay(inputId, selectedColor);
+      });
+    });
+  });
+
+  function updateSelectedColorDisplay(target, color) {
+    const customDisplay = document.getElementById(target + '_custom');
+    const swatch = customDisplay.querySelector('.color-preview-swatch');
+    
+    customDisplay.style.display = 'flex';
+    swatch.style.backgroundColor = color;
+  }
+
+  document.querySelectorAll('.hidden-color-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const target = e.target.dataset.target;
+      const color = e.target.value;
+      
+      document.getElementById(target).value = color;
+      
+      const customDisplay = document.getElementById(target + '_custom');
+      const swatch = customDisplay.querySelector('.color-preview-swatch');
+      swatch.style.backgroundColor = color;
+      
+      const picker = document.getElementById(target + '_picker');
+      picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+      
+      customDisplay.classList.add('active');
+      
+      const customBtn = picker.parentElement.querySelector('.custom-color-btn[data-target="' + target + '"]');
+      customBtn.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.change-color-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const preview = btn.closest('.selected-color-preview');
+      const target = preview.dataset.target;
+      const hiddenInput = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
+      hiddenInput.click();
+    });
+  });
+
+  document.querySelectorAll('.custom-color-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      const customDisplay = document.getElementById(target + '_custom');
+      const hiddenInput = customDisplay.querySelector('.hidden-color-input');
+      
+      customDisplay.style.display = 'flex';
+      btn.classList.add('active');
+
+      const picker = document.getElementById(target + '_picker');
+      picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+      
+      setTimeout(() => {
+        hiddenInput.click();
+      }, 100);
+    });
+  });
+
+  document.querySelectorAll('.default-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      document.getElementById(target).value = '';
+      
+      const picker = document.getElementById(target + '_picker');
+      picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+      
+      const customDisplay = document.getElementById(target + '_custom');
+      customDisplay.style.display = 'none';
+      customDisplay.classList.remove('active');
+      
+      const customBtn = picker.parentElement.querySelector('.custom-color-btn[data-target="' + target + '"]');
+      customBtn.classList.remove('active');
+    });
+  });
+
+  ['button_color', 'card_background', 'small_card_bg', 'text_color'].forEach(fieldName => {
+    const hiddenInput = document.getElementById(fieldName);
+    const currentValue = hiddenInput.value;
+    
+    if (currentValue && currentValue !== '') {
+
+      const picker = document.getElementById(fieldName + '_picker');
+      const presetOption = picker.querySelector(`[data-value="${currentValue}"]`);
+      
+      if (presetOption) {
+        presetOption.classList.add('selected');
+        updateSelectedColorDisplay(fieldName, currentValue);
+      } else {
+
+        const customDisplay = document.getElementById(fieldName + '_custom');
+        const customBtn = picker.parentElement.querySelector('.custom-color-btn[data-target="' + fieldName + '"]');
+        const colorInput = customDisplay.querySelector('.hidden-color-input');
+        const swatch = customDisplay.querySelector('.color-preview-swatch');
+        
+        customDisplay.style.display = 'flex';
+        customDisplay.classList.add('active');
+        customBtn.classList.add('active');
+        colorInput.value = currentValue;
+        swatch.style.backgroundColor = currentValue;
+      }
+    }
+  });
+});
+</script>
+
+<script>
+function setupAutocomplete(inputId, listId, formId) {
+  const input = document.getElementById(inputId);
+  const list = document.getElementById(listId);
+  const form = document.getElementById(formId);
+
+  if (!input || !list || !form) return;
+
+  input.addEventListener('input', async () => {
+    const query = input.value.trim();
+
+    if (query.length < 2) {
+      list.innerHTML = '';
+      list.classList.add('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/search/autocomplete?q=${encodeURIComponent(query)}`);
+      const suggestions = await res.json();
+
+      list.innerHTML = '';
+      suggestions.forEach(name => {
+        const li = document.createElement('li');
+        li.textContent = name;
+        li.addEventListener('click', () => {
+          input.value = name;
+          list.innerHTML = '';
+          form.submit();
+        });
+        list.appendChild(li);
+      });
+
+      list.classList.remove('hidden');
+    } catch (err) {
+      console.error('Autocomplete fetch failed', err);
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      list.innerHTML = '';
+      list.classList.add('hidden');
+    }
+  });
+}
+
+setupAutocomplete('q', 'autocomplete-list', 'search-form');
+setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
+</script>
+
+</body>
+</html>

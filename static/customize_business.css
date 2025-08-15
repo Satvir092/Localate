@@ -1,0 +1,233 @@
+.create-business-container {
+  max-width: 600px;
+  margin: 2rem auto 0; 
+  padding: 2rem;
+}
+
+.create-business-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.color-section {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.color-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.color-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0;
+  align-items: flex-start;
+}
+
+.color-option {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 2px solid #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.color-option:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+  border-color: #555;
+}
+
+.color-option.selected {
+  border-color: #3182ce;
+  border-width: 3px;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 2px rgba(49,130,206,0.4);
+}
+
+.custom-color-display {
+  width: 100%;
+  max-width: 280px;
+  margin: 0.75rem auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #2a2a2a;
+  border-radius: 8px;
+  border: 2px solid #444;
+}
+
+.custom-color-display.active {
+  border-color: #3182ce;
+  box-shadow: 0 0 0 2px rgba(49,130,206,0.4);
+}
+
+.selected-color-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.color-preview-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 2px solid #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.color-label {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.hidden-color-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.default-btn, .custom-color-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  gap: 0.25rem;
+}
+
+.default-btn:hover, .custom-color-btn:hover {
+  background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+  border-color: #555;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.custom-color-btn.active {
+  background: linear-gradient(135deg, #3182ce 0%, #2563eb 100%);
+  border-color: #3182ce;
+}
+
+.custom-color-btn span {
+  font-size: 0.8rem;
+}
+
+label {
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 0.25rem;
+  display: block;
+  font-size: 0.9rem;
+}
+
+select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.9rem;
+}
+
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
+.btn.save-btn {
+  display: block;
+  width: 70%; 
+  margin: 1.5rem auto 0;
+  font-size: 1.15rem;
+  background-color: transparent;
+  border: 1px solid rgba(138, 110, 248, 0.3);
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.9rem 1rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: none;
+  transition: background-color 0.3s ease,
+              border-color 0.3s ease,
+              transform 0.2s ease;
+}
+
+.btn.save-btn:hover,
+.btn.save-btn:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.btn.secondary {
+  display: inline-block;
+  width: 50%;               
+  font-size: 1.15rem;
+  background-color: transparent;
+  border: 1px solid rgba(138, 110, 248, 0.3);
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.9rem 1rem;
+  letter-spacing: 0.04em;
+  text-align: center; 
+  margin-top: 1rem;   
+  text-decoration: none;
+  transition: background-color 0.3s ease,
+              border-color 0.3s ease,
+              transform 0.2s ease;
+}
+
+.btn.secondary:hover,
+.btn.secondary:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.create-business-form > div:last-of-type {
+  margin-bottom: 0.5rem; 
+}
+
+.create-business-form .btn.save-btn {
+  margin-top: 0; 
+}
+
+@media (max-width: 768px) {
+  .create-business-container {
+    max-width: 90%; 
+    margin: 1rem auto;
+    padding: 1.5rem;
+  }
+}

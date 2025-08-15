@@ -593,3 +593,29 @@ def view_reviews(business_id):
         city=request.args.get('city', ''),
         state=request.args.get('state', '')
     )
+
+@business_bp.route('/customize/<int:business_id>', methods=['GET', 'POST'])
+@login_required
+def customize_business(business_id):
+    supabase = current_app.supabase
+    business = supabase.table("businesses").select("*").eq("id", business_id).single().execute().data
+
+    if request.method == "POST":
+
+        button_color = request.form.get("button_color") or None
+        font_family = request.form.get("font_family") or None
+        text_color = request.form.get("text_color") or None
+        card_background = request.form.get("card_background") or None
+        small_card_bg = request.form.get("small_card_bg") or None
+
+
+        supabase.table("businesses").update({
+            "button_color": button_color,
+            "font_family": font_family,
+            "text_color": text_color,
+            "card_background": card_background,
+            "small_card_bg": small_card_bg,
+        }).eq("id", business_id).execute()
+        return redirect(url_for("business.view_business", business_id=business_id))
+
+    return render_template("customize_business.html", business=business)
