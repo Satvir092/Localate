@@ -101,9 +101,9 @@
     <p class="description">{{ business.description }}</p>
 
     <div class="business-details">
-      <p><strong>Opening Time:</strong> {{ business.opening_time }}</p>
-      <p><strong>Closing Time:</strong> {{ business.closing_time }}</p>
-      <p><strong>Open Days:</strong> {{ business.open_days | join(', ') }}</p>
+      <p><strong>Open:</strong> {{ business.opening_time }}</p>
+      <p><strong>Close:</strong> {{ business.closing_time }}</p>
+      <p><strong>Days:</strong> {{ business.open_days | join(', ') }}</p>
       {% if business.interval %}
         <p><strong>Slot Interval:</strong> {{ business.interval }} minutes</p>
       {% endif %}

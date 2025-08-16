@@ -83,264 +83,319 @@
       <label>Button Color</label>
       <div class="color-controls">
         <button type="button" class="default-btn" data-target="button_color">Default</button>
-        <button type="button" class="custom-color-btn" data-target="button_color">
-          <span>🎨</span> Custom Color
+        <button type="button" class="custom-color-btn" data-target="button_color"><span>🎨</span> Custom Color</button>
+        <button type="button" class="gradient-toggle-btn" data-target="button_color">
+          🌈 Gradient: <strong class="state">OFF</strong>
         </button>
       </div>
       <div class="color-picker" id="button_color_picker">
         {% for color, hex in colors %}
-        <div class="color-option {% if business.button_color == hex %}selected{% endif %}" 
-             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);" 
+        <div class="color-option {% if business.button_color == hex %}selected{% endif %}"
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);"
              data-value="{{ hex }}" title="{{ color }}"></div>
         {% endfor %}
-        <div class="custom-color-display" id="button_color_custom" style="display: none;">
-          <div class="selected-color-preview" data-target="button_color">
-            <div class="color-preview-swatch" style="background-color: #000000;"></div>
-            <span class="color-label">Selected Color</span>
-          </div>
-          <input type="color" class="hidden-color-input" data-target="button_color" value="#000000">
+      </div>
+      <div class="custom-color-display" id="button_color_custom" style="display: none;">
+        <div class="selected-color-preview" data-target="button_color">
+          <div class="color-preview-swatch" style="background-color: #000000;"></div>
+          <span class="selected-color-label">Selected Color</span>
         </div>
+        <input type="color" class="hidden-color-input" data-target="button_color" value="#000000">
       </div>
       <input type="hidden" name="button_color" id="button_color" value="{{ business.button_color or '' }}">
+      <input type="hidden" name="button_color_gradient" id="button_color_gradient" value="{{ business.button_color_gradient or '' }}">
     </div>
 
     <div class="color-section">
       <label>Main Card Background</label>
       <div class="color-controls">
         <button type="button" class="default-btn" data-target="card_background">Default</button>
-        <button type="button" class="custom-color-btn" data-target="card_background">
-          <span>🎨</span> Custom Color
+        <button type="button" class="custom-color-btn" data-target="card_background"><span>🎨</span> Custom Color</button>
+        <button type="button" class="gradient-toggle-btn" data-target="card_background">
+          🌈 Gradient: <strong class="state">OFF</strong>
         </button>
       </div>
       <div class="color-picker" id="card_background_picker">
         {% for color, hex in colors %}
-        <div class="color-option {% if business.card_background == hex %}selected{% endif %}" 
-             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);" 
+        <div class="color-option {% if business.card_background == hex %}selected{% endif %}"
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);"
              data-value="{{ hex }}" title="{{ color }}"></div>
         {% endfor %}
-        <div class="custom-color-display" id="card_background_custom" style="display: none;">
-          <div class="selected-color-preview" data-target="card_background">
-            <div class="color-preview-swatch" style="background-color: #000000;"></div>
-            <span class="color-label">Selected Color</span>
-          </div>
-          <input type="color" class="hidden-color-input" data-target="card_background" value="#000000">
+      </div>
+      <div class="custom-color-display" id="card_background_custom" style="display: none;">
+        <div class="selected-color-preview" data-target="card_background">
+          <div class="color-preview-swatch" style="background-color: #000000;"></div>
+          <span class="selected-color-label">Selected Color</span>
         </div>
+        <input type="color" class="hidden-color-input" data-target="card_background" value="#000000">
       </div>
       <input type="hidden" name="card_background" id="card_background" value="{{ business.card_background or '' }}">
+      <input type="hidden" name="card_background_gradient" id="card_background_gradient" value="{{ business.card_background_gradient or '' }}">
     </div>
 
     <div class="color-section">
       <label>Small Card Background</label>
       <div class="color-controls">
         <button type="button" class="default-btn" data-target="small_card_bg">Default</button>
-        <button type="button" class="custom-color-btn" data-target="small_card_bg">
-          <span>🎨</span> Custom Color
+        <button type="button" class="custom-color-btn" data-target="small_card_bg"><span>🎨</span> Custom Color</button>
+        <button type="button" class="gradient-toggle-btn" data-target="small_card_bg">
+          🌈 Gradient: <strong class="state">OFF</strong>
         </button>
       </div>
       <div class="color-picker" id="small_card_bg_picker">
         {% for color, hex in colors %}
-        <div class="color-option {% if business.small_card_bg == hex %}selected{% endif %}" 
-             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);" 
+        <div class="color-option {% if business.small_card_bg == hex %}selected{% endif %}"
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);"
              data-value="{{ hex }}" title="{{ color }}"></div>
         {% endfor %}
-        <div class="custom-color-display" id="small_card_bg_custom" style="display: none;">
-          <div class="selected-color-preview" data-target="small_card_bg">
-            <div class="color-preview-swatch" style="background-color: #000000;"></div>
-            <span class="color-label">Selected Color</span>
-          </div>
-          <input type="color" class="hidden-color-input" data-target="small_card_bg" value="#000000">
+      </div>
+      <div class="custom-color-display" id="small_card_bg_custom" style="display: none;">
+        <div class="selected-color-preview" data-target="small_card_bg">
+          <div class="color-preview-swatch" style="background-color: #000000;"></div>
+          <span class="selected-color-label">Selected Color</span>
         </div>
+        <input type="color" class="hidden-color-input" data-target="small_card_bg" value="#000000">
       </div>
       <input type="hidden" name="small_card_bg" id="small_card_bg" value="{{ business.small_card_bg or '' }}">
+      <input type="hidden" name="small_card_bg_gradient" id="small_card_bg_gradient" value="{{ business.small_card_bg_gradient or '' }}">
     </div>
 
     <div class="color-section">
       <label>Text Color</label>
       <div class="color-controls">
         <button type="button" class="default-btn" data-target="text_color">Default</button>
-        <button type="button" class="custom-color-btn" data-target="text_color">
-          <span>🎨</span> Custom Color
-        </button>
+        <button type="button" class="custom-color-btn" data-target="text_color"><span>🎨</span> Custom Color</button>
       </div>
       <div class="color-picker" id="text_color_picker">
         {% for color, hex in colors %}
-        <div class="color-option {% if business.text_color == hex %}selected{% endif %}" 
-             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);" 
+        <div class="color-option {% if business.text_color == hex %}selected{% endif %}"
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);"
              data-value="{{ hex }}" title="{{ color }}"></div>
         {% endfor %}
-        <div class="custom-color-display" id="text_color_custom" style="display: none;">
-          <div class="selected-color-preview" data-target="text_color">
-            <div class="color-preview-swatch" style="background-color: #000000;"></div>
-            <span class="color-label">Selected Color</span>
-          </div>
-          <input type="color" class="hidden-color-input" data-target="text_color" value="#000000">
+      </div>
+      <div class="custom-color-display" id="text_color_custom" style="display: none;">
+        <div class="selected-color-preview" data-target="text_color">
+          <div class="color-preview-swatch" style="background-color: #000000;"></div>
+          <span class="selected-color-label">Selected Color</span>
         </div>
+        <input type="color" class="hidden-color-input" data-target="text_color" value="#000000">
       </div>
       <input type="hidden" name="text_color" id="text_color" value="{{ business.text_color or '' }}">
+      <input type="hidden" name="text_color_gradient" id="text_color_gradient" value="{{ business.text_color_gradient or '' }}">
     </div>
 
-<div>
-  <label for="font_family">Font</label>
-  <select name="font_family" id="font_family">
-    <option value="" {% if not business.font_family %}selected{% endif %}>Default</option>
-    {% for font in [
-        "Inter, system-ui, sans-serif", "Roboto, Arial, sans-serif", "Open Sans, sans-serif",
-        "Lato, sans-serif", "Poppins, sans-serif", "Montserrat, sans-serif",
-        "Source Sans Pro, sans-serif", "Nunito Sans, sans-serif", "Work Sans, sans-serif",
-        "Raleway, sans-serif", "Oswald, sans-serif", "Ubuntu, sans-serif",
-        "Fira Sans, sans-serif", "Cabin, sans-serif", "Muli, sans-serif",
-        "Quicksand, sans-serif", "Exo 2, sans-serif", "Hind, sans-serif",
-        "Josefin Sans, sans-serif", "Karla, sans-serif",
+    <div>
+      <label for="font_family">Font</label>
+      <select name="font_family" id="font_family">
+        <option value="" {% if not business.font_family %}selected{% endif %}>Default</option>
+        {% for font in [
+            "Inter, system-ui, sans-serif", "Roboto, Arial, sans-serif", "Open Sans, sans-serif",
+            "Lato, sans-serif", "Poppins, sans-serif", "Montserrat, sans-serif",
+            "Source Sans Pro, sans-serif", "Nunito Sans, sans-serif", "Work Sans, sans-serif",
+            "Raleway, sans-serif", "Oswald, sans-serif", "Ubuntu, sans-serif",
+            "Fira Sans, sans-serif", "Cabin, sans-serif", "Muli, sans-serif",
+            "Quicksand, sans-serif", "Exo 2, sans-serif", "Hind, sans-serif",
+            "Josefin Sans, sans-serif", "Karla, sans-serif",
+            "Playfair Display, serif", "Merriweather, serif", "Crimson Text, serif",
+            "Arvo, serif", "Bitter, serif", "Vollkorn, serif",
+            "PT Serif, serif", "Georgia, serif", "Times New Roman, serif",
+            "Libre Baskerville, serif", "Cormorant Garamond, serif", "Cardo, serif",
+            "Courier New, monospace", "Fira Code, monospace", "Roboto Mono, monospace",
+            "Inconsolata, monospace", "Source Code Pro, monospace", "IBM Plex Mono, monospace",
+            "Pacifico, cursive", "Dancing Script, cursive", "Lobster, cursive",
+            "Comic Neue, cursive", "Amatic SC, cursive", "Great Vibes, cursive",
+            "Sacramento, cursive", "Satisfy, cursive", "Kaushan Script, cursive"
+        ] %}
+        <option value="{{ font }}" style="font-family: {{ font }}" {% if business.font_family == font %}selected{% endif %}>
+          {{ font.split(',')[0] }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
 
-        "Playfair Display, serif", "Merriweather, serif", "Crimson Text, serif",
-        "Arvo, serif", "Bitter, serif", "Vollkorn, serif",
-        "PT Serif, serif", "Georgia, serif", "Times New Roman, serif",
-        "Libre Baskerville, serif", "Cormorant Garamond, serif", "Cardo, serif",
-
-        "Courier New, monospace", "Fira Code, monospace", "Roboto Mono, monospace",
-        "Inconsolata, monospace", "Source Code Pro, monospace", "IBM Plex Mono, monospace",
-
-        "Pacifico, cursive", "Dancing Script, cursive", "Lobster, cursive",
-        "Comic Neue, cursive", "Amatic SC, cursive", "Great Vibes, cursive",
-        "Sacramento, cursive", "Satisfy, cursive", "Kaushan Script, cursive"
-    ] %}
-    <option value="{{ font }}" style="font-family: {{ font }}" {% if business.font_family == font %}selected{% endif %}>
-      {{ font.split(',')[0] }}
-    </option>
-    {% endfor %}
-  </select>
-</div>
-
-    <button type="submit" class="btn save-btn">Save Customizations</button>
+    <button type="submit" class="btn save-btn">Save</button>
   </form>
 
   <a href="{{ url_for('business.view_business', business_id=business.id) }}" class="btn secondary">Back</a>
 </main>
 
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+
+  const isGradientString = (v) => typeof v === 'string' && v.trim().startsWith('linear-gradient');
+  const extractFirstHex = (v) => {
+    if (!v) return null;
+    const m = v.match(/#([0-9a-fA-F]{6})/);
+    return m ? ('#' + m[1]).toUpperCase() : null;
+  };
+
+  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+  function createGradient(baseColor) {
+    const hex = baseColor.replace('#', '');
+    if (hex.length !== 6) return baseColor;
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    const lighter = `#${clamp(r+40,0,255).toString(16).padStart(2,'0')}${clamp(g+40,0,255).toString(16).padStart(2,'0')}${clamp(b+40,0,255).toString(16).padStart(2,'0')}`;
+    const darker  = `#${clamp(r-30,0,255).toString(16).padStart(2,'0')}${clamp(g-30,0,255).toString(16).padStart(2,'0')}${clamp(b-30,0,255).toString(16).padStart(2,'0')}`;
+    return `linear-gradient(135deg, ${lighter} 0%, ${baseColor} 50%, ${darker} 100%)`;
+  }
+
+  function setHiddenValue(target, baseColor, useGradient) {
+    const mainInput = document.getElementById(target);
+    const gradInput = document.getElementById(target + '_gradient');
+    if (useGradient && baseColor) {
+      mainInput.value = createGradient(baseColor); 
+      gradInput.value = 'true';
+    } else {
+      mainInput.value = baseColor || '';
+      gradInput.value = '';
+    }
+    mainInput.dataset.baseColor = baseColor;
+  }
+
+  function updatePreview(target, baseColor, useGradient) {
+    const customDisplay = document.getElementById(target + '_custom');
+    const swatch = customDisplay?.querySelector('.color-preview-swatch');
+    if (!swatch) return;
+    if (useGradient && baseColor) {
+      swatch.style.background = createGradient(baseColor);
+    } else if (baseColor) {
+      swatch.style.background = baseColor;
+      swatch.style.backgroundColor = baseColor;
+    } else {
+      swatch.style.background = '';
+      swatch.style.backgroundColor = '';
+    }
+  }
+
+  function markGradientButton(target, on) {
+    const btn = document.querySelector('.gradient-toggle-btn[data-target="' + target + '"]');
+    if (!btn) return;
+    const state = btn.querySelector('.state');
+    if (on) {
+      btn.classList.add('active');
+      if (state) state.textContent = 'ON';
+    } else {
+      btn.classList.remove('active');
+      if (state) state.textContent = 'OFF';
+    }
+  }
+
+  function showCustomArea(target) {
+    const custom = document.getElementById(target + '_custom');
+    if (custom) custom.style.display = 'block';
+    const parent = document.getElementById(target + '_picker')?.parentElement;
+    const customBtn = parent?.querySelector('.custom-color-btn[data-target="' + target + '"]');
+    if (customBtn) customBtn.classList.add('active');
+  }
+
   document.querySelectorAll('.color-picker').forEach(picker => {
     picker.querySelectorAll('.color-option').forEach(option => {
       option.addEventListener('click', () => {
         picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
-        picker.querySelector('.custom-color-display')?.classList.remove('active');
-        picker.parentElement.querySelector('.custom-color-btn')?.classList.remove('active');
-        
         option.classList.add('selected');
-
-        const inputId = picker.id.replace('_picker','');
-        const selectedColor = option.dataset.value;
-        document.getElementById(inputId).value = selectedColor;
-        
-        updateSelectedColorDisplay(inputId, selectedColor);
+        const target = picker.id.replace('_picker', '');
+        const baseColor = option.dataset.value;
+        const gradientActive = document.getElementById(target + '_gradient').value === 'true' ||
+                               document.querySelector('.gradient-toggle-btn[data-target="' + target + '"]')?.classList.contains('active');
+        setHiddenValue(target, baseColor, gradientActive);
+        showCustomArea(target);
+        updatePreview(target, baseColor, gradientActive);
       });
     });
   });
 
-  function updateSelectedColorDisplay(target, color) {
-    const customDisplay = document.getElementById(target + '_custom');
-    const swatch = customDisplay.querySelector('.color-preview-swatch');
-    
-    customDisplay.style.display = 'flex';
-    swatch.style.backgroundColor = color;
-  }
-
   document.querySelectorAll('.hidden-color-input').forEach(input => {
     input.addEventListener('input', (e) => {
       const target = e.target.dataset.target;
-      const color = e.target.value;
-      
-      document.getElementById(target).value = color;
-      
-      const customDisplay = document.getElementById(target + '_custom');
-      const swatch = customDisplay.querySelector('.color-preview-swatch');
-      swatch.style.backgroundColor = color;
-      
+      const baseColor = e.target.value;
+      const gradientActive = document.getElementById(target + '_gradient').value === 'true' ||
+                             document.querySelector('.gradient-toggle-btn[data-target="' + target + '"]')?.classList.contains('active');
+      setHiddenValue(target, baseColor, gradientActive);
+      showCustomArea(target);
+      updatePreview(target, baseColor, gradientActive);
       const picker = document.getElementById(target + '_picker');
       picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
-      
-      customDisplay.classList.add('active');
-      
-      const customBtn = picker.parentElement.querySelector('.custom-color-btn[data-target="' + target + '"]');
-      customBtn.classList.add('active');
     });
   });
 
-  document.querySelectorAll('.change-color-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const preview = btn.closest('.selected-color-preview');
-      const target = preview.dataset.target;
-      const hiddenInput = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
-      hiddenInput.click();
+  document.querySelectorAll('.gradient-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      const mainInput = document.getElementById(target);
+      const gradInput = document.getElementById(target + '_gradient');
+      const currentlyOn = gradInput.value === 'true' || btn.classList.contains('active');
+      const baseColor = mainInput.dataset.baseColor || mainInput.value || '#000000';
+      if (!currentlyOn) {
+        markGradientButton(target, true);
+        setHiddenValue(target, baseColor, true);
+        showCustomArea(target);
+        updatePreview(target, baseColor, true);
+      } else {
+        markGradientButton(target, false);
+        setHiddenValue(target, baseColor, false);
+        updatePreview(target, baseColor, false);
+      }
     });
   });
 
   document.querySelectorAll('.custom-color-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.target;
-      const customDisplay = document.getElementById(target + '_custom');
-      const hiddenInput = customDisplay.querySelector('.hidden-color-input');
-      
-      customDisplay.style.display = 'flex';
-      btn.classList.add('active');
-
-      const picker = document.getElementById(target + '_picker');
-      picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
-      
-      setTimeout(() => {
-        hiddenInput.click();
-      }, 100);
+      showCustomArea(target);
+      const input = document.querySelector('.hidden-color-input[data-target="' + target + '"]');
+      setTimeout(() => input && input.click(), 50);
     });
   });
 
   document.querySelectorAll('.default-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.target;
-      document.getElementById(target).value = '';
-      
+      setHiddenValue(target, '', false);
       const picker = document.getElementById(target + '_picker');
       picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
-      
-      const customDisplay = document.getElementById(target + '_custom');
-      customDisplay.style.display = 'none';
-      customDisplay.classList.remove('active');
-      
+      const custom = document.getElementById(target + '_custom');
+      if (custom) {
+        custom.style.display = 'none';
+        custom.classList.remove('active');
+        const swatch = custom.querySelector('.color-preview-swatch');
+        if (swatch) swatch.style.background = '';
+      }
       const customBtn = picker.parentElement.querySelector('.custom-color-btn[data-target="' + target + '"]');
-      customBtn.classList.remove('active');
+      if (customBtn) customBtn.classList.remove('active');
+      markGradientButton(target, false);
     });
   });
 
-  ['button_color', 'card_background', 'small_card_bg', 'text_color'].forEach(fieldName => {
-    const hiddenInput = document.getElementById(fieldName);
-    const currentValue = hiddenInput.value;
-    
-    if (currentValue && currentValue !== '') {
-
-      const picker = document.getElementById(fieldName + '_picker');
-      const presetOption = picker.querySelector(`[data-value="${currentValue}"]`);
-      
-      if (presetOption) {
-        presetOption.classList.add('selected');
-        updateSelectedColorDisplay(fieldName, currentValue);
-      } else {
-
-        const customDisplay = document.getElementById(fieldName + '_custom');
-        const customBtn = picker.parentElement.querySelector('.custom-color-btn[data-target="' + fieldName + '"]');
-        const colorInput = customDisplay.querySelector('.hidden-color-input');
-        const swatch = customDisplay.querySelector('.color-preview-swatch');
-        
-        customDisplay.style.display = 'flex';
-        customDisplay.classList.add('active');
-        customBtn.classList.add('active');
-        colorInput.value = currentValue;
-        swatch.style.backgroundColor = currentValue;
-      }
+  ['button_color','card_background','small_card_bg','text_color'].forEach(target => {
+    const mainInput = document.getElementById(target);
+    const gradInput = document.getElementById(target + '_gradient');
+    const val = mainInput.value;
+    let baseColor = null;
+    let gradientOn = false;
+    if (isGradientString(val)) {
+      gradientOn = true;
+      baseColor = extractFirstHex(val);
+    } else {
+      gradientOn = gradInput.value === 'true';
+      baseColor = val || null;
+    }
+    if (gradientOn) {
+      markGradientButton(target, true);
+      showCustomArea(target);
+      if (!baseColor) baseColor = '#000000';
+      updatePreview(target, baseColor, true);
+      setHiddenValue(target, baseColor, true);
+    } else if (baseColor) {
+      showCustomArea(target);
+      updatePreview(target, baseColor, false);
     }
   });
+
 });
 </script>
+
 
 <script>
 function setupAutocomplete(inputId, listId, formId) {
