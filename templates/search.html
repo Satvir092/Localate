@@ -54,7 +54,7 @@
 
         <div class="filter-bar">
           <select name="category" aria-label="Filter by category">
-            <option value="">All Categories</option>
+            <option value="">Category</option>
             {% for cat in [
               "Beauty and Personal Care", "Health and Wellness", "Medical Services",
               "Fitness and Training", "Childcare and Parenting", "Pet Care",
@@ -69,7 +69,7 @@
           </select>
 
           <select name="state" aria-label="Filter by state">
-            <option value="">All States</option>
+            <option value="">State</option>
             {% for abbr, full in {
               'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
               'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',

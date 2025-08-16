@@ -110,7 +110,6 @@ body {
 }
 
 
-
 .business-meta {
   margin-top: 2.5rem;
   line-height: 1.9;
@@ -551,18 +550,20 @@ body {
   font-size: 1.1rem;
   border-radius: 999px;
   border: none;
+  box-sizing: border-box;
   cursor: pointer;
   background-color: #f5a623;
   color: #1e1e1e;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
 }
 
 .review-form button[type="submit"]:hover,
 .review-form button[type="submit"]:focus {
   background-color: #d18e1f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
   outline: none;
 }
-
 .star-rating {
   display: flex;
   gap: 0.25em;
@@ -858,6 +859,42 @@ a.btn.primary.login-btn:hover {
     margin-right: 0.4rem;
     line-height: 1;
   }
+}
+
+button, .btn, .website-btn, .instagram-btn, .action-buttons > .share-btn, a.btn {
+  transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.25s ease;
+}
+
+button:hover, 
+.btn:hover, 
+.website-btn:hover, 
+.instagram-btn:hover, 
+.action-buttons > .share-btn:hover, 
+a.btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.35);
+}
+
+
+.business-card, .business-details-left, .business-meta {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.business-details-left:hover, 
+.business-meta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+
+.business-image-wrapper:hover .business-image {
+  box-shadow: 0 0 15px 2px rgba(255,255,255,0.15);
+  transform: scale(1.03);
+}
+
+input:hover, select:hover, textarea:hover {
+  filter: brightness(1.08);
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
 }
 
 @media (max-width: 639px) {

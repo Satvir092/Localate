@@ -73,7 +73,6 @@
 }
 {% endif %}
 
-/* Apply font only to specific text elements, not the containers */
 {% if business.font_family %}
 .business-details-left h1,
 .business-details-left .category,
@@ -99,7 +98,6 @@
 }
 {% endif %}
 
-/* Apply font only to specific text elements in business-meta */
 {% if business.font_family %}
 .business-meta p {
   {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
@@ -108,47 +106,29 @@
 {% endif %}
 
 {% if business.button_color or business.text_color %}
-.btn.primary,
-.btn.secondary,
-.instagram-btn,
-.website-btn,
-.share-btn,
-a.btn.primary.login-btn,
-.action-buttons > .share-btn,
-.action-buttons button.btn.primary {
+/* Exclude modal buttons from overrides */
+.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn),
+.btn.secondary:not(#bookingModal .btn):not(#reviewModal .btn),
+.instagram-btn:not(#bookingModal .instagram-btn):not(#reviewModal .instagram-btn),
+.website-btn:not(#bookingModal .website-btn):not(#reviewModal .website-btn),
+.share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn),
+a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn),
+.action-buttons > .share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn),
+.action-buttons button.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn) {
   {% if business.button_color %}background: {{ business.button_color }} !important; border-color: {{ business.button_color }} !important;{% endif %}
   {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-  /* Force buttons to use system default font instead of inheriting custom font */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
 }
 
-.btn.primary:hover,
-.btn.secondary:hover,
-.instagram-btn:hover,
-.website-btn:hover,
-.share-btn:hover,
-a.btn.primary.login-btn:hover,
-.action-buttons > .share-btn:hover,
-.action-buttons button.btn.primary:hover {
+.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn):hover,
+.btn.secondary:not(#bookingModal .btn):not(#reviewModal .btn):hover,
+.instagram-btn:not(#bookingModal .instagram-btn):not(#reviewModal .instagram-btn):hover,
+.website-btn:not(#bookingModal .website-btn):not(#reviewModal .website-btn):hover,
+.share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn):hover,
+a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn):hover,
+.action-buttons > .share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn):hover,
+.action-buttons button.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn):hover {
   {% if business.button_color %}background: {{ business.button_color }} !important; border-color: {{ business.button_color }} !important;{% endif %}
-}
-
-#bookingModal .btn.primary,
-#bookingModal .btn.secondary,
-#reviewModal .btn.primary {
-  {% if business.button_color %}background: {{ business.button_color }} !important; border-color: {{ business.button_color }} !important;{% endif %}
-  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-  /* Force modal buttons to use system default font too */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
-}
-{% endif %}
-
-{% if business.card_background or business.text_color or business.font_family %}
-#bookingModal,
-#reviewModal .modal-content {
-  {% if business.card_background %}background: {{ business.card_background }} !important;{% endif %}
-  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-  {% if business.font_family %}font-family: {{ business.font_family }} !important;{% endif %}
 }
 {% endif %}
 </style>

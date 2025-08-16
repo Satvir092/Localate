@@ -2,12 +2,13 @@
   max-width: 600px;
   margin: 2rem auto 0; 
   padding: 2rem;
+  padding-bottom: 3rem; 
 }
 
 .create-business-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem; 
 }
 
 .color-section {
@@ -15,25 +16,31 @@
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid #333;
+  margin-bottom: 1rem;
 }
 
 .color-controls {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
 .color-picker {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(32px, 1fr));
   gap: 8px;
   margin-top: 0.5rem;
   padding: 0.5rem 0;
-  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .color-option {
-  width: 32px;
+  width: 100%;
   height: 32px;
   border-radius: 6px;
   border: 2px solid #333;
@@ -56,42 +63,51 @@
   box-shadow: 0 0 0 2px rgba(49,130,206,0.4);
 }
 
-.custom-color-display {
-  width: 100%;
-  max-width: 280px;
-  margin: 0.75rem auto 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: #2a2a2a;
+.color-option::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
   border-radius: 8px;
-  border: 2px solid #444;
+  background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
 }
 
-.custom-color-display.active {
-  border-color: #3182ce;
-  box-shadow: 0 0 0 2px rgba(49,130,206,0.4);
+.color-option:hover::before {
+  opacity: 1;
+}
+
+.custom-color-display {
+  display: block;
+  text-align: center;
+  margin: 1rem 0;
 }
 
 .selected-color-preview {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  background: #2a2a2a;
+  border-radius: 6px;
+  border: 2px solid #444;
 }
 
 .color-preview-swatch {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: 2px solid #333;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  width: 36px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
 }
 
-.color-label {
+.selected-color-label {
   font-size: 0.85rem;
-  color: #e2e8f0;
+  color: #666;
   font-weight: 500;
 }
 
@@ -103,37 +119,47 @@
   height: 0;
 }
 
-.default-btn, .custom-color-btn {
+.color-controls .default-btn,
+.color-controls .custom-color-btn,
+.color-controls .gradient-toggle-btn {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1;
-  border-radius: 4px;
+  padding: 0.35rem 0.65rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 600;
+  line-height: 1.2 !important;
+  border-radius: 5px;
   border: 1px solid #333;
   background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
   color: #e2e8f0;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  gap: 0.25rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.28);
+  gap: 0.3rem;
 }
 
-.default-btn:hover, .custom-color-btn:hover {
+.color-controls .default-btn:hover,
+.color-controls .custom-color-btn:hover,
+.color-controls .gradient-toggle-btn:hover {
   background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
   border-color: #555;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.35);
 }
 
-.custom-color-btn.active {
+.color-controls .custom-color-btn.active {
   background: linear-gradient(135deg, #3182ce 0%, #2563eb 100%);
   border-color: #3182ce;
 }
 
-.custom-color-btn span {
-  font-size: 0.8rem;
+.color-controls .gradient-toggle-btn {
+  background: #444;
+  border: 1px solid #333;
+}
+
+.color-controls .gradient-toggle-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
 }
 
 label {
@@ -147,10 +173,11 @@ label {
 select {
   width: 100%;
   padding: 0.5rem;
-  border: 2px solid #e9ecef;
+  border: 2px solid #444;
   border-radius: 6px;
-  background: white;
+  background: #1a1a1a;
   font-size: 0.9rem;
+  color: #e2e8f0;
 }
 
 select:focus {
@@ -159,69 +186,46 @@ select:focus {
   box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
 
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem; 
+}
+
 .btn.save-btn {
-  display: block;
-  width: 70%; 
-  margin: 1.5rem auto 0;
-  font-size: 1.15rem;
+  font-size: 1.2rem; 
+  padding: 0.9rem 1.2rem;
+}
+
+.btn.back-btn {
+  font-size: 1.05rem; 
+  padding: 0.85rem 1rem;
+}
+
+.btn.save-btn,
+.btn.back-btn {
+  display: inline-block;
   background-color: transparent;
   border: 1px solid rgba(138, 110, 248, 0.3);
   border-radius: 10px;
   color: #fff;
   font-weight: 700;
   cursor: pointer;
-  padding: 0.9rem 1rem;
   letter-spacing: 0.04em;
   text-align: center;
   text-decoration: none;
-  box-shadow: none;
-  transition: background-color 0.3s ease,
-              border-color 0.3s ease,
-              transform 0.2s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn.save-btn:hover,
-.btn.save-btn:focus {
+.btn.save-btn:focus,
+.btn.back-btn:hover,
+.btn.back-btn:focus {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   outline: none;
-}
-
-.btn.secondary {
-  display: inline-block;
-  width: 50%;               
-  font-size: 1.15rem;
-  background-color: transparent;
-  border: 1px solid rgba(138, 110, 248, 0.3);
-  border-radius: 10px;
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0.9rem 1rem;
-  letter-spacing: 0.04em;
-  text-align: center; 
-  margin-top: 1rem;   
-  text-decoration: none;
-  transition: background-color 0.3s ease,
-              border-color 0.3s ease,
-              transform 0.2s ease;
-}
-
-.btn.secondary:hover,
-.btn.secondary:focus {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  outline: none;
-}
-
-.create-business-form > div:last-of-type {
-  margin-bottom: 0.5rem; 
-}
-
-.create-business-form .btn.save-btn {
-  margin-top: 0; 
 }
 
 @media (max-width: 768px) {
@@ -229,5 +233,17 @@ select:focus {
     max-width: 90%; 
     margin: 1rem auto;
     padding: 1.5rem;
+    padding-bottom: 2rem; 
+  }
+
+  .btn-container {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .btn.save-btn,
+  .btn.back-btn {
+    flex: 0 1 auto;
   }
 }
