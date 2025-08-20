@@ -293,22 +293,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Mobile-only: Create temporary color input that gets removed
   function triggerMobileColorPicker(target, currentColor) {
+    // Create a temporary visible color input for mobile
     const tempInput = document.createElement('input');
     tempInput.type = 'color';
     tempInput.value = currentColor || '#000000';
     
-    // Make it temporarily visible but tiny for mobile browsers
+    // Make it visible but small and centered
     tempInput.style.position = 'fixed';
     tempInput.style.top = '50%';
     tempInput.style.left = '50%';
     tempInput.style.transform = 'translate(-50%, -50%)';
-    tempInput.style.width = '1px';
-    tempInput.style.height = '1px';
-    tempInput.style.opacity = '0.01'; // Almost invisible but not completely
-    tempInput.style.zIndex = '10000';
-    tempInput.style.border = 'none';
+    tempInput.style.width = '44px';
+    tempInput.style.height = '44px';
+    tempInput.style.zIndex = '10001';
+    tempInput.style.border = '2px solid #ccc';
+    tempInput.style.borderRadius = '8px';
+    tempInput.style.cursor = 'pointer';
     
+    // Add a backdrop
+    const backdrop = document.createElement('div');
+    backdrop.style.position = 'fixed';
+    backdrop.style.top = '0';
+    backdrop.style.left = '0';
+    backdrop.style.width = '100%';
+    backdrop.style.height = '100%';
+    backdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
+    backdrop.style.zIndex = '10000';
+    
+    document.body.appendChild(backdrop);
     document.body.appendChild(tempInput);
+    
+    // Auto-trigger after a brief moment
+    setTimeout(() => {
+      tempInput.click();
+    }, 100);
     
     tempInput.addEventListener('input', function(e) {
       const baseColor = e.target.value;
@@ -323,27 +341,20 @@ document.addEventListener('DOMContentLoaded', function () {
       picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
     });
 
-    tempInput.addEventListener('change', function() {
-      // Remove after a short delay
-      setTimeout(() => {
-        if (tempInput && tempInput.parentNode) {
-          tempInput.remove();
-        }
-      }, 200);
-    });
-
-    // For mobile, focus first then click
-    setTimeout(() => {
-      tempInput.focus();
-      tempInput.click();
-    }, 10);
-    
-    // Fallback cleanup
-    setTimeout(() => {
+    function cleanup() {
       if (tempInput && tempInput.parentNode) {
         tempInput.remove();
       }
-    }, 10000);
+      if (backdrop && backdrop.parentNode) {
+        backdrop.remove();
+      }
+    }
+
+    tempInput.addEventListener('change', cleanup);
+    backdrop.addEventListener('click', cleanup);
+    
+    // Fallback cleanup
+    setTimeout(cleanup, 15000);
   }
 
   document.querySelectorAll('.color-picker').forEach(picker => {
