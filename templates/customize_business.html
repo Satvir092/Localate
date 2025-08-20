@@ -340,28 +340,29 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-    document.querySelectorAll('.custom-color-btn').forEach(btn => {
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      btn.addEventListener('click', () => {
-        const target = btn.dataset.target;
-        showCustomArea(target);
+document.querySelectorAll('.custom-color-btn').forEach(btn => {
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    showCustomArea(target);
 
-        const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
+    let input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
+    if (!input) return;
 
-        if (!isTouchDevice) {
-          // Desktop: trigger hidden color picker
-          setTimeout(() => input && input.click(), 50);
-        } else {
-          // Mobile: make input visible and let user tap
-          if (input) {
-            input.style.display = 'block'; // show the input
-            input.style.position = 'relative'; // remove absolute positioning
-            input.style.width = '100%'; // adjust size if needed
-            input.focus(); // optional
-          }
-        }
-      });
+    // Clone and replace to reset on mobile
+    const newInput = input.cloneNode(true);
+    input.parentNode.replaceChild(newInput, input);
+    newInput.addEventListener('input', (e) => {
+      const baseColor = e.target.value;
+      setHiddenValue(target, baseColor, document.getElementById(target + '_gradient').value === 'true');
+      updatePreview(target, baseColor, document.getElementById(target + '_gradient').value === 'true');
     });
+
+    // Trigger click for both desktop and mobile
+    setTimeout(() => newInput.click(), 50);
+  });
+});
+
   document.querySelectorAll('.default-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.target;
