@@ -340,28 +340,26 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-    document.querySelectorAll('.custom-color-btn').forEach(btn => {
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      btn.addEventListener('click', () => {
-        const target = btn.dataset.target;
-        showCustomArea(target);
+document.querySelectorAll('.custom-color-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
+    
+    // Show the custom color display area
+    showCustomArea(target);
 
-        const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
-
-        if (!isTouchDevice) {
-          // Desktop: trigger hidden color picker
-          setTimeout(() => input && input.click(), 50);
-        } else {
-          // Mobile: make input visible and let user tap
-          if (input) {
-            input.style.display = 'block'; // show the input
-            input.style.position = 'relative'; // remove absolute positioning
-            input.style.width = '100%'; // adjust size if needed
-            input.focus(); // optional
-          }
-        }
-      });
-    });
+    if (!isTouchDevice) {
+      // Desktop: trigger hidden color picker
+      setTimeout(() => input && input.click(), 50);
+    } else {
+      // Mobile: just trigger the native picker, keep input hidden
+      if (input) {
+        input.style.display = 'none';   // <-- hide it completely
+        input.click();                  // trigger native picker
+      }
+    }
+  });
+});
   document.querySelectorAll('.default-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.target;
