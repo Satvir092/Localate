@@ -341,25 +341,42 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 document.querySelectorAll('.custom-color-btn').forEach(btn => {
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  btn.addEventListener('click', () => {
-    const target = btn.dataset.target;
-    showCustomArea(target);
+  const target = btn.dataset.target;
+  const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
+  if (!input) return;
 
-    let input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
-    if (!input) return;
+  let active = false; // track toggle state
 
-    // Clone and replace to reset on mobile
-    const newInput = input.cloneNode(true);
-    input.parentNode.replaceChild(newInput, input);
-    newInput.addEventListener('input', (e) => {
-      const baseColor = e.target.value;
-      setHiddenValue(target, baseColor, document.getElementById(target + '_gradient').value === 'true');
-      updatePreview(target, baseColor, document.getElementById(target + '_gradient').value === 'true');
-    });
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    active = !active;
 
-    // Trigger click for both desktop and mobile
-    setTimeout(() => newInput.click(), 50);
+    const customArea = document.getElementById(target + '_custom');
+    if (active) {
+      showCustomArea(target); // show the swatch
+      customArea.style.display = 'block';
+      // Immediately update preview with current value
+      const baseColor = input.value || '#000000';
+      const useGradient = document.getElementById(target + '_gradient').value === 'true';
+      updatePreview(target, baseColor, useGradient);
+    } else {
+      customArea.style.display = 'none';
+    }
+  });
+
+  input.addEventListener('input', (e) => {
+    const baseColor = e.target.value;
+    const useGradient = document.getElementById(target + '_gradient').value === 'true';
+    setHiddenValue(target, baseColor, useGradient);
+    updatePreview(target, baseColor, useGradient);
+  });
+
+  // Optional: hide custom area if user taps outside
+  document.addEventListener('click', (e) => {
+    if (!btn.contains(e.target) && !document.getElementById(target + '_custom').contains(e.target)) {
+      active = false;
+      document.getElementById(target + '_custom').style.display = 'none';
+    }
   });
 });
 
