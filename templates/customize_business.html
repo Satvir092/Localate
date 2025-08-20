@@ -221,6 +221,7 @@
 
 <script>
 
+
 document.addEventListener('DOMContentLoaded', function () {
 
   const isGradientString = (v) => typeof v === 'string' && v.trim().startsWith('linear-gradient');
@@ -291,43 +292,73 @@ document.addEventListener('DOMContentLoaded', function () {
     if (customBtn) customBtn.classList.add('active');
   }
 
-  // Mobile-only: Create temporary color input that gets removed
+  // Enhanced mobile color picker with better UX
   function triggerMobileColorPicker(target, currentColor) {
     // Create a temporary visible color input for mobile
     const tempInput = document.createElement('input');
     tempInput.type = 'color';
     tempInput.value = currentColor || '#000000';
     
-    // Make it visible but small and centered
-    tempInput.style.position = 'fixed';
-    tempInput.style.top = '50%';
-    tempInput.style.left = '50%';
-    tempInput.style.transform = 'translate(-50%, -50%)';
-    tempInput.style.width = '44px';
-    tempInput.style.height = '44px';
-    tempInput.style.zIndex = '10001';
-    tempInput.style.border = '2px solid #ccc';
-    tempInput.style.borderRadius = '8px';
-    tempInput.style.cursor = 'pointer';
+    // Create instruction overlay
+    const instructionOverlay = document.createElement('div');
+    instructionOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    `;
     
-    // Add a backdrop
-    const backdrop = document.createElement('div');
-    backdrop.style.position = 'fixed';
-    backdrop.style.top = '0';
-    backdrop.style.left = '0';
-    backdrop.style.width = '100%';
-    backdrop.style.height = '100%';
-    backdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
-    backdrop.style.zIndex = '10000';
+    // Create instruction text
+    const instructionText = document.createElement('div');
+    instructionText.style.cssText = `
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      max-width: 300px;
+      line-height: 1.4;
+    `;
+    instructionText.textContent = 'Tap the color square below to choose a custom color';
     
-    document.body.appendChild(backdrop);
-    document.body.appendChild(tempInput);
+    // Style the color input to be more prominent
+    tempInput.style.cssText = `
+      width: 80px;
+      height: 80px;
+      border: 3px solid white;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+    `;
     
-    // Auto-trigger after a brief moment
-    setTimeout(() => {
-      tempInput.click();
-    }, 100);
+    // Create cancel text
+    const cancelText = document.createElement('div');
+    cancelText.style.cssText = `
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.8;
+      margin-top: 10px;
+    `;
+    cancelText.textContent = 'Tap anywhere else to cancel';
     
+    instructionOverlay.appendChild(instructionText);
+    instructionOverlay.appendChild(tempInput);
+    instructionOverlay.appendChild(cancelText);
+    
+    document.body.appendChild(instructionOverlay);
+    
+    // Handle color selection
     tempInput.addEventListener('input', function(e) {
       const baseColor = e.target.value;
       const gradientActive = document.getElementById(target + '_gradient').value === 'true' ||
@@ -342,19 +373,42 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function cleanup() {
-      if (tempInput && tempInput.parentNode) {
-        tempInput.remove();
-      }
-      if (backdrop && backdrop.parentNode) {
-        backdrop.remove();
+      if (instructionOverlay && instructionOverlay.parentNode) {
+        instructionOverlay.remove();
       }
     }
 
+    // Close on color change or backdrop click
     tempInput.addEventListener('change', cleanup);
-    backdrop.addEventListener('click', cleanup);
+    
+    // Only close on backdrop click, not on the instruction elements
+    instructionOverlay.addEventListener('click', function(e) {
+      if (e.target === instructionOverlay) {
+        cleanup();
+      }
+    });
+    
+    // Prevent clicks on the instruction text and color input from closing
+    instructionText.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+    
+    cancelText.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+    
+    tempInput.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+    
+    // Auto-focus the color input after a brief moment to trigger the color picker
+    setTimeout(() => {
+      tempInput.focus();
+      tempInput.click();
+    }, 300);
     
     // Fallback cleanup
-    setTimeout(cleanup, 15000);
+    setTimeout(cleanup, 30000);
   }
 
   document.querySelectorAll('.color-picker').forEach(picker => {
@@ -461,7 +515,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 50);
         
       } else {
-        // Mobile: Use temporary input approach
+        // Mobile: Use enhanced mobile experience
         const mainInput = document.getElementById(target);
         const currentColor = mainInput.dataset.baseColor || extractFirstHex(mainInput.value) || '#000000';
         triggerMobileColorPicker(target, currentColor);
