@@ -116,9 +116,12 @@
   width: 1px;
   height: 1px;
   opacity: 0;
-  border: none;
-  background: transparent;
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
+
 .color-controls .default-btn,
 .color-controls .custom-color-btn,
 .color-controls .gradient-toggle-btn {
