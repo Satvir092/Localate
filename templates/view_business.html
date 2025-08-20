@@ -46,7 +46,7 @@
           type="search"
           id="navbar-q"
           name="q"
-          placeholder="Search for a business or city"
+          placeholder="Search for any business"
           value="{{ request.args.get('q', '') }}"
           aria-label="Search businesses"
           class="search-input"
@@ -110,9 +110,10 @@
     </div>
 
     <div class="action-buttons">
-      <a href="{{ url_for('business.edit_business', business_id=business.id) }}" class="btn">Edit Business</a>
+      <a href="{{ url_for('business.edit_business', business_id=business.id) }}" class="btn">Edit Info</a>
       <a href="{{ url_for('business.view_appointments', business_id=business.id) }}" class="btn view-appts-btn">Manage Appointments</a>
       <a href="{{ url_for('business.customize_business', business_id=business.id) }}" class="btn">Cutomize Page</a>
+      <a href="{{ url_for('business.upload_business_image', business_id=business.id) }}" class="btn">Add Images</a>
       <a href="{{ url_for('business.dashboard') }}" class="btn secondary">Back to Dashboard</a>
     </div>
   </main>

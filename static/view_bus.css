@@ -7,7 +7,7 @@ body {
 }
 
 .view-business-container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 4rem auto;
   padding: 4rem 4rem 3rem;
   background: linear-gradient(145deg, #212121, #1a1a1a);
@@ -210,6 +210,7 @@ body {
   background-color: #333;
 }
 
+
 #cropModal {
   position: fixed;
   top: 0;
@@ -316,7 +317,7 @@ body {
   border: 1px solid #ffecb5;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1100px) {
   .view-business-container {
     padding: 2.5rem 2rem;
   }
@@ -354,7 +355,7 @@ body {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1100px) {
   .view-business-container {
     margin: 2rem 1rem;
     padding: 2rem 1.5rem;
@@ -388,7 +389,7 @@ body {
   }
 
 
-@media (max-width: 500px) {
+@media (max-width: 1100px) {
   .upload-circle {
     width: 70px;
     height: 70px;

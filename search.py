@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, current_app, redirect, url_for, flash
 from flask_login import login_required, current_user
 from datetime import datetime
-from extensions import mail
 from math import ceil
 from datetime import datetime, date
 import pytz
@@ -10,7 +9,6 @@ from sib_api_v3_sdk import Configuration, ApiClient
 from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
 from sib_api_v3_sdk.models.send_smtp_email import SendSmtpEmail
 from sib_api_v3_sdk.rest import ApiException
-import os.path
 
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
@@ -54,41 +52,56 @@ def create_gcal_event(business_name, business_id, date, time, user_name, user_em
         current_app.logger.error(f'Error creating Google Calendar link: {e}')
         return None
     
-    
 @search_bp.route('/', methods=['GET'])
 def search():
+    
+    STATE_ABBREVIATIONS = {
+        'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA',
+        'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA',
+        'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA',
+        'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+        'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO',
+        'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+        'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH',
+        'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+        'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT',
+        'virginia': 'VA', 'washington': 'WA', 'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'
+    }
+
     supabase = current_app.supabase
     query = request.args.get('q', '').strip()
     category = request.args.get('category', '').strip()
-    state = request.args.get('state', '').strip()
+    location = request.args.get('location', '').strip()
     popularity = request.args.get('popularity', '').strip()
     page = int(request.args.get('page', 1))
-    per_page = 5
+    per_page = 20
     offset = (page - 1) * per_page
 
     filters = supabase.table('businesses').select('*', count='exact')
 
-    if not query and not category and not state:
-        return render_template(
-            'search.html',
-            businesses=[],
-            popularity=popularity,
-            page=page,
-            total_pages=0,
-            query=query,
-            category=category,
-            state=state,
-            message="Please enter a search term or select a filter."
-        )
-
     if query:
-        filters = filters.or_(
-            f"name.ilike.%{query}%,city.ilike.%{query}%"
-        )
+        filters = filters.ilike('name', f'%{query}%')
+
     if category:
         filters = filters.eq('category', category)
-    if state:
-        filters = filters.eq('state', state)
+
+
+    if location:
+        if ',' in location:
+            city, state = [part.strip() for part in location.split(',', 1)]
+            
+            state_lower = state.lower()
+            if state_lower in STATE_ABBREVIATIONS:
+                state = STATE_ABBREVIATIONS[state_lower]
+            
+            filters = filters.ilike('city', f'%{city}%').ilike('state', f'%{state}%')
+        else:
+
+            location_to_search = location
+            if location.lower() in STATE_ABBREVIATIONS:
+                location_to_search = STATE_ABBREVIATIONS[location.lower()]
+            
+            filters = filters.or_(f'city.ilike.%{location_to_search}%,state.ilike.%{location_to_search}%')
 
     if popularity == 'most':
         filters = filters.order('review_count', desc=True)
@@ -96,10 +109,8 @@ def search():
         filters = filters.order('review_count', desc=False)
 
     response = filters.range(offset, offset + per_page - 1).execute()
-
     businesses = response.data or []
     total_count = response.count or 0
-
     total_pages = ceil(total_count / per_page)
 
     return render_template(
@@ -110,7 +121,7 @@ def search():
         total_pages=total_pages,
         query=query,
         category=category,
-        state=state
+        location=location
     )
 
 @search_bp.route('/customer_view/<int:business_id>')

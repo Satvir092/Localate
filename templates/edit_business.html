@@ -26,7 +26,7 @@
       type="search"
       id="navbar-q"
       name="q"
-      placeholder="Search businesses"
+      placeholder="Search for any business"
       value="{{ request.args.get('q', '') }}"
       aria-label="Search for a business or city"
       class="search-input"
@@ -107,7 +107,7 @@
       </select>
 
       <label for="description">Description</label>
-      <textarea name="description" id="description" placeholder="Describe your business..." rows="5">{{ business.description }}</textarea>
+      <textarea name="description" id="description" placeholder="Add an address, contact info, or anything else important..." rows="5">{{ business.description }}</textarea>
 
       <div class="weekday-section">
         <label class="section-label">Select Open Days</label>
@@ -140,10 +140,10 @@
         <option value="180" {% if interval_val == '180' %}selected{% endif %}>3 hour</option>
       </select>
 
-      <label for="social_url">Photo Showcase URL (recommended)</label>
+      <label for="social_url">Social Media (optional)</label>
       <input type="social" id="social_url" name="social_url" value="{{ business.social_url }}"/>
 
-      <label for="website_url">Website URL (recommended)</label>
+      <label for="website_url">Website (optional)</label>
       <input type="website" id="wesbite_url" name="website_url" value="{{ business.website_url }}"/>
 
       <button type="submit">Update Business</button>

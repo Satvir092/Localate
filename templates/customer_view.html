@@ -25,7 +25,7 @@
           type="search"
           id="navbar-q"
           name="q"
-          placeholder="Search for a business or city"
+          placeholder="Search for any business"
           value="{{ request.args.get('q', '') }}"
           aria-label="Search businesses"
           class="search-input"
@@ -49,90 +49,83 @@
     </label>
   </nav>
 
-<!-- Custom styling for business customizations -->
 <style>
-{% if business.card_background or business.text_color %}
-.business-card {
-  {% if business.card_background %}background: {{ business.card_background }} !important;{% endif %}
-  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-}
-{% endif %}
+  :root {
+    {% if business.font_family %}
+      --dynamic-font-family: {{ business.font_family }};
+    {% else %}
+      --dynamic-font-family: system-ui, sans-serif;
+    {% endif %}
+    {% if business.text_color %}
+      --dynamic-text-color: {{ business.text_color }};
+    {% else %}
+      --dynamic-text-color: inherit;
+    {% endif %}
+  }
 
-{% if business.small_card_bg or business.text_color %}
-.business-details-left {
-  {% if business.small_card_bg %}background: {{ business.small_card_bg }} !important;{% endif %}
-  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-}
+  {% if business.card_background %}
+  .business-card {
+    background: {{ business.card_background }} !important;
+  }
+  {% endif %}
 
-.business-details-left::before {
-  background: transparent !important;
-}
+  .business-details-left h1,
+  .business-details-left .category,
+  .business-details-left .location,
+  .business-details-left .description,
+  .business-meta p {
+    color: var(--dynamic-text-color) !important;
+    font-family: var(--dynamic-font-family) !important;
+  }
 
-.business-details-left:hover {
-  {% if business.small_card_bg %}background: {{ business.small_card_bg }} !important;{% endif %}
-}
-{% endif %}
+  {% if business.small_card_bg %}
+  .business-details-left,
+  .business-meta {
+    background: {{ business.small_card_bg }} !important;
+  }
+  .business-details-left::before,
+  .business-meta::before {
+    background: transparent !important;
+  }
+  {% elif business.card_background %}
+  .business-details-left,
+  .business-meta {
+    background: #111 !important;
+  }
+  {% endif %}
 
-{% if business.font_family %}
-.business-details-left h1,
-.business-details-left .category,
-.business-details-left .location,
-.business-details-left .description {
-  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-  font-family: {{ business.font_family }} !important;
-}
-{% endif %}
+  {% if business.button_color %}
+  .btn.primary:not(#bookingModal .btn):not(#reviewModal .btn),
+  .btn.secondary:not(#bookingModal .btn):not(#reviewModal .btn),
+  .website-btn:not(#bookingModal .website-btn):not(#reviewModal .website-btn),
+  .share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn),
+  a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn),
+  .action-buttons > .share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn),
+  .action-buttons button.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn) {
+    background: {{ business.button_color }} !important;
+    border-color: {{ business.button_color }} !important;
+    color: var(--dynamic-text-color) !important;
+  }
+  {% elif business.card_background %}
+  .btn.primary:not(#bookingModal .btn):not(#reviewModal .btn),
+  .btn.secondary:not(#bookingModal .btn):not(#reviewModal .btn),
+  .website-btn:not(#bookingModal .website-btn):not(#reviewModal .website-btn),
+  .share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn),
+  a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn),
+  .action-buttons > .share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn),
+  .action-buttons button.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn) {
+    background: #2a2a2a !important;
+    border-color: #2a2a2a !important;
+    color: #f8fafc !important;
+  }
+  {% endif %}
 
-{% if business.small_card_bg or business.text_color %}
-.business-meta {
-  {% if business.small_card_bg %}background: {{ business.small_card_bg }} !important;{% endif %}
-  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-}
-
-.business-meta::before {
-  background: transparent !important;
-}
-
-.business-meta:hover {
-  {% if business.small_card_bg %}background: {{ business.small_card_bg }} !important;{% endif %}
-}
-{% endif %}
-
-{% if business.font_family %}
-.business-meta p {
-  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-  font-family: {{ business.font_family }} !important;
-}
-{% endif %}
-
-{% if business.button_color or business.text_color %}
-/* Exclude modal buttons from overrides */
-.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn),
-.btn.secondary:not(#bookingModal .btn):not(#reviewModal .btn),
-.instagram-btn:not(#bookingModal .instagram-btn):not(#reviewModal .instagram-btn),
-.website-btn:not(#bookingModal .website-btn):not(#reviewModal .website-btn),
-.share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn),
-a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn),
-.action-buttons > .share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn),
-.action-buttons button.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn) {
-  {% if business.button_color %}background: {{ business.button_color }} !important; border-color: {{ business.button_color }} !important;{% endif %}
-  {% if business.text_color %}color: {{ business.text_color }} !important;{% endif %}
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
-}
-
-.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn):hover,
-.btn.secondary:not(#bookingModal .btn):not(#reviewModal .btn):hover,
-.instagram-btn:not(#bookingModal .instagram-btn):not(#reviewModal .instagram-btn):hover,
-.website-btn:not(#bookingModal .website-btn):not(#reviewModal .website-btn):hover,
-.share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn):hover,
-a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn):hover,
-.action-buttons > .share-btn:not(#bookingModal .share-btn):not(#reviewModal .share-btn):hover,
-.action-buttons button.btn.primary:not(#bookingModal .btn):not(#reviewModal .btn):hover {
-  {% if business.button_color %}background: {{ business.button_color }} !important; border-color: {{ business.button_color }} !important;{% endif %}
-}
-{% endif %}
+  .instagram-btn:not(#bookingModal .instagram-btn):not(#reviewModal .instagram-btn) {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    color: #fff !important;
+    border: none !important;
+  }
 </style>
-
 <main class="business-card">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -144,24 +137,39 @@ a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn):hover,
     {% endif %}
     {% endwith %}
 
-    <div class="business-card-header">
-      <div class="business-details-left">
-        <h1>{{ business.name }}</h1>
-        <p class="category">{{ business.category }}</p>
-        <p class="location"><strong>Location:</strong> {{ business.city}}, {{  business.state }}</p>
-        <p class="description">{{ business.description }}</p>
-      </div>
-      <div class="business-image-wrapper">
-        {% if business.profile_image_url %}
-          <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
-        {% else %}
-          <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" style="width:160px; height:160px; color:#ffffff;">
-            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
-          </svg>
-        {% endif %}
-      </div>
+<div class="business-card-header">
+  <div class="business-details-left">
+    <div class="details-text">
+      <h1>{{ business.name }}</h1>
+      <p class="category">{{ business.category }}</p>
+      <p class="location"><strong>Location:</strong> {{ business.city }}, {{ business.state }}</p>
+      <p class="description">{{ business.description }}</p>
     </div>
 
+{% if business.business_image_urls and business.business_image_urls|length > 0 %}
+<div class="business-image-gallery-wrapper">
+  <div class="business-image-gallery">
+    <div class="image-preview-box" onclick="openLightbox(0)">
+      <img src="{{ business.business_image_urls[0] }}" alt="Business Image Preview">
+      <div class="preview-overlay"><span>View More</span></div>
+    </div>
+  </div>
+</div>
+{% endif %}
+</div> <!-- end of business-right-side or left section -->
+
+  <div class="business-right-side">
+    <div class="business-image-wrapper">
+      {% if business.profile_image_url %}
+        <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
+      {% else %}
+        <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" style="width:160px; height:160px; color:#ffffff;">
+          <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
+        </svg>
+      {% endif %}
+    </div>
+  </div>
+</div>
     <div class="business-meta">
       <p><strong>Open:</strong> {{ business.opening_time }}</p>
       <p><strong>Close:</strong> {{ business.closing_time }}</p>
@@ -224,7 +232,15 @@ a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn):hover,
   </form>
 </div>
 
-  <!-- Review Modal -->
+{% if business.business_image_urls and business.business_image_urls|length > 0 %}
+<div id="lightbox" class="lightbox">
+  <span class="close-btn" onclick="closeLightbox()">&times;</span>
+  <img class="lightbox-image" src="" alt="Gallery Image">
+  <div class="lightbox-nav left" onclick="prevImage()">&#10094;</div>
+  <div class="lightbox-nav right" onclick="nextImage()">&#10095;</div>
+</div>
+{% endif %}
+
   <div id="reviewModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="reviewModalTitle" aria-describedby="reviewModalDesc" style="display:none;">
     <div class="modal-content">
       <button type="button" class="close" id="closeReviewModal" aria-label="Close review form">&times;</button>
@@ -247,6 +263,52 @@ a.btn.primary.login-btn:not(#bookingModal .btn):not(#reviewModal .btn):hover,
       </form>
     </div>
   </div>
+
+<script>
+  const businessImagesRaw = {{ business.business_image_urls|tojson }};
+  const businessImages = businessImagesRaw ? businessImagesRaw.filter(url => url && url.trim() !== "") : [];
+
+  if (businessImages.length > 0) {
+    let currentIndex = 0;
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = lightbox.querySelector('.lightbox-image');
+
+    function openLightbox(index) {
+      currentIndex = index;
+      lightboxImage.src = businessImages[currentIndex];
+      lightbox.style.display = 'flex';
+    }
+
+    function closeLightbox() {
+      lightbox.style.display = 'none';
+    }
+
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % businessImages.length;
+      lightboxImage.src = businessImages[currentIndex];
+    }
+
+    function prevImage() {
+      currentIndex = (currentIndex - 1 + businessImages.length) % businessImages.length;
+      lightboxImage.src = businessImages[currentIndex];
+    }
+
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (lightbox.style.display === 'flex') {
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'Escape') closeLightbox();
+      }
+    });
+
+
+    lightbox.style.display = 'none';
+  }
+</script>
 
 <script>
   function copyProfileLink() {

@@ -27,7 +27,7 @@
         type="search"
         id="navbar-q"
         name="q"
-        placeholder="Search businesses"
+        placeholder="Search for any business"
         value="{{ request.args.get('q', '') }}"
         aria-label="Search for a business or city"
         class="search-input"
@@ -79,35 +79,8 @@
         ("Golden Yellow","#EAB308"), ("Sunset Orange","#F59E0B"), ("Amber","#FFBF00"), ("Orange","#FFA500")
     ] %}
 
-    <div class="color-section">
-      <label>Button Color</label>
-      <div class="color-controls">
-        <button type="button" class="default-btn" data-target="button_color">Default</button>
-        <button type="button" class="custom-color-btn" data-target="button_color"><span>🎨</span> Custom Color</button>
-        <button type="button" class="gradient-toggle-btn" data-target="button_color">
-          🌈 Gradient: <strong class="state">OFF</strong>
-        </button>
-      </div>
-      <div class="color-picker" id="button_color_picker">
-        {% for color, hex in colors %}
-        <div class="color-option {% if business.button_color == hex %}selected{% endif %}"
-             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);"
-             data-value="{{ hex }}" title="{{ color }}"></div>
-        {% endfor %}
-      </div>
-      <div class="custom-color-display" id="button_color_custom" style="display: none;">
-        <div class="selected-color-preview" data-target="button_color">
-          <div class="color-preview-swatch" style="background-color: #000000;"></div>
-          <span class="selected-color-label">Selected Color</span>
-        </div>
-        <input type="color" class="hidden-color-input" data-target="button_color" value="#000000">
-      </div>
-      <input type="hidden" name="button_color" id="button_color" value="{{ business.button_color or '' }}">
-      <input type="hidden" name="button_color_gradient" id="button_color_gradient" value="{{ business.button_color_gradient or '' }}">
-    </div>
-
-    <div class="color-section">
-      <label>Main Card Background</label>
+      <div class="color-section">
+      <label>Background Color</label>
       <div class="color-controls">
         <button type="button" class="default-btn" data-target="card_background">Default</button>
         <button type="button" class="custom-color-btn" data-target="card_background"><span>🎨</span> Custom Color</button>
@@ -134,7 +107,7 @@
     </div>
 
     <div class="color-section">
-      <label>Small Card Background</label>
+      <label>Info Cards Color</label>
       <div class="color-controls">
         <button type="button" class="default-btn" data-target="small_card_bg">Default</button>
         <button type="button" class="custom-color-btn" data-target="small_card_bg"><span>🎨</span> Custom Color</button>
@@ -158,6 +131,33 @@
       </div>
       <input type="hidden" name="small_card_bg" id="small_card_bg" value="{{ business.small_card_bg or '' }}">
       <input type="hidden" name="small_card_bg_gradient" id="small_card_bg_gradient" value="{{ business.small_card_bg_gradient or '' }}">
+    </div>
+
+    <div class="color-section">
+      <label>Button Color</label>
+      <div class="color-controls">
+        <button type="button" class="default-btn" data-target="button_color">Default</button>
+        <button type="button" class="custom-color-btn" data-target="button_color"><span>🎨</span> Custom Color</button>
+        <button type="button" class="gradient-toggle-btn" data-target="button_color">
+          🌈 Gradient: <strong class="state">OFF</strong>
+        </button>
+      </div>
+      <div class="color-picker" id="button_color_picker">
+        {% for color, hex in colors %}
+        <div class="color-option {% if business.button_color == hex %}selected{% endif %}"
+             style="background: linear-gradient(to bottom, {{ hex }} 0%, {{ hex }}CC 100%);"
+             data-value="{{ hex }}" title="{{ color }}"></div>
+        {% endfor %}
+      </div>
+      <div class="custom-color-display" id="button_color_custom" style="display: none;">
+        <div class="selected-color-preview" data-target="button_color">
+          <div class="color-preview-swatch" style="background-color: #000000;"></div>
+          <span class="selected-color-label">Selected Color</span>
+        </div>
+        <input type="color" class="hidden-color-input" data-target="button_color" value="#000000">
+      </div>
+      <input type="hidden" name="button_color" id="button_color" value="{{ business.button_color or '' }}">
+      <input type="hidden" name="button_color_gradient" id="button_color_gradient" value="{{ business.button_color_gradient or '' }}">
     </div>
 
     <div class="color-section">
