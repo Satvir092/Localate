@@ -43,7 +43,7 @@
             type="search"
             id="q"
             name="q"
-            placeholder="Search for a business or city"
+            placeholder="Search for any business"
             value="{{ request.args.get('q', '') }}"
             autofocus
             aria-label="Search businesses"
@@ -68,23 +68,17 @@
             {% endfor %}
           </select>
 
-          <select name="state" aria-label="Filter by state">
-            <option value="">State</option>
-            {% for abbr, full in {
-              'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
-              'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
-              'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
-              'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
-              'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
-              'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
-              'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
-              'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
-              'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
-              'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
-            }.items() %}
-              <option value="{{ abbr }}" {% if request.args.get('state') == abbr %}selected{% endif %}>{{ full }}</option>
-            {% endfor %}
-          </select>
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            value="{{ request.args.get('location', '') }}"
+            aria-label="Filter by location"
+            class="location-input"
+            list="location-list"
+          />
+
+          <datalist id="location-list"></datalist>
 
           <select name="popularity" aria-label="Sort by Popularity">
           <option value="">Popularity</option>
@@ -199,59 +193,91 @@
   </div>
   {% endif %}
 </section>
-
   </main>
 
   <script>
-    function setupAutocomplete(inputId, listId, formId) {
-      const input = document.getElementById(inputId);
-      const list = document.getElementById(listId);
-      const form = document.getElementById(formId);
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("{{ url_for('static', filename='locations.json') }}")
+    .then(response => response.json())
+    .then(data => {
+      const datalist = document.getElementById("location-list");
 
-      if (!input || !list || !form) return;
+      // Loop through states
+      Object.keys(data).forEach(state => {
+        // Add state itself
+        const stateOption = document.createElement("option");
+        stateOption.value = state;
+        datalist.appendChild(stateOption);
 
-      input.addEventListener('input', async () => {
-        const query = input.value.trim();
+        // Add each city with state
+        data[state].forEach(city => {
+          const cityOption = document.createElement("option");
+          cityOption.value = `${city}, ${state}`;
+          datalist.appendChild(cityOption);
+        });
+      });
+    })
+    .catch(err => console.error("Error loading locations.json:", err));
+});
+</script>
+<script>
+  function setupAutocomplete(inputId, listId, formId) {
+    const input = document.getElementById(inputId);
+    const list = document.getElementById(listId);
+    const form = document.getElementById(formId);
 
-        if (query.length < 2) {
-          list.innerHTML = '';
-          list.classList.add('hidden');
-          return;
-        }
+    if (!input || !list || !form) return;
 
-        try {
-          const res = await fetch(`/search/autocomplete?q=${encodeURIComponent(query)}`);
-          const suggestions = await res.json();
+    input.addEventListener('input', async () => {
+      const query = input.value.trim();
 
-          list.innerHTML = '';
-          suggestions.forEach(name => {
-            const li = document.createElement('li');
-            li.textContent = name;
-            li.addEventListener('click', () => {
-              input.value = name;
-              list.innerHTML = '';
-              form.submit();
-            });
-            list.appendChild(li);
+      if (query.length < 2) {
+        list.innerHTML = '';
+        list.classList.add('hidden');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/search/autocomplete?q=${encodeURIComponent(query)}`);
+        const suggestions = await res.json();
+
+        list.innerHTML = '';
+        suggestions.forEach(name => {
+          const li = document.createElement('li');
+          li.textContent = name;
+          li.addEventListener('click', () => {
+            input.value = name;
+            list.innerHTML = '';
+            form.submit();
           });
+          list.appendChild(li);
+        });
 
-          list.classList.remove('hidden');
-        } catch (err) {
-          console.error('Autocomplete fetch failed', err);
-        }
-      });
+        list.classList.remove('hidden');
+      } catch (err) {
+        console.error('Autocomplete fetch failed', err);
+      }
+    });
 
-      document.addEventListener('click', (e) => {
-        if (!input.contains(e.target) && !list.contains(e.target)) {
-          list.innerHTML = '';
-          list.classList.add('hidden');
-        }
-      });
-    }
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
 
-    setupAutocomplete('q', 'autocomplete-list', 'search-form');
-    setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
-  </script>
+        e.preventDefault(); 
+        form.submit();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!input.contains(e.target) && !list.contains(e.target)) {
+        list.innerHTML = '';
+        list.classList.add('hidden');
+      }
+    });
+  }
+
+  setupAutocomplete('q', 'autocomplete-list', 'search-form');
+  setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
+</script>
 
 </body>
 </html>
