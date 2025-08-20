@@ -344,7 +344,7 @@ document.querySelectorAll('.custom-color-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const target = btn.dataset.target;
     const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
-    
+
     // Show the custom color display area
     showCustomArea(target);
 
@@ -352,10 +352,14 @@ document.querySelectorAll('.custom-color-btn').forEach(btn => {
       // Desktop: trigger hidden color picker
       setTimeout(() => input && input.click(), 50);
     } else {
-      // Mobile: just trigger the native picker, keep input hidden
+      // Mobile: make input virtually invisible but still clickable
       if (input) {
-        input.style.display = 'none';   // <-- hide it completely
-        input.click();                  // trigger native picker
+        input.style.position = 'absolute';
+        input.style.left = '-9999px';   // move offscreen
+        input.style.width = '1px';
+        input.style.height = '1px';
+        input.style.opacity = 0;
+        input.click();
       }
     }
   });
