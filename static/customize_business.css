@@ -250,3 +250,14 @@ select:focus {
     flex: 0 1 auto;
   }
 }
+
+@media (hover: none) and (pointer: coarse) {
+  .hidden-color-input {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    opacity: 1;
+    pointer-events: auto;
+    margin-left: 8px;
+  }
+}
