@@ -113,12 +113,12 @@
 
 .hidden-color-input {
   position: absolute;
+  width: 1px;
+  height: 1px;
   opacity: 0;
-  pointer-events: none;
-  width: 0;
-  height: 0;
+  border: none;
+  background: transparent;
 }
-
 .color-controls .default-btn,
 .color-controls .custom-color-btn,
 .color-controls .gradient-toggle-btn {
