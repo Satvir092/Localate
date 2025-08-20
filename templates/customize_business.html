@@ -342,43 +342,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.querySelectorAll('.custom-color-btn').forEach(btn => {
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const target = btn.dataset.target;
-  const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
-  if (!input) return;
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    showCustomArea(target);
 
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const customArea = document.getElementById(target + '_custom');
+    const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
 
     if (!isTouchDevice) {
-      // Desktop: trigger native color picker
-      input.click();
-      showCustomArea(target);
+      // Desktop: trigger hidden color picker
+      setTimeout(() => input && input.click(), 50);
     } else {
-      // Mobile: toggle custom swatch area
-      if (customArea.style.display === 'block') {
-        customArea.style.display = 'none';
-      } else {
-        showCustomArea(target);
+      // Mobile: make input visible and let user tap
+      if (input) {
+        input.style.display = 'block'; // show the input
+        input.style.position = 'relative'; // remove absolute positioning
+        input.style.width = '100%'; // adjust size if needed
+        input.focus(); // optional
       }
     }
   });
-
-  input.addEventListener('input', (e) => {
-    const baseColor = e.target.value;
-    const useGradient = document.getElementById(target + '_gradient').value === 'true';
-    setHiddenValue(target, baseColor, useGradient);
-    updatePreview(target, baseColor, useGradient);
-  });
-
-  // Hide custom swatch if tapping outside (mobile)
-  if (isTouchDevice) {
-    document.addEventListener('click', (e) => {
-      if (!btn.contains(e.target) && !document.getElementById(target + '_custom').contains(e.target)) {
-        document.getElementById(target + '_custom').style.display = 'none';
-      }
-    });
-  }
 });
 
   document.querySelectorAll('.default-btn').forEach(btn => {
