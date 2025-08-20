@@ -340,15 +340,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  document.querySelectorAll('.custom-color-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.target;
-      showCustomArea(target);
-      const input = document.querySelector('.hidden-color-input[data-target="' + target + '"]');
-      setTimeout(() => input && input.click(), 50);
-    });
-  });
+document.querySelectorAll('.custom-color-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    showCustomArea(target);
+    const input = document.querySelector('.hidden-color-input[data-target="' + target + '"]');
 
+    // Trigger click after a tiny delay
+    setTimeout(() => {
+      if (input) {
+        // Reposition input over the button temporarily
+        const rect = btn.getBoundingClientRect();
+        input.style.top = `${rect.top + window.scrollY + rect.height / 2}px`;
+        input.style.left = `${rect.left + window.scrollX + rect.width / 2}px`;
+        input.click();
+      }
+    }, 50);
+  });
+});
   document.querySelectorAll('.default-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.target;
