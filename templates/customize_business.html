@@ -296,10 +296,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const tempInput = document.createElement('input');
     tempInput.type = 'color';
     tempInput.value = currentColor || '#000000';
+    
+    // Make it temporarily visible but tiny for mobile browsers
     tempInput.style.position = 'fixed';
-    tempInput.style.left = '-9999px';
-    tempInput.style.top = '-9999px';
-    tempInput.style.opacity = '0';
+    tempInput.style.top = '50%';
+    tempInput.style.left = '50%';
+    tempInput.style.transform = 'translate(-50%, -50%)';
+    tempInput.style.width = '1px';
+    tempInput.style.height = '1px';
+    tempInput.style.opacity = '0.01'; // Almost invisible but not completely
+    tempInput.style.zIndex = '10000';
+    tempInput.style.border = 'none';
     
     document.body.appendChild(tempInput);
     
@@ -317,13 +324,26 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     tempInput.addEventListener('change', function() {
-      setTimeout(() => tempInput.remove(), 100);
+      // Remove after a short delay
+      setTimeout(() => {
+        if (tempInput && tempInput.parentNode) {
+          tempInput.remove();
+        }
+      }, 200);
     });
 
-    tempInput.click();
+    // For mobile, focus first then click
     setTimeout(() => {
-      if (tempInput.parentNode) tempInput.remove();
-    }, 5000); // Fallback cleanup
+      tempInput.focus();
+      tempInput.click();
+    }, 10);
+    
+    // Fallback cleanup
+    setTimeout(() => {
+      if (tempInput && tempInput.parentNode) {
+        tempInput.remove();
+      }
+    }, 10000);
   }
 
   document.querySelectorAll('.color-picker').forEach(picker => {
@@ -378,11 +398,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.querySelectorAll('.custom-color-btn').forEach(btn => {
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
     btn.addEventListener('click', () => {
       const target = btn.dataset.target;
       showCustomArea(target);
 
       if (!isTouchDevice) {
+        // Desktop: Create a temporary centered input for better positioning
         const tempInput = document.createElement('input');
         tempInput.type = 'color';
         tempInput.style.position = 'fixed';
@@ -395,6 +417,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tempInput.style.width = '1px';
         tempInput.style.height = '1px';
         
+        // Set current color
         const mainInput = document.getElementById(target);
         const currentColor = mainInput.dataset.baseColor || extractFirstHex(mainInput.value) || '#000000';
         tempInput.value = currentColor;
@@ -420,12 +443,14 @@ document.addEventListener('DOMContentLoaded', function () {
         
         setTimeout(() => {
           tempInput.click();
+          // Fallback cleanup
           setTimeout(() => {
             if (tempInput.parentNode) tempInput.remove();
           }, 5000);
         }, 50);
         
       } else {
+        // Mobile: Use temporary input approach
         const mainInput = document.getElementById(target);
         const currentColor = mainInput.dataset.baseColor || extractFirstHex(mainInput.value) || '#000000';
         triggerMobileColorPicker(target, currentColor);
@@ -452,6 +477,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Initialize existing values
   ['button_color','card_background','small_card_bg','text_color'].forEach(target => {
     const mainInput = document.getElementById(target);
     const gradInput = document.getElementById(target + '_gradient');
