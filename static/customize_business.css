@@ -112,14 +112,17 @@
 }
 
 .hidden-color-input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  border: none;
+  outline: none;
+  z-index: 9999;
 }
 
 .color-controls .default-btn,
@@ -248,16 +251,5 @@ select:focus {
   .btn.save-btn,
   .btn.back-btn {
     flex: 0 1 auto;
-  }
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .hidden-color-input {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    opacity: 1;
-    pointer-events: auto;
-    margin-left: 8px;
   }
 }

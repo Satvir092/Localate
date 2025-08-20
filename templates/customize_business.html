@@ -220,6 +220,7 @@
 </main>
 
 <script>
+
 document.addEventListener('DOMContentLoaded', function () {
 
   const isGradientString = (v) => typeof v === 'string' && v.trim().startsWith('linear-gradient');
@@ -290,6 +291,41 @@ document.addEventListener('DOMContentLoaded', function () {
     if (customBtn) customBtn.classList.add('active');
   }
 
+  // Mobile-only: Create temporary color input that gets removed
+  function triggerMobileColorPicker(target, currentColor) {
+    const tempInput = document.createElement('input');
+    tempInput.type = 'color';
+    tempInput.value = currentColor || '#000000';
+    tempInput.style.position = 'fixed';
+    tempInput.style.left = '-9999px';
+    tempInput.style.top = '-9999px';
+    tempInput.style.opacity = '0';
+    
+    document.body.appendChild(tempInput);
+    
+    tempInput.addEventListener('input', function(e) {
+      const baseColor = e.target.value;
+      const gradientActive = document.getElementById(target + '_gradient').value === 'true' ||
+                             document.querySelector('.gradient-toggle-btn[data-target="' + target + '"]')?.classList.contains('active');
+      
+      setHiddenValue(target, baseColor, gradientActive);
+      showCustomArea(target);
+      updatePreview(target, baseColor, gradientActive);
+      
+      const picker = document.getElementById(target + '_picker');
+      picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+    });
+
+    tempInput.addEventListener('change', function() {
+      setTimeout(() => tempInput.remove(), 100);
+    });
+
+    tempInput.click();
+    setTimeout(() => {
+      if (tempInput.parentNode) tempInput.remove();
+    }, 5000); // Fallback cleanup
+  }
+
   document.querySelectorAll('.color-picker').forEach(picker => {
     picker.querySelectorAll('.color-option').forEach(option => {
       option.addEventListener('click', () => {
@@ -340,28 +376,62 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-document.querySelectorAll('.custom-color-btn').forEach(btn => {
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  btn.addEventListener('click', () => {
-    const target = btn.dataset.target;
-    showCustomArea(target);
+  document.querySelectorAll('.custom-color-btn').forEach(btn => {
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      showCustomArea(target);
 
-    const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
+      if (!isTouchDevice) {
+        const tempInput = document.createElement('input');
+        tempInput.type = 'color';
+        tempInput.style.position = 'fixed';
+        tempInput.style.top = '50vh';
+        tempInput.style.left = '50vw';
+        tempInput.style.transform = 'translate(-50%, -50%)';
+        tempInput.style.opacity = '0';
+        tempInput.style.pointerEvents = 'none';
+        tempInput.style.zIndex = '10000';
+        tempInput.style.width = '1px';
+        tempInput.style.height = '1px';
+        
+        const mainInput = document.getElementById(target);
+        const currentColor = mainInput.dataset.baseColor || extractFirstHex(mainInput.value) || '#000000';
+        tempInput.value = currentColor;
+        
+        document.body.appendChild(tempInput);
+        
+        tempInput.addEventListener('input', function(e) {
+          const baseColor = e.target.value;
+          const gradientActive = document.getElementById(target + '_gradient').value === 'true' ||
+                                 document.querySelector('.gradient-toggle-btn[data-target="' + target + '"]')?.classList.contains('active');
+          
+          setHiddenValue(target, baseColor, gradientActive);
+          showCustomArea(target);
+          updatePreview(target, baseColor, gradientActive);
+          
+          const picker = document.getElementById(target + '_picker');
+          picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+        });
 
-    if (!isTouchDevice) {
-      // Desktop: trigger hidden color picker
-      setTimeout(() => input && input.click(), 50);
-    } else {
-      // Mobile: make input visible and let user tap
-      if (input) {
-        input.style.display = 'block'; // show the input
-        input.style.position = 'relative'; // remove absolute positioning
-        input.style.width = '100%'; // adjust size if needed
-        input.focus(); // optional
+        tempInput.addEventListener('change', function() {
+          setTimeout(() => tempInput.remove(), 100);
+        });
+        
+        setTimeout(() => {
+          tempInput.click();
+          setTimeout(() => {
+            if (tempInput.parentNode) tempInput.remove();
+          }, 5000);
+        }, 50);
+        
+      } else {
+        const mainInput = document.getElementById(target);
+        const currentColor = mainInput.dataset.baseColor || extractFirstHex(mainInput.value) || '#000000';
+        triggerMobileColorPicker(target, currentColor);
       }
-    }
+    });
   });
-});
 
   document.querySelectorAll('.default-btn').forEach(btn => {
     btn.addEventListener('click', () => {
