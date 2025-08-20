@@ -341,26 +341,26 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 document.querySelectorAll('.custom-color-btn').forEach(btn => {
+  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const target = btn.dataset.target;
   const input = document.querySelector(`.hidden-color-input[data-target="${target}"]`);
   if (!input) return;
 
-  let active = false; // track toggle state
-
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    active = !active;
-
     const customArea = document.getElementById(target + '_custom');
-    if (active) {
-      showCustomArea(target); // show the swatch
-      customArea.style.display = 'block';
-      // Immediately update preview with current value
-      const baseColor = input.value || '#000000';
-      const useGradient = document.getElementById(target + '_gradient').value === 'true';
-      updatePreview(target, baseColor, useGradient);
+
+    if (!isTouchDevice) {
+      // Desktop: trigger native color picker
+      input.click();
+      showCustomArea(target);
     } else {
-      customArea.style.display = 'none';
+      // Mobile: toggle custom swatch area
+      if (customArea.style.display === 'block') {
+        customArea.style.display = 'none';
+      } else {
+        showCustomArea(target);
+      }
     }
   });
 
@@ -371,13 +371,14 @@ document.querySelectorAll('.custom-color-btn').forEach(btn => {
     updatePreview(target, baseColor, useGradient);
   });
 
-  // Optional: hide custom area if user taps outside
-  document.addEventListener('click', (e) => {
-    if (!btn.contains(e.target) && !document.getElementById(target + '_custom').contains(e.target)) {
-      active = false;
-      document.getElementById(target + '_custom').style.display = 'none';
-    }
-  });
+  // Hide custom swatch if tapping outside (mobile)
+  if (isTouchDevice) {
+    document.addEventListener('click', (e) => {
+      if (!btn.contains(e.target) && !document.getElementById(target + '_custom').contains(e.target)) {
+        document.getElementById(target + '_custom').style.display = 'none';
+      }
+    });
+  }
 });
 
   document.querySelectorAll('.default-btn').forEach(btn => {
