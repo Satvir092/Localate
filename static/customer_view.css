@@ -975,7 +975,7 @@ input:hover, select:hover, textarea:hover {
 }
 
 .details-text {
-  flex: 1; /* text takes remaining space */
+  flex: 1; 
 }
 
 .business-image-gallery-wrapper {
@@ -1049,7 +1049,62 @@ input:hover, select:hover, textarea:hover {
   opacity: 1;
 }
 
-/* Mobile Hamburger Menu */
+.business-rating {
+  margin: 8px 0;
+}
+
+.star-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.star-display:hover {
+  opacity: 0.8;
+}
+
+.star-display.no-reviews {
+  cursor: default;
+}
+
+.star-display.no-reviews:hover {
+  opacity: 1;
+}
+
+.star {
+  color: #ddd;
+  font-size: 16px;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+.rating-score {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dynamic-text-color, #333);
+  font-family: var(--dynamic-font-family) !important;
+  margin-left: 4px;
+}
+
+.rating-count {
+  font-size: 14px;
+  color: #666;
+  font-family: var(--dynamic-font-family) !important;
+  margin-left: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .rating-count {
+    color: #aaa;
+  }
+}
+
+
 @media (max-width: 1212px) {
   .nav-toggle-label {
     display: flex;
@@ -1071,7 +1126,6 @@ input:hover, select:hover, textarea:hover {
   }
 }
 
-/* Small Mobile Screens (up to 480px) */
 @media (max-width: 480px) {
   .business-card {
     padding: 1.5rem 1rem;
