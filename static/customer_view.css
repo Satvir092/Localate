@@ -1086,7 +1086,7 @@ input:hover, select:hover, textarea:hover {
 .rating-score {
   font-size: 14px;
   font-weight: 500;
-  color: var(--dynamic-text-color, #333);
+  color: var(--dynamic-text-color, #8b5cf6);
   font-family: var(--dynamic-font-family) !important;
   margin-left: 4px;
 }
