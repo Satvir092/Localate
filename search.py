@@ -77,6 +77,20 @@ def search():
     per_page = 20
     offset = (page - 1) * per_page
 
+    if not query and not category and not location:
+        # Return empty results for completely empty searches
+        return render_template(
+            'search.html',
+            businesses=[],
+            popularity=popularity,
+            page=1,
+            total_pages=0,
+            query=query,
+            category=category,
+            location=location,
+            is_empty_search=True
+        )
+
     filters = supabase.table('businesses').select('*', count='exact')
 
     if query:
@@ -84,7 +98,6 @@ def search():
 
     if category:
         filters = filters.eq('category', category)
-
 
     if location:
         if ',' in location:
@@ -96,7 +109,6 @@ def search():
             
             filters = filters.ilike('city', f'%{city}%').ilike('state', f'%{state}%')
         else:
-
             location_to_search = location
             if location.lower() in STATE_ABBREVIATIONS:
                 location_to_search = STATE_ABBREVIATIONS[location.lower()]
@@ -121,7 +133,8 @@ def search():
         total_pages=total_pages,
         query=query,
         category=category,
-        location=location
+        location=location,
+        is_empty_search=False
     )
 
 @search_bp.route('/customer_view/<int:business_id>')
