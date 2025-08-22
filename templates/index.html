@@ -132,7 +132,7 @@
     <div class="info-columns">
       <div class="info-block">
         <h3>1. Create Your Free Profile</h3>
-        <p>Set up your business in minutes with your services, hours, and location. No tech experience required.</p>
+        <p>Set up your business in minutes with your services, hours, images, and custom colors. No tech experience required.</p>
       </div>
       <div class="info-block">
         <h3>2. Manage Appointments Easily</h3>
@@ -144,6 +144,128 @@
       </div>
     </div>
     <div class="center-cta">
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+  <div class="faq-container">
+    <h2 class="faq-title">Frequently Asked Questions</h2>
+    
+    <!-- General Category -->
+    <div class="faq-category">
+      <h3 class="faq-category-title">General</h3>
+      
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>What is Localate?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Localate is a platform where people can discover, connect with, and support local businesses in their community.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>How is Localate different from Google or Yelp?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Unlike traditional listings, Localate gives businesses control over their profiles, lets customers easily book services, and highlights authentic local connections.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Is Localate free to use?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes! Localate is completely free for customers and business owners.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Customers Category -->
+    <div class="faq-category">
+      <h3 class="faq-category-title">For Customers</h3>
+      
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Do I need an account to use Localate?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>You can browse without an account, but creating one lets you leave reviews, favorite businesses, and book services.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Can I leave reviews?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, you can share ratings and feedback to help others discover great local businesses.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>How do I find businesses near me?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Use the search bar and filters (by category, city, or state) to quickly discover businesses in your area.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Business Owners Category -->
+    <div class="faq-category">
+      <h3 class="faq-category-title">For Business Owners</h3>
+      
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>How do I get my business on Localate?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Create a free account, set up your profile with details and images, customize your listing, and your business will be discoverable.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>What can I add to my business profile?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>You can showcase your description, services, hours, location, images, customer reviews, and customize everything.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>How does Localate help me reach more customers?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Localate boosts your visibility by making your business searchable by name, category, and location, and helps you build trust through reviews.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">
+          <span>Can customers book through my profile?</span>
+          <i class="faq-icon fas fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, if you choose to enable appointment scheduling, customers can book directly with you.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -197,6 +319,47 @@ function setupAutocomplete(inputId, listId, formId) {
 
 setupAutocomplete('q', 'autocomplete-list', 'search-form');
 setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
+
+// FAQ Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  
+  faqQuestions.forEach(question => {
+    question.addEventListener('click', () => {
+      const faqItem = question.parentElement;
+      const answer = faqItem.querySelector('.faq-answer');
+      const icon = question.querySelector('.faq-icon');
+      const isOpen = question.getAttribute('aria-expanded') === 'true';
+      
+      // Close all other FAQ items
+      faqQuestions.forEach(otherQuestion => {
+        if (otherQuestion !== question) {
+          const otherItem = otherQuestion.parentElement;
+          const otherAnswer = otherItem.querySelector('.faq-answer');
+          const otherIcon = otherQuestion.querySelector('.faq-icon');
+          
+          otherQuestion.setAttribute('aria-expanded', 'false');
+          otherItem.classList.remove('active');
+          otherAnswer.style.maxHeight = '0px';
+          otherIcon.style.transform = 'rotate(0deg)';
+        }
+      });
+      
+      // Toggle current FAQ item
+      if (!isOpen) {
+        question.setAttribute('aria-expanded', 'true');
+        faqItem.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        question.setAttribute('aria-expanded', 'false');
+        faqItem.classList.remove('active');
+        answer.style.maxHeight = '0px';
+        icon.style.transform = 'rotate(0deg)';
+      }
+    });
+  });
+});
 </script>
 
 
