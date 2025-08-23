@@ -661,13 +661,6 @@ body {
   color: #d0d0d0;
 }
 
-.support-link:hover .fas.fa-heart {
-  animation: pulseGlow 1.5s infinite;
-  transform-origin: center;
-  display: inline-block;
-  color: #ff6b9d;
-}
-
 .faq-section {
   padding: 5rem 0;
   background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 50%, #2a2a2a 100%);
