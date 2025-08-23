@@ -900,7 +900,6 @@ body {
   }
 }
 
-/* Animation for smooth opening/closing */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -910,7 +909,6 @@ body {
   animation: fadeIn 0.3s ease;
 }
 
-/* Focus states for accessibility */
 .faq-question:focus {
   outline: 2px solid #8e67d2;
   outline-offset: 2px;
@@ -927,6 +925,13 @@ body {
   50% {
     transform: scale(1.2);
   }
+}
+
+.support-link:hover .fas.fa-heart {
+  animation: pulseHeart 1.5s infinite;
+  transform-origin: center;
+  display: inline-block;
+  color: #ff6b9d;
 }
 
 @media (max-width: 1210px) {
