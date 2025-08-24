@@ -240,15 +240,15 @@ body {
   width: 200%;
   height: 200%;
   background: conic-gradient(
-    from 0deg, 
-    rgba(138, 43, 226, 0.6),    
-    rgba(75, 0, 130, 0.6),      
-    rgba(123, 104, 238, 0.6),  
-    rgba(0, 191, 255, 0.6),     
-    rgba(64, 224, 208, 0.6),    
-    rgba(0, 255, 127, 0.6),    
-    rgba(50, 205, 50, 0.6),     
-    rgba(138, 43, 226, 0.6)    
+      from 0deg, 
+    rgba(142, 103, 210, 1),      
+    rgba(164, 135, 217, 1),      
+    rgba(236, 72, 153, 1),    
+    rgba(249, 115, 22, 1),       
+    rgba(14, 165, 233, 1),      
+    rgba(168, 85, 247, 1),       
+    rgba(239, 68, 68, 1),        
+    rgba(142, 103, 210, 1)       
   );
   animation: float 15s linear infinite;
   z-index: 0;
