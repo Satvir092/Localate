@@ -71,11 +71,11 @@
 
     <div class="image-counter">
       <i class="fas fa-images"></i>
-      <span id="imageCount">{{ business.business_image_urls|length if business.business_image_urls else 0 }}</span> / 5 images uploaded
+      <span id="imageCount">{{ business.business_image_urls|length if business.business_image_urls else 0 }}</span> / 10 images uploaded
     </div>
 
     <div class="image-grid">
-      {% for i in range(5) %}
+      {% for i in range(10) %}
       <div class="image-box {% if business.business_image_urls and business.business_image_urls[i] %}has-image{% endif %}" data-index="{{ i }}">
         <img id="previewImg{{ i }}" 
              src="{{ business.business_image_urls[i] if business.business_image_urls and business.business_image_urls[i] else '' }}">
@@ -120,7 +120,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const maxImages = 5;
+  const maxImages = 10;
   let currentIndex = null;
   let cropper = null;
 
