@@ -625,7 +625,6 @@ def customize_business(business_id):
 def upload_business_image(business_id):
     supabase = current_app.supabase
 
-    # Get current business data
     try:
         business_resp = supabase.table("businesses").select("*").eq("id", business_id).single().execute()
         business = business_resp.data
@@ -637,19 +636,19 @@ def upload_business_image(business_id):
 
     if request.method == "POST":
         try:
-            image_index = int(request.form.get("image_index", 0))  # slot 0-4
+            image_index = int(request.form.get("image_index", 0)) 
             remove_image = request.form.get("remove_image") == "true"
             image_urls = business.get("business_image_urls") or []
             
-            # Ensure we have 5 slots
-            while len(image_urls) < 5:
+            while len(image_urls) < 10:
                 image_urls.append(None)
 
-            # Remove image
+            if image_index < 0 or image_index >= 10:
+                return '', 400
+
             if remove_image:
                 old_image = image_urls[image_index]
                 if old_image:
-                    # Extract filename from URL for deletion
                     old_filename = old_image.split('/')[-1].split('?')[0]
                     try:
                         current_app.supabase.storage.from_("business-images").remove([old_filename])
@@ -662,18 +661,15 @@ def upload_business_image(business_id):
                     }).eq("id", business_id).execute()
                 return '', 200
 
-            # Upload new image
             image_file = request.files.get("image")
             if not image_file or image_file.filename == '':
                 return '', 400
-
-            # Validate file type (optional but recommended)
+            
             allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
             file_ext = image_file.filename.rsplit('.', 1)[1].lower() if '.' in image_file.filename else ''
             if file_ext not in allowed_extensions:
                 return '', 400
 
-            # Delete old image if exists
             old_image = image_urls[image_index]
             if old_image:
                 old_filename = old_image.split('/')[-1].split('?')[0]
@@ -682,51 +678,42 @@ def upload_business_image(business_id):
                 except Exception as e:
                     print(f"Failed to delete old image: {e}")
 
-            # Create secure filename
             from werkzeug.utils import secure_filename
             import time
             
             secure_name = secure_filename(image_file.filename)
             filename = f"business_{business_id}_{image_index}_{int(time.time())}_{secure_name}"
-            
-            # Read file data as bytes
             file_data = image_file.read()
             
-            # Upload file data with proper content type
             upload_result = current_app.supabase.storage.from_("business-images").upload(
                 filename, 
                 file_data,
                 file_options={"content-type": image_file.content_type}
             )
             
-            # Check if upload was successful
             if hasattr(upload_result, 'error') and upload_result.error:
                 print(f"Upload error: {upload_result.error}")
                 return '', 500
             
-            # Get public URL - different methods depending on supabase-py version
             try:
                 public_url = current_app.supabase.storage.from_("business-images").get_public_url(filename)
             except Exception as e:
                 print(f"Error getting public URL: {e}")
                 return '', 500
 
-            # Update array and save
             image_urls[image_index] = public_url
             update_result = supabase.table("businesses").update({
                 "business_image_urls": image_urls
             }).eq("id", business_id).execute()
             
-            # Check if database update was successful
             if hasattr(update_result, 'error') and update_result.error:
                 print(f"Database update error: {update_result.error}")
                 return '', 500
 
-            return '', 200  # success for AJAX
+            return '', 200  
 
         except Exception as e:
             print(f"Error in upload_business_image: {e}")
             return '', 500
 
-    # GET request → render template
     return render_template("upload_business_image.html", business=business)
