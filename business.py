@@ -68,6 +68,14 @@ def dashboard():
 @login_required
 def create_business():
     if request.method == 'POST':
+
+        supabase = current_app.supabase
+        existing_businesses = supabase.table('businesses').select("id").eq("user_id", str(current_user.id)).execute()
+        
+        if len(existing_businesses.data) >= 5:
+            flash("You can only create a maximum of 5 businesses per account.", "error")
+            return redirect(url_for('business.create_business'))
+
         name = request.form.get('name')
         category = request.form.get('category')
         city = request.form.get('city')
@@ -137,7 +145,6 @@ def create_business():
             flash("Website url must be less than 2000 characters")
             return redirect(url_for('business.create_business'))
 
-        supabase = current_app.supabase
         response = supabase.table('businesses').insert({
             "user_id": str(current_user.id),
             "name": name,
