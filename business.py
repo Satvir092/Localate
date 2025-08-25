@@ -69,13 +69,6 @@ def dashboard():
 def create_business():
     if request.method == 'POST':
 
-        supabase = current_app.supabase
-        existing_businesses = supabase.table('businesses').select("id").eq("user_id", str(current_user.id)).execute()
-        
-        if len(existing_businesses.data) >= 5:
-            flash("You can only create a maximum of 5 businesses per account.", "error")
-            return redirect(url_for('business.create_business'))
-
         name = request.form.get('name')
         category = request.form.get('category')
         city = request.form.get('city')
@@ -89,25 +82,47 @@ def create_business():
         website_url = request.form.get('website_url')
         timezone = request.form.get('timezone')
 
+        form_data = {
+            'name': name,
+            'category': category,
+            'city': city,
+            'description': description,
+            'start_time': opening_time,
+            'end_time': closing_time,
+            'interval': interval,  
+            'weekdays': days_list,
+            'state': state,
+            'social_url': social_url,
+            'website_url': website_url,
+            'timezone': timezone
+        }
+
+        supabase = current_app.supabase
+        existing_businesses = supabase.table('businesses').select("id").eq("user_id", str(current_user.id)).execute()
+        
+        if len(existing_businesses.data) >= 5:
+            flash("You can only create a maximum of 5 businesses per account.", "error")
+            return render_template('create_business.html', form_data=form_data)
+
         if not name:
             flash("Business name is required.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         if not days_list:
             flash("Please select at least one open day.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         if not city:
             flash("Please select a city.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         if not state:
             flash("Please select a state.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         if not timezone:
             flash("Please select a timezone", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         if interval == 'none':
             interval = None
@@ -116,34 +131,34 @@ def create_business():
                 interval = int(interval)
             except (ValueError, TypeError):
                 flash("Invalid appointment interval selected.", "error")
-                return redirect(url_for('business.create_business'))
+                return render_template('create_business.html', form_data=form_data)
         else:
             flash("Please select an appointment interval", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         if opening_time and closing_time and opening_time >= closing_time:
             flash("Opening time must be earlier than closing time.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
         
         if len(name) > 50:
             flash("Business name must be under 50 characters.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         if description and len(description) > 1000:
             flash("Description must be under 1000 characters.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         if len(city) > 50:
             flash("City name must be under 50 characters.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
         
         if len(social_url) > 2000:
             flash("Social url must be less than 2000 characters")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
         
         if len(website_url) > 2000:
             flash("Website url must be less than 2000 characters")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
         response = supabase.table('businesses').insert({
             "user_id": str(current_user.id),
@@ -165,9 +180,10 @@ def create_business():
             return redirect(url_for('business.dashboard'))
         else:
             flash("Failed to create business. Please try again.", "error")
-            return redirect(url_for('business.create_business'))
+            return render_template('create_business.html', form_data=form_data)
 
-    return render_template('create_business.html')
+    form_data = {}
+    return render_template('create_business.html', form_data=form_data)
 
 @business_bp.route('/view_business/<int:business_id>')
 @login_required

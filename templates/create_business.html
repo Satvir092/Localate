@@ -65,147 +65,149 @@
     {% endwith %}
 
     <form method="POST" enctype="multipart/form-data" class="create-business-form">
-      <input type="text" name="name" placeholder="Business Name" required maxlength="50" />
+      <input type="text" name="name" placeholder="Business Name" required maxlength="50" value="{{ form_data.name or '' }}" />
+      
       <select name="category" id="category" required>
-          <option value="" disabled selected>Select a category</option>
-          <option value="Beauty and Personal Care">Beauty and Personal Care</option>
-          <option value="Health and Wellness">Health and Wellness</option>
-          <option value="Medical Services">Medical Services</option>
-          <option value="Fitness and Training">Fitness and Training</option>
-          <option value="Childcare and Parenting">Childcare and Parenting</option>
-          <option value="Pet Care">Pet Care</option>
-          <option value="Automotive Services">Automotive Services</option>
-          <option value="Home Services">Home Services</option>
-          <option value="Photography and Media">Photography and Media</option>
-          <option value="Education and Tutoring">Education and Tutoring</option>
-          <option value="Event Services">Event Services</option>
-          <option value="Legal and Notary">Legal and Notary</option>
-          <option value="Financial Services">Financial Services</option>
-          <option value="Technology Services">Technology Services</option>
-          <option value="Retail and Boutiques">Retail and Boutiques</option>
-          <option value="Repair and Maintenance">Repair and Maintenance</option>
-          <option value="Consulting and Coaching">Consulting and Coaching</option>
-          <option value="Art and Design">Art and Design</option>
-          <option value="Moving and Delivery">Moving and Delivery</option>
-          <option value="Food and Beverage">Food and Beverage</option>
+          <option value="" disabled {{ 'selected' if not form_data.category else '' }}>Select a category</option>
+          <option value="Beauty and Personal Care" {{ 'selected' if form_data.category == 'Beauty and Personal Care' else '' }}>Beauty and Personal Care</option>
+          <option value="Health and Wellness" {{ 'selected' if form_data.category == 'Health and Wellness' else '' }}>Health and Wellness</option>
+          <option value="Medical Services" {{ 'selected' if form_data.category == 'Medical Services' else '' }}>Medical Services</option>
+          <option value="Fitness and Training" {{ 'selected' if form_data.category == 'Fitness and Training' else '' }}>Fitness and Training</option>
+          <option value="Childcare and Parenting" {{ 'selected' if form_data.category == 'Childcare and Parenting' else '' }}>Childcare and Parenting</option>
+          <option value="Pet Care" {{ 'selected' if form_data.category == 'Pet Care' else '' }}>Pet Care</option>
+          <option value="Automotive Services" {{ 'selected' if form_data.category == 'Automotive Services' else '' }}>Automotive Services</option>
+          <option value="Home Services" {{ 'selected' if form_data.category == 'Home Services' else '' }}>Home Services</option>
+          <option value="Photography and Media" {{ 'selected' if form_data.category == 'Photography and Media' else '' }}>Photography and Media</option>
+          <option value="Education and Tutoring" {{ 'selected' if form_data.category == 'Education and Tutoring' else '' }}>Education and Tutoring</option>
+          <option value="Event Services" {{ 'selected' if form_data.category == 'Event Services' else '' }}>Event Services</option>
+          <option value="Legal and Notary" {{ 'selected' if form_data.category == 'Legal and Notary' else '' }}>Legal and Notary</option>
+          <option value="Financial Services" {{ 'selected' if form_data.category == 'Financial Services' else '' }}>Financial Services</option>
+          <option value="Technology Services" {{ 'selected' if form_data.category == 'Technology Services' else '' }}>Technology Services</option>
+          <option value="Retail and Boutiques" {{ 'selected' if form_data.category == 'Retail and Boutiques' else '' }}>Retail and Boutiques</option>
+          <option value="Repair and Maintenance" {{ 'selected' if form_data.category == 'Repair and Maintenance' else '' }}>Repair and Maintenance</option>
+          <option value="Consulting and Coaching" {{ 'selected' if form_data.category == 'Consulting and Coaching' else '' }}>Consulting and Coaching</option>
+          <option value="Art and Design" {{ 'selected' if form_data.category == 'Art and Design' else '' }}>Art and Design</option>
+          <option value="Moving and Delivery" {{ 'selected' if form_data.category == 'Moving and Delivery' else '' }}>Moving and Delivery</option>
+          <option value="Food and Beverage" {{ 'selected' if form_data.category == 'Food and Beverage' else '' }}>Food and Beverage</option>
         </select>
-      <input type="text" name="city" placeholder="City" required maxlength="50"/>
+      
+      <input type="text" name="city" placeholder="City" required maxlength="50" value="{{ form_data.city or '' }}"/>
 
       <select name="state" id="state" required>
-        <option value="" disabled selected>Select State</option>
-        <option value="AL">AL</option>
-        <option value="AK">AK</option>
-        <option value="AZ">AZ</option>
-        <option value="AR">AR</option>
-        <option value="CA">CA</option>
-        <option value="CO">CO</option>
-        <option value="CT">CT</option>
-        <option value="DE">DE</option>
-        <option value="FL">FL</option>
-        <option value="GA">GA</option>
-        <option value="HI">HI</option>
-        <option value="ID">ID</option>
-        <option value="IL">IL</option>
-        <option value="IN">IN</option>
-        <option value="IA">IA</option>
-        <option value="KS">KS</option>
-        <option value="KY">KY</option>
-        <option value="LA">LA</option>
-        <option value="ME">ME</option>
-        <option value="MD">MD</option>
-        <option value="MA">MA</option>
-        <option value="MI">MI</option>
-        <option value="MN">MN</option>
-        <option value="MS">MS</option>
-        <option value="MO">MO</option>
-        <option value="MT">MT</option>
-        <option value="NE">NE</option>
-        <option value="NV">NV</option>
-        <option value="NH">NH</option>
-        <option value="NJ">NJ</option>
-        <option value="NM">NM</option>
-        <option value="NY">NY</option>
-        <option value="NC">NC</option>
-        <option value="ND">ND</option>
-        <option value="OH">OH</option>
-        <option value="OK">OK</option>
-        <option value="OR">OR</option>
-        <option value="PA">PA</option>
-        <option value="RI">RI</option>
-        <option value="SC">SC</option>
-        <option value="SD">SD</option>
-        <option value="TN">TN</option>
-        <option value="TX">TX</option>
-        <option value="UT">UT</option>
-        <option value="VT">VT</option>
-        <option value="VA">VA</option>
-        <option value="WA">WA</option>
-        <option value="WV">WV</option>
-        <option value="WI">WI</option>
-        <option value="WY">WY</option>
+        <option value="" disabled {{ 'selected' if not form_data.state else '' }}>Select State</option>
+        <option value="AL" {{ 'selected' if form_data.state == 'AL' else '' }}>AL</option>
+        <option value="AK" {{ 'selected' if form_data.state == 'AK' else '' }}>AK</option>
+        <option value="AZ" {{ 'selected' if form_data.state == 'AZ' else '' }}>AZ</option>
+        <option value="AR" {{ 'selected' if form_data.state == 'AR' else '' }}>AR</option>
+        <option value="CA" {{ 'selected' if form_data.state == 'CA' else '' }}>CA</option>
+        <option value="CO" {{ 'selected' if form_data.state == 'CO' else '' }}>CO</option>
+        <option value="CT" {{ 'selected' if form_data.state == 'CT' else '' }}>CT</option>
+        <option value="DE" {{ 'selected' if form_data.state == 'DE' else '' }}>DE</option>
+        <option value="FL" {{ 'selected' if form_data.state == 'FL' else '' }}>FL</option>
+        <option value="GA" {{ 'selected' if form_data.state == 'GA' else '' }}>GA</option>
+        <option value="HI" {{ 'selected' if form_data.state == 'HI' else '' }}>HI</option>
+        <option value="ID" {{ 'selected' if form_data.state == 'ID' else '' }}>ID</option>
+        <option value="IL" {{ 'selected' if form_data.state == 'IL' else '' }}>IL</option>
+        <option value="IN" {{ 'selected' if form_data.state == 'IN' else '' }}>IN</option>
+        <option value="IA" {{ 'selected' if form_data.state == 'IA' else '' }}>IA</option>
+        <option value="KS" {{ 'selected' if form_data.state == 'KS' else '' }}>KS</option>
+        <option value="KY" {{ 'selected' if form_data.state == 'KY' else '' }}>KY</option>
+        <option value="LA" {{ 'selected' if form_data.state == 'LA' else '' }}>LA</option>
+        <option value="ME" {{ 'selected' if form_data.state == 'ME' else '' }}>ME</option>
+        <option value="MD" {{ 'selected' if form_data.state == 'MD' else '' }}>MD</option>
+        <option value="MA" {{ 'selected' if form_data.state == 'MA' else '' }}>MA</option>
+        <option value="MI" {{ 'selected' if form_data.state == 'MI' else '' }}>MI</option>
+        <option value="MN" {{ 'selected' if form_data.state == 'MN' else '' }}>MN</option>
+        <option value="MS" {{ 'selected' if form_data.state == 'MS' else '' }}>MS</option>
+        <option value="MO" {{ 'selected' if form_data.state == 'MO' else '' }}>MO</option>
+        <option value="MT" {{ 'selected' if form_data.state == 'MT' else '' }}>MT</option>
+        <option value="NE" {{ 'selected' if form_data.state == 'NE' else '' }}>NE</option>
+        <option value="NV" {{ 'selected' if form_data.state == 'NV' else '' }}>NV</option>
+        <option value="NH" {{ 'selected' if form_data.state == 'NH' else '' }}>NH</option>
+        <option value="NJ" {{ 'selected' if form_data.state == 'NJ' else '' }}>NJ</option>
+        <option value="NM" {{ 'selected' if form_data.state == 'NM' else '' }}>NM</option>
+        <option value="NY" {{ 'selected' if form_data.state == 'NY' else '' }}>NY</option>
+        <option value="NC" {{ 'selected' if form_data.state == 'NC' else '' }}>NC</option>
+        <option value="ND" {{ 'selected' if form_data.state == 'ND' else '' }}>ND</option>
+        <option value="OH" {{ 'selected' if form_data.state == 'OH' else '' }}>OH</option>
+        <option value="OK" {{ 'selected' if form_data.state == 'OK' else '' }}>OK</option>
+        <option value="OR" {{ 'selected' if form_data.state == 'OR' else '' }}>OR</option>
+        <option value="PA" {{ 'selected' if form_data.state == 'PA' else '' }}>PA</option>
+        <option value="RI" {{ 'selected' if form_data.state == 'RI' else '' }}>RI</option>
+        <option value="SC" {{ 'selected' if form_data.state == 'SC' else '' }}>SC</option>
+        <option value="SD" {{ 'selected' if form_data.state == 'SD' else '' }}>SD</option>
+        <option value="TN" {{ 'selected' if form_data.state == 'TN' else '' }}>TN</option>
+        <option value="TX" {{ 'selected' if form_data.state == 'TX' else '' }}>TX</option>
+        <option value="UT" {{ 'selected' if form_data.state == 'UT' else '' }}>UT</option>
+        <option value="VT" {{ 'selected' if form_data.state == 'VT' else '' }}>VT</option>
+        <option value="VA" {{ 'selected' if form_data.state == 'VA' else '' }}>VA</option>
+        <option value="WA" {{ 'selected' if form_data.state == 'WA' else '' }}>WA</option>
+        <option value="WV" {{ 'selected' if form_data.state == 'WV' else '' }}>WV</option>
+        <option value="WI" {{ 'selected' if form_data.state == 'WI' else '' }}>WI</option>
+        <option value="WY" {{ 'selected' if form_data.state == 'WY' else '' }}>WY</option>
       </select>
 
       <select name="timezone" id="timezone" required>
-      <option value="" disabled selected>Select Time Zone</option>
-      <option value="America/New_York">Eastern Time (ET)</option>
-      <option value="America/Chicago">Central Time (CT)</option>
-      <option value="America/Denver">Mountain Time (MT)</option>
-      <option value="America/Los_Angeles">Pacific Time (PT)</option>
-      <option value="America/Anchorage">Alaska Time</option>
-      <option value="Pacific/Honolulu">Hawaii Time</option>
+      <option value="" disabled {{ 'selected' if not form_data.timezone else '' }}>Select Time Zone</option>
+      <option value="America/New_York" {{ 'selected' if form_data.timezone == 'America/New_York' else '' }}>Eastern Time (ET)</option>
+      <option value="America/Chicago" {{ 'selected' if form_data.timezone == 'America/Chicago' else '' }}>Central Time (CT)</option>
+      <option value="America/Denver" {{ 'selected' if form_data.timezone == 'America/Denver' else '' }}>Mountain Time (MT)</option>
+      <option value="America/Los_Angeles" {{ 'selected' if form_data.timezone == 'America/Los_Angeles' else '' }}>Pacific Time (PT)</option>
+      <option value="America/Anchorage" {{ 'selected' if form_data.timezone == 'America/Anchorage' else '' }}>Alaska Time</option>
+      <option value="Pacific/Honolulu" {{ 'selected' if form_data.timezone == 'Pacific/Honolulu' else '' }}>Hawaii Time</option>
       </select>
       
       <label for="description">Description</label>
-      <textarea name="description" placeholder="Add an address, contact info, or anything else important..." rows="6" maxlength="1000"></textarea>
+      <textarea name="description" placeholder="Add an address, contact info, or anything else important..." rows="6" maxlength="1000">{{ form_data.description or '' }}</textarea>
 
       <div class="weekday-section">
         <label class="section-label">Select Open Days</label>
         <div class="weekday-options">
-          <input type="checkbox" id="monday" name="weekdays" value="Monday">
+          <input type="checkbox" id="monday" name="weekdays" value="Monday" {{ 'checked' if 'Monday' in (form_data.weekdays or []) else '' }}>
           <label for="monday">Mon</label>
 
-          <input type="checkbox" id="tuesday" name="weekdays" value="Tuesday">
+          <input type="checkbox" id="tuesday" name="weekdays" value="Tuesday" {{ 'checked' if 'Tuesday' in (form_data.weekdays or []) else '' }}>
           <label for="tuesday">Tue</label>
 
-          <input type="checkbox" id="wednesday" name="weekdays" value="Wednesday">
+          <input type="checkbox" id="wednesday" name="weekdays" value="Wednesday" {{ 'checked' if 'Wednesday' in (form_data.weekdays or []) else '' }}>
           <label for="wednesday">Wed</label>
 
-          <input type="checkbox" id="thursday" name="weekdays" value="Thursday">
+          <input type="checkbox" id="thursday" name="weekdays" value="Thursday" {{ 'checked' if 'Thursday' in (form_data.weekdays or []) else '' }}>
           <label for="thursday">Thu</label>
 
-          <input type="checkbox" id="friday" name="weekdays" value="Friday">
+          <input type="checkbox" id="friday" name="weekdays" value="Friday" {{ 'checked' if 'Friday' in (form_data.weekdays or []) else '' }}>
           <label for="friday">Fri</label>
 
-          <input type="checkbox" id="saturday" name="weekdays" value="Saturday">
+          <input type="checkbox" id="saturday" name="weekdays" value="Saturday" {{ 'checked' if 'Saturday' in (form_data.weekdays or []) else '' }}>
           <label for="saturday">Sat</label>
 
-          <input type="checkbox" id="sunday" name="weekdays" value="Sunday">
+          <input type="checkbox" id="sunday" name="weekdays" value="Sunday" {{ 'checked' if 'Sunday' in (form_data.weekdays or []) else '' }}>
           <label for="sunday">Sun</label>
         </div>
       </div>
 
       <label for="start_time">Start Time</label>
-      <input type="time" id="start_time" name="start_time" required />
+      <input type="time" id="start_time" name="start_time" required value="{{ form_data.start_time or '' }}" />
 
       <label for="end_time">End Time</label>
-      <input type="time" id="end_time" name="end_time" required />
+      <input type="time" id="end_time" name="end_time" required value="{{ form_data.end_time or '' }}" />
 
       <select name="interval" required>
-        <option value="" disabled selected>Select Appointment Interval</option>
-        <option value="none">We don't do appointments</option>
-        <option value="15">15 minutes</option>
-        <option value="30">30 minutes</option>
-        <option value="60">1 hour</option>
-        <option value="90">1.5 hour</option>
-        <option value="120">2 hour</option>
-        <option value="180">3 hour</option>
+        <option value="" disabled {{ 'selected' if not form_data.interval else '' }}>Select Appointment Interval</option>
+        <option value="none" {{ 'selected' if form_data.interval == 'none' else '' }}>We don't do appointments</option>
+        <option value="15" {{ 'selected' if form_data.interval == '15' else '' }}>15 minutes</option>
+        <option value="30" {{ 'selected' if form_data.interval == '30' else '' }}>30 minutes</option>
+        <option value="60" {{ 'selected' if form_data.interval == '60' else '' }}>1 hour</option>
+        <option value="90" {{ 'selected' if form_data.interval == '90' else '' }}>1.5 hour</option>
+        <option value="120" {{ 'selected' if form_data.interval == '120' else '' }}>2 hour</option>
+        <option value="180" {{ 'selected' if form_data.interval == '180' else '' }}>3 hour</option>
       </select>
 
       <label for="social_url">Social Media (optional)</label>
-      <input type="social" id="social_url" name="social_url" placeholder="Instagram URL" maxlength="2000"/>
+      <input type="social" id="social_url" name="social_url" placeholder="Instagram URL" maxlength="2000" value="{{ form_data.social_url or '' }}"/>
 
       <label for="website_url">Website (optional)</label>
-      <input type="website" id="website_url" name="website_url" placeholder="Website URL" maxlength="2000"/>
+      <input type="website" id="website_url" name="website_url" placeholder="Website URL" maxlength="2000" value="{{ form_data.website_url or '' }}"/>
 
       <button type="submit">Create Business</button>
     </form>
