@@ -69,28 +69,27 @@
       
       <select name="category" id="category" required>
           <option value="" disabled {{ 'selected' if not form_data.category else '' }}>Select a category</option>
-          <option value="Beauty and Personal Care" {{ 'selected' if form_data.category == 'Beauty and Personal Care' else '' }}>Beauty and Personal Care</option>
-          <option value="Health and Wellness" {{ 'selected' if form_data.category == 'Health and Wellness' else '' }}>Health and Wellness</option>
-          <option value="Medical Services" {{ 'selected' if form_data.category == 'Medical Services' else '' }}>Medical Services</option>
-          <option value="Fitness and Training" {{ 'selected' if form_data.category == 'Fitness and Training' else '' }}>Fitness and Training</option>
-          <option value="Childcare and Parenting" {{ 'selected' if form_data.category == 'Childcare and Parenting' else '' }}>Childcare and Parenting</option>
-          <option value="Pet Care" {{ 'selected' if form_data.category == 'Pet Care' else '' }}>Pet Care</option>
+          <option value="Art & Design" {{ 'selected' if form_data.category == 'Art & Design' else '' }}>Art & Design</option>
           <option value="Automotive Services" {{ 'selected' if form_data.category == 'Automotive Services' else '' }}>Automotive Services</option>
-          <option value="Home Services" {{ 'selected' if form_data.category == 'Home Services' else '' }}>Home Services</option>
-          <option value="Photography and Media" {{ 'selected' if form_data.category == 'Photography and Media' else '' }}>Photography and Media</option>
-          <option value="Education and Tutoring" {{ 'selected' if form_data.category == 'Education and Tutoring' else '' }}>Education and Tutoring</option>
-          <option value="Event Services" {{ 'selected' if form_data.category == 'Event Services' else '' }}>Event Services</option>
-          <option value="Legal and Notary" {{ 'selected' if form_data.category == 'Legal and Notary' else '' }}>Legal and Notary</option>
+          <option value="Beauty & Personal Care" {{ 'selected' if form_data.category == 'Beauty & Personal Care' else '' }}>Beauty & Personal Care</option>
+          <option value="Childcare & Parenting" {{ 'selected' if form_data.category == 'Childcare & Parenting' else '' }}>Childcare & Parenting</option>
+          <option value="Consulting & Coaching" {{ 'selected' if form_data.category == 'Consulting & Coaching' else '' }}>Consulting & Coaching</option>
+          <option value="Education & Tutoring" {{ 'selected' if form_data.category == 'Education & Tutoring' else '' }}>Education & Tutoring</option>
+          <option value="Event Planning" {{ 'selected' if form_data.category == 'Event Planning' else '' }}>Event Planning</option>
           <option value="Financial Services" {{ 'selected' if form_data.category == 'Financial Services' else '' }}>Financial Services</option>
+          <option value="Fitness & Training" {{ 'selected' if form_data.category == 'Fitness & Training' else '' }}>Fitness & Training</option>
+          <option value="Food & Beverage" {{ 'selected' if form_data.category == 'Food & Beverage' else '' }}>Food & Beverage</option>
+          <option value="Health & Wellness" {{ 'selected' if form_data.category == 'Health & Wellness' else '' }}>Health & Wellness</option>
+          <option value="Home Services" {{ 'selected' if form_data.category == 'Home Services' else '' }}>Home Services</option>
+          <option value="Legal & Notary" {{ 'selected' if form_data.category == 'Legal & Notary' else '' }}>Legal & Notary</option>
+          <option value="Marketing Agency" {{ 'selected' if form_data.category == 'Marketing Agency' else '' }}>Marketing Agency</option>
+          <option value="Medical Services" {{ 'selected' if form_data.category == 'Medical Services' else '' }}>Medical Services</option>
+          <option value="Pet Care" {{ 'selected' if form_data.category == 'Pet Care' else '' }}>Pet Care</option>
+          <option value="Photography & Media" {{ 'selected' if form_data.category == 'Photography & Media' else '' }}>Photography & Media</option>
+          <option value="Repair & Maintenance" {{ 'selected' if form_data.category == 'Repair & Maintenance' else '' }}>Repair & Maintenance</option>
+          <option value="Retail & Boutiques" {{ 'selected' if form_data.category == 'Retail & Boutiques' else '' }}>Retail & Boutiques</option>
           <option value="Technology Services" {{ 'selected' if form_data.category == 'Technology Services' else '' }}>Technology Services</option>
-          <option value="Retail and Boutiques" {{ 'selected' if form_data.category == 'Retail and Boutiques' else '' }}>Retail and Boutiques</option>
-          <option value="Repair and Maintenance" {{ 'selected' if form_data.category == 'Repair and Maintenance' else '' }}>Repair and Maintenance</option>
-          <option value="Consulting and Coaching" {{ 'selected' if form_data.category == 'Consulting and Coaching' else '' }}>Consulting and Coaching</option>
-          <option value="Art and Design" {{ 'selected' if form_data.category == 'Art and Design' else '' }}>Art and Design</option>
-          <option value="Moving and Delivery" {{ 'selected' if form_data.category == 'Moving and Delivery' else '' }}>Moving and Delivery</option>
-          <option value="Food and Beverage" {{ 'selected' if form_data.category == 'Food and Beverage' else '' }}>Food and Beverage</option>
-        </select>
-      
+          <option value="Transportation Services" {{ 'selected' if form_data.category == 'Transportation Services' else '' }}>Transportation Services</option>
       <input type="text" name="city" placeholder="City" required maxlength="50" value="{{ form_data.city or '' }}"/>
 
       <select name="state" id="state" required>

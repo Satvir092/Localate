@@ -100,8 +100,8 @@ def create_business():
         supabase = current_app.supabase
         existing_businesses = supabase.table('businesses').select("id").eq("user_id", str(current_user.id)).execute()
         
-        if len(existing_businesses.data) >= 5:
-            flash("You can only create a maximum of 5 businesses per account.", "error")
+        if len(existing_businesses.data) >= 100:
+            flash("You can only create a maximum of 100 businesses per account.", "error")
             return render_template('create_business.html', form_data=form_data)
 
         if not name:

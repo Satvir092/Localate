@@ -71,15 +71,28 @@
       <label for="category">Category</label>
       <select name="category" id="category" required>
         <option value="" disabled>Select a category</option>
-        {% for cat in [
-          "Beauty and Personal Care", "Health and Wellness", "Medical Services",
-          "Fitness and Training", "Childcare and Parenting", "Pet Care",
-          "Automotive Services", "Home Services", "Photography and Media",
-          "Education", "Event Services", "Legal Services",
-          "Financial Services", "Technology Services", "Retail and Boutiques",
-          "Repair and Maintenance", "Consulting", "Art and Design",
-          "Moving and Delivery", "Food and Beverage"
-        ] %}
+          {% for cat in [
+              "Art & Design",
+              "Automotive Services",
+              "Beauty & Wellness",
+              "Childcare",
+              "Consulting",
+              "Education",
+              "Event Planning",
+              "Financial Services",
+              "Food & Beverage",
+              "Health Services",
+              "Home Services",
+              "Legal Services",
+              "Marketing Agency",
+              "Moving & Delivery",
+              "Pet Care",
+              "Photography & Media",
+              "Repair & Maintenance",
+              "Retail & Boutiques",
+              "Technology Services",
+              "Transportation Services"
+          ] %}
           <option value="{{ cat }}" {% if business.category == cat %}selected{% endif %}>{{ cat }}</option>
         {% endfor %}
       </select>
