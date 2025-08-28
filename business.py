@@ -338,7 +338,7 @@ def edit_business(business_id):
             flash("Business name must be under 50 characters.", "error")
             return redirect(url_for('business.create_business'))
 
-        if len(description) > 500:
+        if len(description) > 1000:
             flash("Description must be under 500 characters.", "error")
             return redirect(url_for('business.create_business'))
 
