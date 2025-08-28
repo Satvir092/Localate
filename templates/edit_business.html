@@ -66,7 +66,7 @@
 
     <form method="POST" enctype="multipart/form-data" class="create-business-form">
       <label for="name">Business Name</label>
-      <input type="text" name="name" id="name" placeholder="Business Name" value="{{ business.name }}" required />
+      <input type="text" name="name" id="name" maxlength="50" placeholder="Business Name" value="{{ business.name }}" required />
 
       <label for="category">Category</label>
       <select name="category" id="category" required>
@@ -98,7 +98,7 @@
       </select>
 
       <label for="city">City</label>
-      <input type="text" name="city" id="city" placeholder="City" value="{{ business.city }}" required />
+      <input type="text" name="city" id="city" maxlength="50" placeholder="City" value="{{ business.city }}" required />
 
       <label for="state">State</label>
       <select name="state" id="state" required>
@@ -120,7 +120,7 @@
       </select>
 
       <label for="description">Description</label>
-      <textarea name="description" id="description" placeholder="Add an address, contact info, or anything else important..." rows="5">{{ business.description }}</textarea>
+      <textarea name="description" id="description" maxlength="1000" placeholder="Add an address, contact info, or anything else important..." rows="5">{{ business.description }}</textarea>
 
       <div class="weekday-section">
         <label class="section-label">Select Open Days</label>
@@ -154,10 +154,10 @@
       </select>
 
       <label for="social_url">Social Media (optional)</label>
-      <input type="social" id="social_url" name="social_url" value="{{ business.social_url }}"/>
+      <input type="social" id="social_url" maxlength="2000" name="social_url" value="{{ business.social_url }}"/>
 
       <label for="website_url">Website (optional)</label>
-      <input type="website" id="wesbite_url" name="website_url" value="{{ business.website_url }}"/>
+      <input type="website" id="wesbite_url" maxlength="2000" name="website_url" value="{{ business.website_url }}"/>
 
       <button type="submit">Update Business</button>
     </form>
