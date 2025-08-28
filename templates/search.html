@@ -55,15 +55,28 @@
         <div class="filter-bar">
           <select name="category" aria-label="Filter by category">
             <option value="">Category</option>
-            {% for cat in [
-              "Beauty and Personal Care", "Health and Wellness", "Medical Services",
-              "Fitness and Training", "Childcare and Parenting", "Pet Care",
-              "Automotive Services", "Home Services", "Photography and Media",
-              "Education", "Event Services", "Legal Services",
-              "Financial Services", "Technology Services", "Retail and Boutiques",
-              "Repair and Maintenance", "Consulting", "Art and Design",
-              "Moving and Delivery", "Food and Beverage"
-            ] %}
+              {% for cat in [
+                  "Art & Design",
+                  "Automotive Services",
+                  "Beauty & Wellness",
+                  "Childcare",
+                  "Consulting",
+                  "Education",
+                  "Event Planning",
+                  "Financial Services",
+                  "Food & Beverage",
+                  "Health Services",
+                  "Home Services",
+                  "Legal Services",
+                  "Marketing Agency",
+                  "Moving & Delivery",
+                  "Pet Care",
+                  "Photography & Media",
+                  "Repair & Maintenance",
+                  "Retail & Boutiques",
+                  "Technology Services",
+                  "Transportation Services"
+              ] %}
               <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
             {% endfor %}
           </select>
@@ -98,13 +111,15 @@
                 {% if business.profile_image_url %}
                   <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
                 {% else %}
-                  <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" style="width:80px; height:80px; color:#888;">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" >
                     <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
                   </svg>
                 {% endif %}
 
                 <div class="business-info-left">
-                  <h3 class="business-name">{{ business.name }}</h3>
+                  <h3 class="business-name">
+                    {{ business.name[:20] }}{% if business.name|length > 20 %}…{% endif %}
+                  </h3>
                   <span class="business-category">{{ business.category }}</span>
                   <div class="business-rating">
                     <a href="{{ url_for('business.view_reviews',

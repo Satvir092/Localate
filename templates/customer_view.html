@@ -215,7 +215,7 @@
     </div>
 
     <div class="action-buttons">
-      <a href="{{ url_for('search.search', q=q, category=category, city=city, state=state) }}" class="btn secondary">← Back to Search</a>
+      <a href="{{ url_for('search.search', q=q, category=category, city=city, state=state) }}" class="btn secondary">Back to Search</a>
       <button class="btn primary" onclick="openBookingModal()">📅 Book Appointment</button>
 
       {% if current_user.is_authenticated %}

@@ -201,33 +201,10 @@
           <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" style="display: none;" />
         </form>
 
-        <div class="edit-profile-btn-container">
+        <div class="edit-profile-btn-container" class="action-buttons">
           <a href="{{ url_for('user.edit_profile') }}" class="edit-profile-btn">Manage Profile</a>
+          <a href="{{ url_for('business.create_business') }}" class="action-btn">+ Create a Business</a>
         </div>
-      </div>
-
-      <div class="action-buttons">
-        <a href="{{ url_for('business.create_business') }}" class="action-btn">+ Create Your Business</a>
-        <a href="{{ url_for('search.search') }}" class="action-btn">
-          <svg
-            class="search-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            width="20"
-            height="20"
-            style="vertical-align: middle; margin-right: 4px;"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-4.35-4.35m0 0a7.5 7.5 0 1 0-10.6-10.6 7.5 7.5 0 0 0 10.6 10.6z"
-            />
-          </svg>
-          Search Businesses
-        </a>
       </div>
     </section>
 

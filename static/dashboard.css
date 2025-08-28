@@ -162,6 +162,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 2rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   letter-spacing: 0.025em;
 }
@@ -543,15 +544,13 @@ a:focus-visible {
     padding: 1.5rem 1rem;
     gap: 1.5rem;
   }
-}
-
-@media (max-width: 668px) {
-  .action-btn {
+    .action-btn {
     min-width: 100%;
     max-width: 100%;
     flex-basis: 100%;
   }
 }
+
 
 @media (max-width: 350px) {
   .action-buttons {
