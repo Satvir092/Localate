@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='create_business.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
 </head>
 <body>
 
@@ -39,10 +40,12 @@
   <ul class="nav-links">
     <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+      <li><a href="{{ url_for('search.search') }}"><i class="fas fa-store nav-icon-small"></i> Browse</a></li>
     <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
+    <li><a href="{{ url_for('business.premium') }}"><i class="fas fa-crown nav-icon-small" style="color: #ffffff;"></i> Premium</a></li>
     <li>
-      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
-        <i class="fas fa-heart"></i> Support Us
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #f7f7f7;">
+        <i class="fas fa-heart"></i> About Us
       </a>
     </li>
   </ul>
@@ -154,10 +157,10 @@
       </select>
 
       <label for="social_url">Social Media (optional)</label>
-      <input type="social" id="social_url" maxlength="2000" name="social_url" value="{{ business.social_url }}"/>
+      <input type="social" id="social_url" placeholder="Instagram URL" maxlength="2000" name="social_url" value="{{ business.social_url }}"/>
 
       <label for="website_url">Website (optional)</label>
-      <input type="website" id="wesbite_url" maxlength="2000" name="website_url" value="{{ business.website_url }}"/>
+      <input type="website" id="wesbite_url" placeholder="Website URL" maxlength="2000" name="website_url" value="{{ business.website_url }}"/>
 
       <button type="submit">Update Business</button>
     </form>

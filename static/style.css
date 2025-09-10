@@ -10,6 +10,24 @@ body {
   color: #eee; 
 }
 
+.nav-icon-small {
+  color: #fff;         
+  fill: currentColor;   
+}
+
+.navbar li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar li a:hover {
+  color: #6c63ff;       
+}
+
+.navbar li a:hover .nav-icon-small {
+  color: #fff;          
+}
+
 .nav-icon {
   height: 38px;
   width: auto;
@@ -915,6 +933,11 @@ body {
   transform-origin: center;
   display: inline-block;
   color: #ff6b9d;
+}
+
+.support-link .fas.fa-heart {
+  position: relative;
+  top: -2px; /* Negative value moves it up, positive moves it down */
 }
 
 @media (max-width: 1210px) {

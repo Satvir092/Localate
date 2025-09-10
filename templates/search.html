@@ -5,6 +5,34 @@
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Search Businesses</title>
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {% for business in businesses %}
+      {
+        "@type": "LocalBusiness",
+        "position": {{ loop.index }},
+        "name": "{{ business.name }}",
+        "image": "{{ business.profile_image_url or url_for('static', filename='default_business.svg', _external=True) }}",
+        "url": "{{ url_for('search.customer_view', business_id=business.id, _external=True) }}",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "{{ business.city }}",
+          "addressRegion": "{{ business.state }}"
+        },
+        "telephone": "{{ business.phone or '' }}",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "{{ business.avg_rating or 0 }}",
+          "reviewCount": "{{ business.review_count or 0 }}"
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -19,9 +47,11 @@
     <ul class="nav-links">
       <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+      <li><a href="{{ url_for('search.search') }}"><i class="fas fa-store nav-icon-small"></i> Browse</a></li>
+      <li><a href="{{ url_for('business.premium') }}"><i class="fas fa-crown nav-icon-small" style="color: #ffffff;"></i> Premium</a></li>
       <li>
-      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
-        <i class="fas fa-heart"></i> Support Us
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ffffff;">
+        <i class="fas fa-heart"></i> About Us
       </a>
     </li>
     </ul>
@@ -30,56 +60,42 @@
     </label>
   </nav>
 
-  <main class="search-page">
+<main class="search-page">
+      <!-- Mobile/Tablet Toggle Buttons -->
+    <div class="content-toggle-section">
+      <button id="search-toggle" class="toggle-btn active">
+        <i class="fas fa-search"></i>
+        <span>Search Results</span>
+      </button>
+      <button id="leaderboard-toggle" class="toggle-btn">
+        <i class="fas fa-trophy"></i>
+        <span>Leaderboard</span>
+      </button>
+    </div>
 
-    <section class="search-bar-section">
-      <form id="search-form" method="GET" action="{{ url_for('search.search') }}" class="search-form" role="search" autocomplete="off">
-        <div class="search-input-wrapper">
-          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"/>
-          </svg>
-          <input
-            type="search"
-            id="q"
-            name="q"
-            placeholder="Search for any business"
-            value="{{ request.args.get('q', '') }}"
-            autofocus
-            aria-label="Search businesses"
-            class="search-input"
-          />
-          <ul id="autocomplete-list" class="autocomplete-suggestions hidden"></ul>
-        </div>
-
-        <div class="filter-bar">
-          <select name="category" aria-label="Filter by category">
-            <option value="">Category</option>
-              {% for cat in [
-                  "Art & Design",
-                  "Automotive Services",
-                  "Beauty & Wellness",
-                  "Childcare",
-                  "Consulting",
-                  "Education",
-                  "Event Planning",
-                  "Financial Services",
-                  "Food & Beverage",
-                  "Health Services",
-                  "Home Services",
-                  "Legal Services",
-                  "Marketing Agency",
-                  "Moving & Delivery",
-                  "Pet Care",
-                  "Photography & Media",
-                  "Repair & Maintenance",
-                  "Retail & Boutiques",
-                  "Technology Services",
-                  "Transportation Services"
-              ] %}
-              <option value="{{ cat }}" {% if request.args.get('category') == cat %}selected{% endif %}>{{ cat }}</option>
-            {% endfor %}
-          </select>
+  <section class="search-bar-section">
+    <form id="search-form" method="GET" action="{{ url_for('search.search') }}" class="search-form" role="search" autocomplete="off">
+      
+      <!-- Main Search Container -->
+      <div class="main-search-container">
+        <div class="search-input-row">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z"/>
+            </svg>
+            <input
+              type="search"
+              id="q"
+              name="q"
+              placeholder="Search for any business"
+              value="{{ request.args.get('q', '') }}"
+              autofocus
+              aria-label="Search businesses"
+              class="search-input"
+            />
+            <ul id="autocomplete-list" class="autocomplete-suggestions hidden"></ul>
+          </div>
 
           <input
             type="text"
@@ -91,45 +107,214 @@
             list="location-list"
           />
 
-          <datalist id="location-list"></datalist>
-
-          <select name="popularity" aria-label="Sort by Popularity">
-          <option value="">Popularity</option>
-          <option value="most" {% if popularity == 'most' %}selected{% endif %}>Most</option>
-          <option value="least" {% if popularity == 'least' %}selected{% endif %}>Least</option>
-        </select>
+          <select name="popularity" aria-label="Sort by Popularity" class="popularity-select">
+            <option value="">Reviews</option>
+            <option value="most" {% if popularity == 'most' %}selected{% endif %}>Most</option>
+            <option value="least" {% if popularity == 'least' %}selected{% endif %}>Least</option>
+          </select>
         </div>
-      </form>
-    </section>
+      </div>
 
-    {% if businesses is not none %}
-      <section class="results-section">
-        {% if businesses %}
-          <div class="results-grid">
-            {% for business in businesses %}
-              <div class="business-card">
-                {% if business.profile_image_url %}
-                  <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
-                {% else %}
-                  <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" >
-                    <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
-                  </svg>
-                {% endif %}
+      <datalist id="location-list"></datalist>
 
-                <div class="business-info-left">
-                  <h3 class="business-name">
-                    {{ business.name[:20] }}{% if business.name|length > 20 %}…{% endif %}
-                  </h3>
-                  <span class="business-category">{{ business.category }}</span>
-                  <div class="business-rating">
-                    <a href="{{ url_for('business.view_reviews',
-                   business_id=business.id,
-                   q=request.args.get('q', ''),
-                   category=request.args.get('category', ''),
-                   city=request.args.get('city', ''),
-                   state=request.args.get('state', '')) }}"
-                    class="star-display" aria-label="View reviews for {{ business.name }}">
-                      {% set avg_rating = business.avg_rating or 0 %}
+      <!-- Hidden category input for form submission -->
+      <input type="hidden" name="category" id="category-input" value="{{ request.args.get('category', '') }}">
+    </form>
+  </section>
+
+    <!-- Main Content Layout with Categories, Results, and Leaderboard -->
+    <div class="main-content-layout">
+      <!-- Category Section - Left Sidebar on Desktop -->
+      <div class="category-section">
+        <h3 class="category-title">Browse by Category</h3>
+        <div class="category-grid">
+          <div class="category-block" data-category="">
+            <div class="category-icon">
+              <i class="fas fa-th-large"></i>
+            </div>
+            <span class="category-name">All Categories</span>
+          </div>
+          
+          <div class="category-block" data-category="Art & Design">
+            <div class="category-icon">
+              <i class="fas fa-palette"></i>
+            </div>
+            <span class="category-name">Art & Design</span>
+          </div>
+          
+          <div class="category-block" data-category="Automotive Services">
+            <div class="category-icon">
+              <i class="fas fa-car"></i>
+            </div>
+            <span class="category-name">Automotive</span>
+          </div>
+          
+          <div class="category-block" data-category="Beauty & Wellness">
+            <div class="category-icon">
+              <i class="fas fa-spa"></i>
+            </div>
+            <span class="category-name">Beauty & Wellness</span>
+          </div>
+          
+          <div class="category-block" data-category="Childcare">
+            <div class="category-icon">
+              <i class="fas fa-baby"></i>
+            </div>
+            <span class="category-name">Childcare</span>
+          </div>
+          
+          <div class="category-block" data-category="Consulting">
+            <div class="category-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <span class="category-name">Consulting</span>
+          </div>
+          
+          <div class="category-block" data-category="Education">
+            <div class="category-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <span class="category-name">Education</span>
+          </div>
+          
+          <div class="category-block" data-category="Event Planning">
+            <div class="category-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <span class="category-name">Events</span>
+          </div>
+          
+          <div class="category-block" data-category="Financial Services">
+            <div class="category-icon">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <span class="category-name">Financial</span>
+          </div>
+          
+          <div class="category-block" data-category="Food & Beverage">
+            <div class="category-icon">
+              <i class="fas fa-utensils"></i>
+            </div>
+            <span class="category-name">Food & Beverage</span>
+          </div>
+          
+          <div class="category-block" data-category="Health Services">
+            <div class="category-icon">
+              <i class="fas fa-heartbeat"></i>
+            </div>
+            <span class="category-name">Health</span>
+          </div>
+          
+          <div class="category-block" data-category="Home Services">
+            <div class="category-icon">
+              <i class="fas fa-home"></i>
+            </div>
+            <span class="category-name">Home Services</span>
+          </div>
+          
+          <div class="category-block" data-category="Legal Services">
+            <div class="category-icon">
+              <i class="fas fa-balance-scale"></i>
+            </div>
+            <span class="category-name">Legal</span>
+          </div>
+          
+          <div class="category-block" data-category="Marketing Agency">
+            <div class="category-icon">
+              <i class="fas fa-bullhorn"></i>
+            </div>
+            <span class="category-name">Marketing</span>
+          </div>
+          
+          <div class="category-block" data-category="Moving & Delivery">
+            <div class="category-icon">
+              <i class="fas fa-truck"></i>
+            </div>
+            <span class="category-name">Moving & Delivery</span>
+          </div>
+          
+          <div class="category-block" data-category="Pet Care">
+            <div class="category-icon">
+              <i class="fas fa-paw"></i>
+            </div>
+            <span class="category-name">Pet Care</span>
+          </div>
+          
+          <div class="category-block" data-category="Photography & Media">
+            <div class="category-icon">
+              <i class="fas fa-camera"></i>
+            </div>
+            <span class="category-name">Photography</span>
+          </div>
+          
+          <div class="category-block" data-category="Repair & Maintenance">
+            <div class="category-icon">
+              <i class="fas fa-tools"></i>
+            </div>
+            <span class="category-name">Repair</span>
+          </div>
+          
+          <div class="category-block" data-category="Retail & Boutiques">
+            <div class="category-icon">
+              <i class="fas fa-shopping-bag"></i>
+            </div>
+            <span class="category-name">Retail</span>
+          </div>
+          
+          <div class="category-block" data-category="Technology Services">
+            <div class="category-icon">
+              <i class="fas fa-laptop"></i>
+            </div>
+            <span class="category-name">Technology</span>
+          </div>
+          
+          <div class="category-block" data-category="Transportation Services">
+            <div class="category-icon">
+              <i class="fas fa-bus"></i>
+            </div>
+            <span class="category-name">Transportation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Content Area -->
+      <div class="center-content">
+        <!-- Search Results Section -->
+        <div id="search-results-content" class="content-panel active">
+          {% if businesses is not none %}
+            <section class="results-section">
+              {% if businesses %}
+                <div class="results-grid">
+                  {% for business in businesses %}
+                    <div class="business-card">
+                      {% if business.profile_image_url %}
+                        <img src="{{ business.profile_image_url }}" alt="Business Image" class="business-image" />
+                      {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img" >
+                          <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
+                        </svg>
+                      {% endif %}
+                      <div class="business-info-left">
+                      <h3 class="business-name">
+                        {{ business.name[:20] }}{% if business.name|length > 20 %}…{% endif %}
+                        {% if business.user.is_premium %}
+                          <span class="premium-badge">
+                            <i class="fa-solid fa-shield badge-background"></i>
+                            <i class="fa-solid fa-cat badge-icon"></i>
+                          </span>
+                        {% endif %}
+                      </h3>
+                      <span class="business-category">{{ business.category }}</span>
+                      <div class="business-rating">
+                      <a href="{{ url_for('business.view_reviews',
+                        business_id=business.id,
+                        q=query,
+                        category=category,
+                        location=location,
+                        popularity=popularity,
+                        page=page) }}"
+                        class="star-display" aria-label="View reviews for {{ business.name }}">
+                        {% set avg_rating = business.avg_rating or 0 %}
                         {% set review_count = business.review_count or 0 %}
                         {% set rounded_rating = avg_rating|round(0, 'common') %}
                         {% for i in range(1, 6) %}
@@ -141,157 +326,628 @@
                         {% endfor %}
                         <span class="rating-score">{{ '%.1f' % avg_rating }}</span>
                         <span class="rating-count">({{ review_count }})</span>
-                                            </a>
+                      </a>
+                    </div>
+                    </div>
+
+                    <div class="business-info-trophy">
+                      <button 
+                          class="trophy-btn" 
+                          data-business="{{ business.id }}"
+                          data-user-authenticated="{{ 'true' if current_user.is_authenticated else 'false' }}">
+                          🏆 <span class="trophy-count">{{ business.trophies or 0 }}</span>
+                      </button>
+                    </div>
+
+                    <div class="business-info-center">
+                      <p class="business-location">{{ business.location }}</p>
+                    </div>
+
+                    <div class="business-info-right">
+                     <a href="{{ url_for('search.customer_view', business_id=business.id,
+                      q=query, 
+                      category=category,
+                      location=location,
+                      popularity=popularity,
+                      page=page) }}" class="view-profile-btn">View Profile</a>
+                    </div>
                   </div>
-                </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <p class="no-results">No businesses found.</p>
+            {% endif %}
+          </section>
+        {% endif %}
 
-                <div class="business-info-center">
-                  <p class="business-location">{{ business.city }}, {{ business.state }}</p>
-                </div>
+        <!-- Pagination Section -->
+        <section class="pagination-section">
+          {% if total_pages > 1 %}
+            <div class="pagination">
+              {% if page > 1 %}
+                <a href="{{ url_for('search.search', page=page-1, q=query, category=category, location=location, popularity=popularity) }}">&laquo;</a>
+              {% endif %}
 
-                <div class="business-info-right">
-                  <a href="{{ url_for('search.customer_view', business_id=business.id, q=request.args.get('q', ''), category=request.args.get('category', ''), city=request.args.get('city', ''), state=request.args.get('state', '')) }}" class="view-profile-btn">View Profile</a>
+              {% if page == 1 %}
+                <span class="current-page">1</span>
+              {% else %}
+                <a href="{{ url_for('search.search', page=1, q=query, category=category, location=location, popularity=popularity) }}">1</a>
+              {% endif %}
+
+              {% if page > 4 %}<span class="ellipsis">...</span>{% endif %}
+
+              {% for p in range(page-2, page+3) %}
+                {% if p > 1 and p < total_pages %}
+                  {% if p == page %}
+                    <span class="current-page">{{ p }}</span>
+                  {% else %}
+                    <a href="{{ url_for('search.search', page=p, q=query, category=category, location=location, popularity=popularity) }}">{{ p }}</a>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              {% if page < total_pages - 3 %}<span class="ellipsis">...</span>{% endif %}
+
+              {% if total_pages > 1 %}
+                {% if page == total_pages %}
+                  <span class="current-page">{{ total_pages }}</span>
+                {% else %}
+                  <a href="{{ url_for('search.search', page=total_pages, q=query, category=category, location=location, popularity=popularity) }}">{{ total_pages }}</a>
+                {% endif %}
+              {% endif %}
+
+              {% if page < total_pages %}
+                <a href="{{ url_for('search.search', page=page+1, q=query, category=category, location=location, popularity=popularity) }}">&raquo;</a>
+              {% endif %}
+            </div>
+          {% endif %}
+        </section>
+      </div>
+
+        <!-- Leaderboard Section -->
+        <div id="leaderboard-content" class="content-panel">
+          <section class="leaderboard-section">
+            <div class="leaderboard-header">
+              <h2 class="leaderboard-title">
+                <i class="fas fa-trophy"></i>
+                Trophy Leaders
+              </h2>
+              <div class="leaderboard-controls">
+                <div class="location-autocomplete-wrapper">
+                  <input
+                    type="text"
+                    id="leaderboard-location"
+                    placeholder="Filter by location"
+                    class="leaderboard-location-input"
+                    list="leaderboard-location-list"
+                  />
+                  <ul id="leaderboard-autocomplete-list" class="autocomplete-suggestions hidden"></ul>
                 </div>
               </div>
-            {% endfor %}
+            </div>
+            
+            <div id="leaderboard-list" class="leaderboard-list">
+              <div class="leaderboard-loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                Loading leaderboard...
+              </div>
+            </div>
+
+            <div id="leaderboard-pagination" class="leaderboard-pagination hidden">
+              <!-- Pagination buttons will be inserted here -->
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Desktop Leaderboard Sidebar -->
+      <div class="leaderboard-sidebar">
+        <section class="leaderboard-section">
+          <div class="leaderboard-header">
+            <h3 class="leaderboard-title">
+              <i class="fas fa-trophy"></i>
+              Trophy Leaders
+            </h3>
+            <div class="leaderboard-controls">
+              <div class="location-autocomplete-wrapper">
+                <input
+                  type="text"
+                  id="sidebar-leaderboard-location"
+                  placeholder="Filter by location"
+                  class="leaderboard-location-input"
+                  list="sidebar-leaderboard-location-list"
+                />
+                <ul id="sidebar-leaderboard-autocomplete-list" class="autocomplete-suggestions hidden"></ul>
+              </div>
+            </div>
           </div>
-        {% else %}
-          <p class="no-results">No businesses found.</p>
-        {% endif %}
-      </section>
-    {% endif %}
-  </div>
-</section>
+          
+          <div id="sidebar-leaderboard-list" class="leaderboard-list">
+            <div class="leaderboard-loading">
+              <i class="fas fa-spinner fa-spin"></i>
+              Loading...
+            </div>
+          </div>
 
-<section class="pagination-section">
-  {% if total_pages > 1 %}
-  <div class="pagination">
-    {% if page > 1 %}
-      <a href="{{ url_for('search.search', page=page-1, q=query, category=category, state=state, popularity=popularity) }}">&laquo;</a>
-    {% endif %}
+          <div id="sidebar-leaderboard-pagination" class="leaderboard-pagination hidden">
+            <!-- Pagination buttons will be inserted here -->
+          </div>
+        </section>
+      </div>
+    </div>
 
-    {% if page == 1 %}
-      <span class="current-page">1</span>
-    {% else %}
-      <a href="{{ url_for('search.search', page=1, q=query, category=category, state=state, popularity=popularity) }}">1</a>
-    {% endif %}
+    <datalist id="leaderboard-location-list"></datalist>
+    <datalist id="sidebar-leaderboard-location-list"></datalist>
 
-    {% if page > 4 %}
-      <span class="ellipsis">...</span>
-    {% endif %}
-
-    {% for p in range(page-2, page+3) %}
-      {% if p > 1 and p < total_pages %}
-        {% if p == page %}
-          <span class="current-page">{{ p }}</span>
-        {% else %}
-          <a href="{{ url_for('search.search', page=p, q=query, category=category, state=state, popularity=popularity) }}">{{ p }}</a>
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-
-    {% if page < total_pages - 3 %}
-      <span class="ellipsis">...</span>
-    {% endif %}
-
-    {% if total_pages > 1 %}
-      {% if page == total_pages %}
-        <span class="current-page">{{ total_pages }}</span>
-      {% else %}
-        <a href="{{ url_for('search.search', page=total_pages, q=query, category=category, state=state, popularity=popularity) }}">{{ total_pages }}</a>
-      {% endif %}
-    {% endif %}
-
-    {% if page < total_pages %}
-      <a href="{{ url_for('search.search', page=page+1, q=query, category=category, state=state, popularity=popularity) }}">&raquo;</a>
-    {% endif %}
-  </div>
-  {% endif %}
-</section>
   </main>
 
-  <script>
+<script>
+// Load locations data for all datalists
 document.addEventListener("DOMContentLoaded", function () {
   fetch("{{ url_for('static', filename='locations.json') }}")
     .then(response => response.json())
     .then(data => {
-      const datalist = document.getElementById("location-list");
+      const datalists = [
+        document.getElementById("location-list"),
+        document.getElementById("leaderboard-location-list"),
+        document.getElementById("sidebar-leaderboard-location-list")
+      ];
 
-      // Loop through states
-      Object.keys(data).forEach(state => {
-        // Add state itself
-        const stateOption = document.createElement("option");
-        stateOption.value = state;
-        datalist.appendChild(stateOption);
+      datalists.forEach(datalist => {
+        if (datalist) {
+          datalist.innerHTML = '';
+          
+          Object.keys(data).forEach(state => {
+            const stateOption = document.createElement("option");
+            stateOption.value = state;
+            datalist.appendChild(stateOption);
 
-        // Add each city with state
-        data[state].forEach(city => {
-          const cityOption = document.createElement("option");
-          cityOption.value = `${city}, ${state}`;
-          datalist.appendChild(cityOption);
-        });
+            data[state].forEach(city => {
+              const cityOption = document.createElement("option");
+              cityOption.value = `${city}, ${state}`;
+              datalist.appendChild(cityOption);
+            });
+          });
+        }
       });
     })
     .catch(err => console.error("Error loading locations.json:", err));
 });
-</script>
-<script>
-  function setupAutocomplete(inputId, listId, formId) {
-    const input = document.getElementById(inputId);
-    const list = document.getElementById(listId);
-    const form = document.getElementById(formId);
 
-    if (!input || !list || !form) return;
+// Category selection functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const categoryBlocks = document.querySelectorAll('.category-block');
+  const categoryInput = document.getElementById('category-input');
+  const searchForm = document.getElementById('search-form');
+  
+  // Set active category on page load
+  const currentCategory = categoryInput.value;
+  categoryBlocks.forEach(block => {
+    if (block.dataset.category === currentCategory) {
+      block.classList.add('active');
+    }
+  });
+  
+  categoryBlocks.forEach(block => {
+    block.addEventListener('click', function() {
+      categoryBlocks.forEach(b => b.classList.remove('active'));
+      
+      this.classList.add('active');
+      
+      categoryInput.value = this.dataset.category;
+      
+      searchForm.submit();
+    });
+  });
+});
 
-    input.addEventListener('input', async () => {
-      const query = input.value.trim();
+// Mobile/tablet content toggle
+document.addEventListener('DOMContentLoaded', function() {
+  const searchToggle = document.getElementById('search-toggle');
+  const leaderboardToggle = document.getElementById('leaderboard-toggle');
+  const searchContent = document.getElementById('search-results-content');
+  const leaderboardContent = document.getElementById('leaderboard-content');
 
-      if (query.length < 2) {
-        list.innerHTML = '';
-        list.classList.add('hidden');
+  searchToggle.addEventListener('click', function() {
+    searchToggle.classList.add('active');
+    leaderboardToggle.classList.remove('active');
+    searchContent.classList.add('active');
+    leaderboardContent.classList.remove('active');
+  });
+
+  leaderboardToggle.addEventListener('click', function() {
+    leaderboardToggle.classList.add('active');
+    searchToggle.classList.remove('active');
+    leaderboardContent.classList.add('active');
+    searchContent.classList.remove('active');
+  });
+});
+
+// FIXED LeaderboardManager class
+class LeaderboardManager {
+  constructor(containerId, paginationId, locationInputId) {
+    this.container = document.getElementById(containerId);
+    this.pagination = document.getElementById(paginationId);
+    this.locationInput = document.getElementById(locationInputId);
+    this.currentPage = 1;
+    this.perPage = 10;
+    this.currentLocation = '';
+    this.debounceTimer = null;
+    this.debounceMs = 300; // debounce delay for typing
+    this.endpoint = "{{ url_for('search.leaderboard') }}";
+
+    this.init();
+  }
+
+  init() {
+    // initial load
+    this.loadLeaderboard();
+
+    if (!this.locationInput) return;
+
+    // when user selects from datalist or browser "change" fires
+    this.locationInput.addEventListener('change', () => {
+      this._applyLocationAndReload(/*force*/ true);
+    });
+
+    // debounce typing, allow searching while typing (keeps datalist UX)
+    this.locationInput.addEventListener('input', (e) => {
+      clearTimeout(this.debounceTimer);
+
+      // if input cleared -> reset filter immediately
+      if (!e.target.value.trim()) {
+        this.currentLocation = '';
+        this.currentPage = 1;
+        this.loadLeaderboard();
         return;
       }
 
-      try {
-        const res = await fetch(`/search/autocomplete?q=${encodeURIComponent(query)}`);
-        const suggestions = await res.json();
-
-        list.innerHTML = '';
-        suggestions.forEach(name => {
-          const li = document.createElement('li');
-          li.textContent = name;
-          li.addEventListener('click', () => {
-            input.value = name;
-            list.innerHTML = '';
-            form.submit();
-          });
-          list.appendChild(li);
-        });
-
-        list.classList.remove('hidden');
-      } catch (err) {
-        console.error('Autocomplete fetch failed', err);
-      }
+      this.debounceTimer = setTimeout(() => {
+        this._applyLocationAndReload(false);
+      }, this.debounceMs);
     });
 
-    input.addEventListener('keydown', (e) => {
+    // Enter key triggers immediate search
+    this.locationInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-
-        e.preventDefault(); 
-        form.submit();
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!input.contains(e.target) && !list.contains(e.target)) {
-        list.innerHTML = '';
-        list.classList.add('hidden');
+        e.preventDefault();
+        clearTimeout(this.debounceTimer);
+        this._applyLocationAndReload(true);
       }
     });
   }
 
+  _applyLocationAndReload(force = false) {
+    const newLocation = (this.locationInput && this.locationInput.value || '').trim();
+    // Only reload if changed OR forced (Enter / explicit change)
+    if (newLocation !== this.currentLocation || force) {
+      this.currentLocation = newLocation;
+      this.currentPage = 1;
+      this.loadLeaderboard();
+    }
+  }
+
+  async loadLeaderboard() {
+    if (!this.container) return;
+
+    this.showLoading();
+
+    try {
+      const params = new URLSearchParams({
+        page: this.currentPage,
+        per_page: this.perPage
+      });
+
+      if (this.currentLocation) params.append('location', this.currentLocation);
+
+      const url = `${this.endpoint}?${params.toString()}`;
+      console.log('[Leaderboard] fetching ->', url);
+
+      const response = await fetch(url, {
+        headers: { 'Accept': 'application/json' },
+        credentials: 'same-origin'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('[Leaderboard] response JSON ->', data);
+
+      // backend returns success + leaderboard (your code uses "leaderboard")
+      if (data && data.success) {
+        const list = data.leaderboard || data.businesses || [];
+        this.renderLeaderboard(list);
+        this.renderPagination(data);
+      } else {
+        // helpful error text
+        const errMsg = (data && (data.error || data.message)) || 'Failed to load leaderboard';
+        this.showError(errMsg);
+      }
+    } catch (err) {
+      console.error('[Leaderboard] load error:', err);
+      this.showError(`Error loading leaderboard: ${err.message}`);
+    }
+  }
+
+  showLoading() {
+    if (!this.container) return;
+    this.container.innerHTML = `
+      <div class="leaderboard-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading leaderboard...
+      </div>
+    `;
+  }
+
+  showError(message) {
+    if (!this.container) return;
+    this.container.innerHTML = `
+      <div class="leaderboard-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        ${message}
+      </div>
+    `;
+  }
+
+renderLeaderboard(businesses) {
+  if (!this.container) return;
+
+  if (!businesses || businesses.length === 0) {
+    const locationText = this.currentLocation ? ` in "${this.currentLocation}"` : '';
+    this.container.innerHTML = `<div class="no-leaderboard-results">No businesses found${locationText}.</div>`;
+    return;
+  }
+
+  const startRank = (this.currentPage - 1) * this.perPage + 1;
+
+  this.container.innerHTML = businesses.map((b, i) => {
+    const rank = startRank + i;
+    const rankClass = rank <= 3 ? `rank-${rank}` : '';
+    const trophies = this.formatCount(b.trophies || b.trophy_count || 0);
+    const city = b.city || '';
+    const state = b.state || '';
+    
+    const profileUrl = `/search/customer_view/${b.id || b.business_id}`;
+
+    return `
+      <div class="leaderboard-item ${rankClass}" onclick="window.location.href='${profileUrl}'" style="cursor: pointer;">
+        <div class="leaderboard-rank">
+          ${rank <= 3 ? this.getRankIcon(rank) : `<span class="rank-number">#${rank}</span>`}
+        </div>
+        <div class="leaderboard-info">
+          <h4 class="leaderboard-business-name">${this.truncateText(b.name || '', 25)}</h4>
+          <p class="leaderboard-location">${city}${city && state ? ', ' : ''}${state}</p>
+        </div>
+        <div class="leaderboard-trophies">
+          <span class="trophy-icon">🏆</span>
+          <span class="trophy-count-display">${trophies}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+  renderPagination(data) {
+    if (!this.pagination) return;
+
+    const total = (data && (data.total || data.total_pages || 0)) || 0;
+    const totalPages = Math.ceil(total / this.perPage);
+
+    if (totalPages <= 1) {
+      this.pagination.classList.add('hidden');
+      this.pagination.innerHTML = '';
+      return;
+    }
+
+    this.pagination.classList.remove('hidden');
+    let html = '';
+
+    if (this.currentPage > 1) {
+      html += `<button class="leaderboard-page-btn" data-page="${this.currentPage - 1}">&laquo;</button>`;
+    }
+
+    for (let i = Math.max(1, this.currentPage - 2); i <= Math.min(totalPages, this.currentPage + 2); i++) {
+      if (i === this.currentPage) html += `<span class="leaderboard-page-current">${i}</span>`;
+      else html += `<button class="leaderboard-page-btn" data-page="${i}">${i}</button>`;
+    }
+
+    if (this.currentPage < totalPages) {
+      html += `<button class="leaderboard-page-btn" data-page="${this.currentPage + 1}">&raquo;</button>`;
+    }
+
+    this.pagination.innerHTML = html;
+    this.pagination.querySelectorAll('.leaderboard-page-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.currentPage = parseInt(btn.dataset.page, 10) || 1;
+        this.loadLeaderboard();
+      });
+    });
+  }
+
+  getRankIcon(rank) {
+    const icons = {
+      1: '<i class="fas fa-crown gold-crown"></i>',
+      2: '<i class="fas fa-medal silver-medal"></i>',
+      3: '<i class="fas fa-award bronze-award"></i>'
+    };
+    return icons[rank] || `<span class="rank-number">#${rank}</span>`;
+  }
+
+  formatCount(num) {
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return String(num);
+  }
+
+  truncateText(text, maxLength) {
+    return (text && text.length > maxLength) ? text.substring(0, maxLength) + '…' : (text || '');
+  }
+}
+
+// init (replace any previous initializers)
+document.addEventListener('DOMContentLoaded', function() {
+  new LeaderboardManager('leaderboard-list', 'leaderboard-pagination', 'leaderboard-location');
+  new LeaderboardManager('sidebar-leaderboard-list', 'sidebar-leaderboard-pagination', 'sidebar-leaderboard-location');
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const trophyButtons = document.querySelectorAll('.trophy-btn');
+
+  function formatCount(num) {
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return num;
+  }
+
+  function createFlyingTrophy(button) {
+    const rect = button.getBoundingClientRect();
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2;
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    const flyingTrophy = document.createElement('div');
+    flyingTrophy.innerHTML = '🏆';
+    flyingTrophy.style.cssText = `
+      position: fixed;
+      left: ${startX}px;
+      top: ${startY}px;
+      font-size: 24px;
+      z-index: 10000;
+      pointer-events: none;
+      transform-origin: center;
+      transition: none;
+    `;
+    document.body.appendChild(flyingTrophy);
+
+    requestAnimationFrame(() => {
+      flyingTrophy.style.cssText += `
+        transform: translate(-50%, -50%) scale(3) rotate(360deg);
+        left: ${centerX}px;
+        top: ${centerY}px;
+        opacity: 0;
+        transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      `;
+    });
+
+    setTimeout(() => {
+      flyingTrophy.remove();
+    }, 1200);
+  }
+
+  // Format counts initially
+  trophyButtons.forEach(button => {
+    const countSpan = button.querySelector('.trophy-count');
+    if (countSpan) countSpan.textContent = formatCount(parseInt(countSpan.textContent, 10) || 0);
+  });
+
+  // Add backend logic for trophy buttons
+  trophyButtons.forEach(button => {
+    const businessId = button.dataset.business;
+    const isAuthenticated = button.dataset.userAuthenticated === 'true';
+
+    if (isAuthenticated) {
+      fetch(`/search/business/${businessId}/trophy_status`, { credentials: 'same-origin' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.has_trophy) button.classList.add('trophy-given');
+      })
+      .catch(console.error);
+    }
+
+    button.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!isAuthenticated) return alert('You must be logged in to give a trophy.');
+      if (button.disabled) return;
+
+      button.disabled = true;
+      try {
+        const res = await fetch(`/search/business/${businessId}/trophy`, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error');
+
+        const countSpan = button.querySelector('.trophy-count');
+        if (countSpan) countSpan.textContent = formatCount(data.new_count);
+
+        if (data.toggled === 'added') {
+          createFlyingTrophy(button);
+          button.classList.add('trophy-given');
+        } else {
+          button.classList.remove('trophy-given');
+        }
+      } catch (err) {
+        console.error(err);
+        alert(err.message);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+});
+
+// Search autocomplete functionality
+function setupAutocomplete(inputId, listId, formId) {
+  const input = document.getElementById(inputId);
+  const list = document.getElementById(listId);
+  const form = document.getElementById(formId);
+
+  if (!input || !list || !form) return;
+
+  input.addEventListener('input', async () => {
+    const query = input.value.trim();
+    if (query.length < 2) {
+      list.innerHTML = '';
+      list.classList.add('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch(`{{ url_for('search.autocomplete') }}?q=${encodeURIComponent(query)}`);
+      const suggestions = await res.json();
+      list.innerHTML = '';
+
+      suggestions.forEach(name => {
+        const li = document.createElement('li');
+        li.textContent = name;
+        li.addEventListener('click', () => {
+          input.value = name;
+          list.innerHTML = '';
+          list.classList.add('hidden');
+          form.submit();
+        });
+        list.appendChild(li);
+      });
+
+      list.classList.remove('hidden');
+    } catch (err) {
+      console.error('Autocomplete error', err);
+    }
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      form.submit();
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      list.innerHTML = '';
+      list.classList.add('hidden');
+    }
+  });
+}
+
+// Setup autocomplete for main search bar
+document.addEventListener('DOMContentLoaded', function() {
   setupAutocomplete('q', 'autocomplete-list', 'search-form');
-  setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
+});
 </script>
 
 </body>

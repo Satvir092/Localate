@@ -3,16 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Log In - Localate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upgrade to Premium - Localate</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='premium.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://www.google.com/recaptcha/api.js?render=6LfBN5ErAAAAAF-F2RHljBWOe8RmKypO8CaPu5g8"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
 </head>
 <body>
-
   <nav class="navbar">
     <div class="nav-logo">
       Localate <img src="{{ url_for('static', filename='cat_logo.svg') }}" alt="Localate Logo" class="nav-icon">
@@ -55,44 +53,73 @@
     </label>
   </nav>
 
-  <section class="auth-section">
-    <h2>Login</h2>
-      {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <ul class="flash-messages">
-        {% for category, message in messages %}
-          <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-    <form method="POST" class="auth-form">
-      <input name="username_or_email" placeholder="Username or Email" required />
-      <input name="password" type="password" placeholder="Password" required />
-      <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
-      <button type="submit" class="cta-button">Let's go</button>
-       <p style="margin-top: 1rem; text-align: center;">
-    </form>
-    <p>Don't have an account? <a href="{{ url_for('auth.signup') }}">Sign Up</a></p>
-           <p style="margin-top: 1rem; text-align: center;">
-    <a href="{{ url_for('auth.forgot_password') }}" style="color: #a78bfa; font-size: 0.9rem; text-decoration: none;">
-      Forgot password?
-    </a>
-  </section>
+  <main class="premium-container">
+    <section class="hero-section">
+        <h1 class="hero-title">Upgrade to Premium</h1>
+        <p class="hero-subtitle">Unlock powerful features to grow your business and stand out from the competition</p>
+      </div>
 
-  <script>
-  grecaptcha.ready(function() {
-    const form = document.querySelector('.auth-form'); 
-    form.addEventListener('submit', function(event) {
-      event.preventDefault();  
-      grecaptcha.execute('6LfBN5ErAAAAAF-F2RHljBWOe8RmKypO8CaPu5g8', {action: 'login'}).then(function(token) {
-        document.getElementById('g-recaptcha-response').value = token;
-        form.submit(); 
-      });
-    });
-  });
-</script>
+      <div class="cta-section">
+        <div class="price-display">
+          <span class="currency">$</span>
+          <span class="price">4.99</span>
+          <span class="period">/month</span>
+        </div>
 
+        <button class="cta-button">
+          <i class="fas fa-rocket"></i>
+          Upgrade Now
+        </button>
+
+        <p class="money-back">
+          Cancel anytime
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h3 class="feature-title">Brand Customization</h3>
+          <ul class="feature-list">
+            <li>Custom colors & themes</li>
+            <li>Professional gradients</li>
+            <li>Brand fonts</li>
+            <li>Unique visual identity</li>
+          </ul>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <!-- Cat inside shield -->
+            <span class="feature-badge">
+              <i class="fa-solid fa-shield badge-background"></i>
+              <i class="fa-solid fa-cat badge-icon"></i>
+            </span>
+          </div>
+          <h3 class="feature-title">Premium Badge</h3>
+          <ul class="feature-list">
+            <li>Higher business status</li>
+            <li>Instant credibility</li>
+            <li>Quality commitment</li>
+            <li>Customer confidence</li>
+          </ul>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-search-plus"></i>
+          </div>
+          <h3 class="feature-title">Priority Ranking</h3>
+          <ul class="feature-list">
+            <li>Top search results</li>
+            <li>Maximum visibility</li>
+            <li>3x more leads</li>
+            <li>Market dominance</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
   <script>
 function setupAutocomplete(inputId, listId, formId) {
   const input = document.getElementById(inputId);
@@ -143,90 +170,30 @@ function setupAutocomplete(inputId, listId, formId) {
 setupAutocomplete('q', 'autocomplete-list', 'search-form');
 setupAutocomplete('navbar-q', 'navbar-autocomplete-list', 'navbar-search-form');
 </script>
-
-
-</body>
-
-<div id="cookie-banner">
-  <p>We use cookies to improve your experience on our site. By using our site, you consent to cookies.</p>
-  <button id="accept-cookies">Got it</button>
-</div>
-
-<style>
-  #cookie-banner {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #2e2e3e;
-    color: #ddd;
-    font-family: Arial, sans-serif;
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.3);
-    transform: translateY(100%);
-    transition: transform 0.4s ease;
-    z-index: 10000;
-  }
-
-  #cookie-banner.show {
-    transform: translateY(0);
-  }
-
-  #cookie-banner p {
-    margin: 0;
-    font-size: 1rem;
-    max-width: 70%;
-    color: #ddd;
-  }
-
-  #cookie-banner button {
-    background: #7e57c2;
-    color: white;
-    border: none;
-    padding: 0.5rem 1.3rem;
-    border-radius: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-    user-select: none;
-  }
-
-  #cookie-banner button:hover {
-    background: #9c77d9;
-  }
-
-  @media (max-width: 600px) {
-    #cookie-banner {
-      flex-direction: column;
-      padding: 1rem;
-      text-align: center;
-      gap: 1rem;
-    }
-
-    #cookie-banner p {
-      max-width: 100%;
-    }
-  }
-</style>
-
+<script src="https://js.stripe.com/v3/"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const banner = document.getElementById("cookie-banner");
-    const acceptBtn = document.getElementById("accept-cookies");
+  // Use the key passed from the backend route
+  const stripe = Stripe("{{ stripe_publishable_key }}");
 
-    if (!localStorage.getItem("cookiesAccepted")) {
-      setTimeout(() => banner.classList.add("show"), 500);
+  document.querySelector('.cta-button').addEventListener('click', async () => {
+    try {
+      const res = await fetch("{{ url_for('business.create_checkout_session') }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const data = await res.json();
+      if (data.sessionId) {
+        await stripe.redirectToCheckout({ sessionId: data.sessionId });
+      } else if (data.error) {
+        alert("Error creating checkout session: " + data.error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong. Please try again.");
     }
-
-    acceptBtn.addEventListener("click", () => {
-      localStorage.setItem("cookiesAccepted", "true");
-      banner.classList.remove("show");
-    });
   });
 </script>
-
+</body>
 </html>

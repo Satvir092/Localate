@@ -19,6 +19,10 @@ def create_app():
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
     app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
     app.config['BREVO_API_KEY'] = os.getenv('BREVO_API_KEY')
+    app.config['STRIPE_PUBLISHABLE_KEY'] = os.getenv('STRIPE_PUBLISHABLE_KEY')
+    app.config['STRIPE_SECRET_KEY'] = os.getenv('STRIPE_SECRET_KEY')
+    app.config['STRIPE_PRODUCT_ID'] = os.getenv('STRIPE_PRODUCT_ID')
+    app.config['STRIPE_WEBHOOK_SECRET'] = os.getenv('STRIPE_WEBHOOK_SECRET')
 
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
@@ -41,4 +45,4 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=False)
+    app.run(debug=True)

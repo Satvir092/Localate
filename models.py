@@ -4,7 +4,7 @@ from flask import current_app
 from postgrest.exceptions import APIError
 
 class User(UserMixin):
-    def __init__(self, id, username, email, password_hash, confirmed, confirmed_on, profile_image_url, full_name, phone_number, age):
+    def __init__(self, id, username, email, password_hash, confirmed, confirmed_on, profile_image_url, full_name, phone_number, age, is_premium, stripe_subscription_id):
         self.id = id
         self.username = username
         self.email = email
@@ -15,6 +15,8 @@ class User(UserMixin):
         self.full_name = full_name
         self.phone_number = phone_number
         self.age = age
+        self.is_premium = is_premium
+        self.stripe_subscription_id = stripe_subscription_id
 
     def check_password(self, password):
         from werkzeug.security import check_password_hash
