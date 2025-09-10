@@ -7,6 +7,7 @@
   <title>Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='view_bus.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -59,10 +60,12 @@
     <ul class="nav-links">
       <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small" /> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename='dash_svg.svg') }}" alt="Dash Icon" class="nav-icon-small" /> Dashboard</a></li>
+      <li><a href="{{ url_for('search.search') }}"><i class="fas fa-store nav-icon-small"></i> Browse</a></li>
       <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename='logout.svg') }}" alt="Logout Icon" class="nav-icon-small" /> Logout</a></li>
+      <li><a href="{{ url_for('business.premium') }}"><i class="fas fa-crown nav-icon-small" style="color: #ffffff;"></i> Premium</a></li>
       <li>
-      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
-        <i class="fas fa-heart"></i> Support Us
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ffffff;">
+        <i class="fas fa-heart"></i> About Us
       </a>
     </li>
     </ul>
@@ -112,7 +115,9 @@
     <div class="action-buttons">
       <a href="{{ url_for('business.edit_business', business_id=business.id) }}" class="btn">Edit Info</a>
       <a href="{{ url_for('business.view_appointments', business_id=business.id) }}" class="btn view-appts-btn">Manage Appointments</a>
-      <a href="{{ url_for('business.customize_business', business_id=business.id) }}" class="btn">Cutomize Page</a>
+      <a href="{{ url_for('business.customize_business', business_id=business.id) }}" class="btn">
+        Customize Page <i class="fa-solid fa-crown premium-crown"></i>
+      </a>
       <a href="{{ url_for('business.upload_business_image', business_id=business.id) }}" class="btn">Add Images</a>
       <a href="{{ url_for('business.dashboard') }}" class="btn secondary">Back to Dashboard</a>
     </div>

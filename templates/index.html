@@ -9,9 +9,9 @@
   "url": "https://www.localate.org",
   "logo": {
     "@type": "ImageObject",
-    "url": "https://www.localate.org/static/act_logo.png",
-    "width": "530",
-    "height": "514"
+    "url": "https://www.localate.org/static/logo_google.png",
+    "width": "512",
+    "height": "512"
   }
 }
 </script>
@@ -60,11 +60,12 @@
   <ul class="nav-links">
     <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
     <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
-    <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename = 'login.svg') }}" alt ="Login Icon" name="login-icon" class="nav-icon-small"> Login</a></li>
-    <li><a href="{{ url_for('auth.signup') }}"><img src="{{ url_for('static', filename = 'sign.svg') }}" alt ="Sign Up Icon" name="sign-icon" class="nav-icon-small"> Sign Up</a></li>
+    <li><a href="{{ url_for('search.search') }}"><i class="fas fa-store nav-icon-small"></i> Browse</a></li>
+    <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename = 'login.svg') }}" alt ="Login Icon" name="login-icon" class="nav-icon-small"> Sign In</a></li>
+    <li><a href="{{ url_for('business.premium') }}"><i class="fas fa-crown nav-icon-small" style="color: #ffffff;"></i> Premium</a></li>
     <li>
-      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
-        <i class="fas fa-heart"></i> Support Us
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ffffff;">
+        <i class="fas fa-heart"></i> About Us
       </a>
     </li>
   </ul>
@@ -96,7 +97,7 @@
     </p>
     <ul class="hero-benefits">
       <li><i class="fas fa-briefcase benefit-icon"></i> Create a custom listing</li>
-      <li><i class="fas fa-chart-line benefit-icon"></i> Track reviews and bookings</li>
+      <li><i class="fas fa-chart-line benefit-icon"></i> Track reviews, bookings, and analytics</li>
       <li><i class="fas fa-search benefit-icon"></i> Increase visibility and attract new clients</li>
     </ul>
   </div> 

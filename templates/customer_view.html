@@ -1,10 +1,42 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Business Profile</title>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "{{ business.name }}",
+      "image": [
+        "{{ business.profile_image_url }}"{% if valid_images|length > 0 %}{% for url in valid_images %}, "{{ url }}"{% endfor %}{% endif %}
+      ],
+      "url": "{{ request.url }}",
+      "telephone": "{{ business.phone or '' }}",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "{{ business.city }}",
+        "addressRegion": "{{ business.state }}"
+      },
+      "openingHours": [
+        {% for day in business.open_days %}
+          "{{ day }} {{ business.opening_time }}-{{ business.closing_time }}"{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ],
+      {% if business.avg_rating %}
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "{{ business.avg_rating }}",
+        "reviewCount": "{{ business.review_count or 0 }}"
+      },
+      {% endif %}
+      {% if business.website_url %}
+      "sameAs": "{{ business.website_url }}"
+      {% endif %}
+    }
+    </script>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='customer_view.css') }}" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -39,9 +71,11 @@
     <ul class="nav-links">
       <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+      <li><a href="{{ url_for('search.search') }}"><i class="fas fa-store nav-icon-small"></i> Browse</a></li>
+      <li><a href="{{ url_for('business.premium') }}"><i class="fas fa-crown nav-icon-small" style="color: #ffffff;"></i> Premium</a></li>
       <li>
-      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
-        <i class="fas fa-heart"></i> Support Us
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ffffff;">
+        <i class="fas fa-heart"></i> About Us
       </a>
     </li>
     </ul>
@@ -214,28 +248,40 @@
       <p><strong>Days:</strong> {{ business.open_days | join(', ') }}</p>
     </div>
 
-    <div class="action-buttons">
-      <a href="{{ url_for('search.search', q=q, category=category, city=city, state=state) }}" class="btn secondary">Back to Search</a>
-      <button class="btn primary" onclick="openBookingModal()">📅 Book Appointment</button>
+      <div class="action-buttons">
+        <a href="{{ url_for('search.search', 
+              q=q, 
+              category=category, 
+              location=location, 
+              popularity=popularity, 
+              page=page) }}"  
+              class="btn secondary">Back to Search</a>
+      <button class="btn primary" onclick="openBookingModal()" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-calendar-alt"></i> Book Appointment
+        </button>
 
-      {% if current_user.is_authenticated %}
-        <button class="btn primary" id="openReviewModal">⭐ Review</button>
-      {% else %}
-        <a href="{{ url_for('auth.login') }}" class="btn primary login-btn">⭐ Review</a>
-      {% endif %}
+        {% if current_user.is_authenticated %}
+          <button class="btn primary" id="openReviewModal" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-star"></i> Review
+          </button>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn primary login-btn" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-star"></i> Review
+          </a>
+        {% endif %}
 
-      {% if business.social_url %}
-     <a href="{{ business.social_url }}" class="btn instagram-btn" target="_blank" rel="noopener noreferrer">
-     <i class="fab fa-instagram"></i>Instagram
-      </a>
-      {% endif %}
-      
-      {% if business.website_url %}
-      <a href="{{ business.website_url }}" class="website-btn" target="_blank" rel="noopener noreferrer">
-        <i class="fas fa-globe"></i> Website
-      </a>
-    {% endif %}
-    
+        {% if business.social_url %}
+          <a href="{{ business.social_url }}" class="btn instagram-btn" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-instagram"></i> Instagram
+          </a>
+        {% endif %}
+
+        {% if business.website_url %}
+          <a href="{{ business.website_url }}" class="website-btn" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-globe"></i> Website
+          </a>
+        {% endif %}
+            
      <button class="share-btn" onclick="copyProfileLink()">
       <i class="fas fa-share-alt"></i> Share
     </button>

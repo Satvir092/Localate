@@ -405,6 +405,18 @@ body {
   border: 1px solid #ffecb5;
 }
 
+.premium-crown {
+  margin-left: 6px;        
+  color: #FFC371;          
+  font-size: 1rem;           
+  vertical-align: middle;    
+  transition: transform 0.2s;
+}
+
+.btn:hover .premium-crown {
+  transform: scale(1.2);     
+}
+
 @media (max-width: 1100px) {
   .view-business-container {
     padding: 2.5rem 2rem;

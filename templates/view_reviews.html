@@ -19,9 +19,11 @@
     <ul class="nav-links">
       <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+      <li><a href="{{ url_for('search.search') }}"><i class="fas fa-store nav-icon-small"></i> Browse</a></li>
+      <li><a href="{{ url_for('business.premium') }}"><i class="fas fa-crown nav-icon-small" style="color: #ffffff;"></i> Premium</a></li>
       <li>
-      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
-        <i class="fas fa-heart"></i> Support Us
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ffffff;">
+        <i class="fas fa-heart"></i> About Us
       </a>
     </li>
     </ul>
@@ -105,23 +107,25 @@
     {% endif %}
 
     <div class="back-btn-container">
-        {% if request.args.get('source') == 'business' %}
-            <a href="{{ url_for('search.customer_view', 
-                                 business_id=business.id, 
-                                 q=q, 
-                                 category=category, 
-                                 city=city, 
-                                 state=state) }}" 
-               class="btn-back">Back to Business</a>
-        {% else %}
-            <a href="{{ url_for('search.search', 
-                                 q=q, 
-                                 category=category, 
-                                 city=city, 
-                                 state=state) }}" 
-               class="btn-back">Back to Search</a>
-        {% endif %}
-    </div>
+    {% if request.args.get('source') == 'business' %}
+        <a href="{{ url_for('search.customer_view', 
+                             business_id=business.id, 
+                             q=q, 
+                             category=category, 
+                             location=location,
+                             popularity=popularity,
+                             page=page) }}" 
+           class="btn-back">Back to Business</a>
+    {% else %}
+        <a href="{{ url_for('search.search', 
+                             q=q, 
+                             category=category, 
+                             location=location,
+                             popularity=popularity,
+                             page=page) }}" 
+           class="btn-back">Back to Search</a>
+    {% endif %}
+</div>
   </main>
 </body>
 </html>

@@ -14,6 +14,7 @@ from sib_api_v3_sdk.rest import ApiException
 from datetime import datetime
 from datetime import datetime
 from datetime import datetime, date
+import stripe
 import pytz
 
 business_bp = Blueprint('business', __name__)
@@ -35,7 +36,7 @@ def support():
 @login_required
 def dashboard():
     supabase = current_app.supabase
-    
+
     response = supabase.table('businesses').select('*').eq('user_id', str(current_user.id)).execute()
     businesses = response.data if response.data else []
 
@@ -50,19 +51,35 @@ def dashboard():
 
         appt['business'] = business
 
-        appt_datetime_str = f"{appt['date']} {appt['time']}" 
+        appt_datetime_str = f"{appt['date']} {appt['time']}"
         business_tz_str = business.get('timezone', 'UTC')
         business_tz = pytz.timezone(business_tz_str)
 
         appt_naive = datetime.strptime(appt_datetime_str, '%Y-%m-%d %H:%M:%S')
         appt_localized = business_tz.localize(appt_naive)
-
         now_local = datetime.now(business_tz)
 
         if appt_localized >= now_local:
             filtered_appointments.append(appt)
 
-    return render_template('dashboard.html', user=current_user, businesses=businesses, appointments=filtered_appointments)
+    stripe.api_key = current_app.config['STRIPE_SECRET_KEY']
+    ends_soon = False
+    if current_user.stripe_subscription_id:
+        try:
+            subscription = stripe.Subscription.retrieve(current_user.stripe_subscription_id)
+            if subscription.cancel_at_period_end:
+                ends_soon = True
+        except stripe.error.StripeError as e:
+            print(f"Stripe error: {e}")
+
+    return render_template(
+        'dashboard.html',
+        user=current_user,
+        businesses=businesses,
+        appointments=filtered_appointments,
+        is_premium=current_user.is_premium,
+        ends_soon=ends_soon
+    )
 
 @business_bp.route('/create_business', methods=['GET', 'POST'])
 @login_required
@@ -575,10 +592,17 @@ def submit_review(business_id):
 def view_reviews(business_id):
     supabase = current_app.supabase
 
-    page = int(request.args.get('page', 1))
+    reviews_page = int(request.args.get('reviews_page', 1))
     per_page = 20
-    offset = (page - 1) * per_page
+    offset = (reviews_page - 1) * per_page
 
+    search_params = {
+        'q': request.args.get('q', ''),
+        'category': request.args.get('category', ''),
+        'location': request.args.get('location', ''),
+        'popularity': request.args.get('popularity', ''),
+        'page': request.args.get('page', 1)  
+    }
 
     business_response = supabase.table('businesses')\
         .select('id, name')\
@@ -586,15 +610,34 @@ def view_reviews(business_id):
         .single()\
         .execute()
 
-    reviews_response = supabase.table('reviews')\
-        .select('rating, comment, created_at, users(username)', count='exact')\
+    count_response = supabase.table('reviews')\
+        .select('*', count='exact')\
         .eq('business_id', business_id)\
-        .order('created_at', desc=True)\
-        .range(offset, offset + per_page - 1)\
         .execute()
-
-    reviews = reviews_response.data
-    total_reviews = reviews_response.count or 0
+    
+    total_reviews = count_response.count or 0
+    
+    if offset >= total_reviews and total_reviews > 0:
+        reviews_page = 1
+        offset = 0
+    
+    try:
+        reviews_response = supabase.table('reviews')\
+            .select('rating, comment, created_at, users(username)')\
+            .eq('business_id', business_id)\
+            .order('created_at', desc=True)\
+            .range(offset, offset + per_page - 1)\
+            .execute()
+        reviews = reviews_response.data or []
+    except Exception:
+        reviews_response = supabase.table('reviews')\
+            .select('rating, comment, created_at, users(username)')\
+            .eq('business_id', business_id)\
+            .order('created_at', desc=True)\
+            .range(0, per_page - 1)\
+            .execute()
+        reviews = reviews_response.data or []
+        reviews_page = 1
 
     avg_rating = (
         sum([r['rating'] for r in reviews]) / len(reviews)
@@ -609,12 +652,16 @@ def view_reviews(business_id):
         reviews=reviews,
         avg_rating=round(avg_rating, 1),
         review_count=total_reviews,
-        page=page,
+        reviews_page=reviews_page,  
         total_pages=total_pages,
-        q=request.args.get('q', ''),
-        category=request.args.get('category', ''),
-        city=request.args.get('city', ''),
-        state=request.args.get('state', '')
+        **search_params 
+    )
+
+@business_bp.route("/premium")
+def premium():
+    return render_template(
+        "premium.html",
+        stripe_publishable_key=current_app.config['STRIPE_PUBLISHABLE_KEY']
     )
 
 @business_bp.route('/customize/<int:business_id>', methods=['GET', 'POST'])
@@ -623,14 +670,18 @@ def customize_business(business_id):
     supabase = current_app.supabase
     business = supabase.table("businesses").select("*").eq("id", business_id).single().execute().data
 
-    if request.method == "POST":
+    # Check if current user is premium
+    user = supabase.table("users").select("*").eq("id", current_user.id).single().execute().data
+    if not user["is_premium"]:
 
+        return redirect(url_for("business.premium"))
+
+    if request.method == "POST":
         button_color = request.form.get("button_color") or None
         font_family = request.form.get("font_family") or None
         text_color = request.form.get("text_color") or None
         card_background = request.form.get("card_background") or None
         small_card_bg = request.form.get("small_card_bg") or None
-
 
         supabase.table("businesses").update({
             "button_color": button_color,
@@ -740,3 +791,113 @@ def upload_business_image(business_id):
             return '', 500
 
     return render_template("upload_business_image.html", business=business)
+
+@business_bp.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    try:
+
+        if not getattr(current_user, "confirmed", False):
+            return jsonify({"error": "You must create and confirm an account before purchasing premium."}), 401
+
+        if getattr(current_user, "is_premium", False):
+            return jsonify({"error": "You already have an active subscription"}), 400
+
+        stripe.api_key = current_app.config['STRIPE_SECRET_KEY']
+        price_id = current_app.config['STRIPE_PRODUCT_ID']
+
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            mode='subscription',
+            line_items=[{'price': price_id, 'quantity': 1}],
+            success_url=url_for(
+                'business.checkout_success',
+                _external=True
+            ) + '?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=url_for('business.checkout_cancel', _external=True),
+            customer_email=current_user.email
+        )
+
+        return jsonify({'sessionId': session.id})
+
+    except Exception as e:
+        current_app.logger.error(f"Stripe checkout error: {e}")
+        return jsonify({"error": "There was an error starting checkout. Please try again."}), 500
+
+@business_bp.route('/checkout-success')
+@login_required
+def checkout_success():
+    stripe.api_key = current_app.config['STRIPE_SECRET_KEY']
+    session_id = request.args.get('session_id')
+    if not session_id:
+        return redirect(url_for('business.premium'))
+
+    session = stripe.checkout.Session.retrieve(session_id, expand=['subscription'])
+    subscription_id = session.subscription.id
+
+    supabase = current_app.supabase
+    supabase.table('users').update({
+        'is_premium': True,
+        'stripe_subscription_id': subscription_id
+    }).eq('id', current_user.id).execute()
+
+    return redirect(url_for('business.dashboard'))
+
+
+@business_bp.route('/cancel-subscription', methods=['POST'])
+@login_required
+def cancel_subscription():
+    stripe.api_key = current_app.config['STRIPE_SECRET_KEY']
+
+    supabase = current_app.supabase
+    user_resp = supabase.table('users').select('stripe_subscription_id').eq('id', current_user.id).execute()
+
+    if not user_resp.data or not user_resp.data[0].get('stripe_subscription_id'):
+        return redirect(url_for('business.dashboard'))
+
+    subscription_id = user_resp.data[0]['stripe_subscription_id']
+
+    stripe.Subscription.modify(subscription_id, cancel_at_period_end=True)
+
+    return redirect(url_for('business.dashboard'))
+
+@business_bp.route('/checkout-cancel')
+@login_required
+def checkout_cancel():
+    return redirect(url_for('business.premium'))
+
+@business_bp.route('/webhook', methods=['POST'])
+def stripe_webhook():
+    stripe.api_key = current_app.config['STRIPE_SECRET_KEY']
+    endpoint_secret = current_app.config['STRIPE_WEBHOOK_SECRET']
+
+    payload = request.data
+    sig_header = request.headers.get("Stripe-Signature")
+
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+    except stripe.error.SignatureVerificationError:
+        current_app.logger.error("Invalid webhook signature")
+        return "Invalid signature", 400
+
+    current_app.logger.info(f"Received event: {event['type']}")
+
+    supabase = current_app.supabase
+    subscription = event["data"]["object"]
+    subscription_id = subscription.get("id")
+
+    if event["type"] == "customer.subscription.deleted":
+
+        supabase.table("users").update({
+            "is_premium": False
+        }).eq("stripe_subscription_id", subscription_id).execute()
+        current_app.logger.info(f"Subscription {subscription_id} ended: set is_premium=False")
+
+    elif event["type"] == "customer.subscription.updated":
+        if subscription.get("status") == "canceled":
+
+            supabase.table("users").update({
+                "is_premium": False
+            }).eq("stripe_subscription_id", subscription_id).execute()
+            current_app.logger.info(f"Subscription {subscription_id} canceled: set is_premium=False")
+
+    return jsonify(success=True)

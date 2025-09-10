@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='create_business.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
 </head>
 <body>
 
@@ -39,10 +40,12 @@
   <ul class="nav-links">
     <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
       <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
+      <li><a href="{{ url_for('search.search') }}"><i class="fas fa-store nav-icon-small"></i> Browse</a></li>
     <li><a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename = 'logout.svg') }}" alt ="Logout Icon" name="logout-icon" class="nav-icon-small"> Logout</a></li>
+    <li><a href="{{ url_for('business.premium') }}"><i class="fas fa-crown nav-icon-small" style="color: #ffffff;"></i> Premium</a></li>
     <li>
-      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
-        <i class="fas fa-heart"></i> Support Us
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ffffff;">
+        <i class="fas fa-heart"></i> About Us
       </a>
     </li>
   </ul>
@@ -90,6 +93,8 @@
           <option value="Retail & Boutiques" {{ 'selected' if form_data.category == 'Retail & Boutiques' else '' }}>Retail & Boutiques</option>
           <option value="Technology Services" {{ 'selected' if form_data.category == 'Technology Services' else '' }}>Technology Services</option>
           <option value="Transportation Services" {{ 'selected' if form_data.category == 'Transportation Services' else '' }}>Transportation Services</option>
+      
+      
       <input type="text" name="city" placeholder="City" required maxlength="50" value="{{ form_data.city or '' }}"/>
 
       <select name="state" id="state" required>

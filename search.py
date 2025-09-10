@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, current_app, redirect, ur
 from flask_login import login_required, current_user
 from datetime import datetime
 from math import ceil
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import pytz
 from flask import jsonify
 from sib_api_v3_sdk import Configuration, ApiClient
@@ -10,8 +10,39 @@ from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
 from sib_api_v3_sdk.models.send_smtp_email import SendSmtpEmail
 from sib_api_v3_sdk.rest import ApiException
 
-
 search_bp = Blueprint('search', __name__, url_prefix='/search')
+
+def record_analytics(business_id, field):
+    supabase = current_app.supabase
+
+    # Check if today's row exists
+    existing = supabase.table("business_analytics")\
+        .select("id, " + field)\
+        .eq("business_id", business_id)\
+        .eq("date", str(date.today()))\
+        .execute()
+
+    if not existing.data:
+        # Insert a new row for today
+        supabase.table("business_analytics").insert({
+            "business_id": business_id,
+            "date": str(date.today()),
+            "profile_views": 1 if field == "profile_views" else 0,
+            "search_appearances": 1 if field == "search_appearances" else 0
+        }).execute()
+    else:
+        row = existing.data[0]
+        supabase.table("business_analytics").update({
+            field: row[field] + 1
+        }).eq("id", row["id"]).execute()
+
+def record_search_analytics(businesses):
+    for b in businesses:
+        try:
+            record_analytics(b["id"], "search_appearances")
+        except Exception as e:
+            current_app.logger.warning(f"Analytics error for business {b['id']}: {e}")
+
 
 def create_gcal_event(business_name, business_id, date, time, user_name, user_email, user_phone):
     """
@@ -78,7 +109,6 @@ def search():
     offset = (page - 1) * per_page
 
     if not query and not category and not location:
-        # Return empty results for completely empty searches
         return render_template(
             'search.html',
             businesses=[],
@@ -91,7 +121,8 @@ def search():
             is_empty_search=True
         )
 
-    filters = supabase.table('businesses').select('*', count='exact')
+    # Include the owner's is_premium status
+    filters = supabase.table('businesses').select('*, user:user_id(is_premium)')
 
     if query:
         filters = filters.ilike('name', f'%{query}%')
@@ -102,17 +133,14 @@ def search():
     if location:
         if ',' in location:
             city, state = [part.strip() for part in location.split(',', 1)]
-            
             state_lower = state.lower()
             if state_lower in STATE_ABBREVIATIONS:
                 state = STATE_ABBREVIATIONS[state_lower]
-            
             filters = filters.ilike('city', f'%{city}%').ilike('state', f'%{state}%')
         else:
             location_to_search = location
             if location.lower() in STATE_ABBREVIATIONS:
                 location_to_search = STATE_ABBREVIATIONS[location.lower()]
-            
             filters = filters.or_(f'city.ilike.%{location_to_search}%,state.ilike.%{location_to_search}%')
 
     if popularity == 'most':
@@ -124,6 +152,9 @@ def search():
     businesses = response.data or []
     total_count = response.count or 0
     total_pages = ceil(total_count / per_page)
+
+    if businesses:
+        record_search_analytics(businesses)
 
     return render_template(
         'search.html',
@@ -139,12 +170,12 @@ def search():
 
 @search_bp.route('/customer_view/<int:business_id>')
 def customer_view(business_id):
+    record_analytics(business_id, "profile_views")
     supabase = current_app.supabase
     response = supabase.table('businesses').select('*').eq('id', business_id).single().execute()
     business = response.data
 
     if business:
-
         tz_str = business.get('timezone', 'UTC')
         try:
             tz = pytz.timezone(tz_str)
@@ -167,15 +198,29 @@ def customer_view(business_id):
         raw_opening = None
         raw_closing = None
 
+    # Get parameters and ensure they're not empty strings
+    q = request.args.get('q', '') 
+    category = request.args.get('category', '')
+    location = request.args.get('location', '')
+    popularity = request.args.get('popularity', '') 
+    page = request.args.get('page', '1')
+    
+    # Convert page to int, fallback to 1 if invalid
+    try:
+        page = int(page) if page else 1
+    except (ValueError, TypeError):
+        page = 1
+
     return render_template(
         'customer_view.html',
         business=business,
         raw_opening=raw_opening,
         raw_closing=raw_closing,
-        q=request.args.get('q', ''),
-        category=request.args.get('category', ''),
-        city=request.args.get('city', ''),
-        state=request.args.get('state', '')
+        q=q,
+        category=category,
+        location=location,
+        popularity=popularity,
+        page=page
     )
 
 @search_bp.route('/book_appointment', methods=['POST'])
@@ -446,3 +491,177 @@ def autocomplete():
 
     results = [b['name'] for b in response.data]
     return jsonify(results)
+
+@search_bp.route('/business/<int:business_id>/trophy', methods=['POST'])
+@login_required
+def toggle_trophy(business_id):
+    try:
+        supabase = current_app.supabase
+        user_id = current_user.id  # INT, not str
+
+        # Check if business exists
+        business_check = supabase.table("businesses") \
+            .select("id, trophies") \
+            .eq("id", business_id) \
+            .execute()
+        if not business_check.data:
+            return jsonify({"error": "Business not found"}), 404
+
+        current_count = business_check.data[0].get("trophies", 0)
+
+        # Check if user already gave a trophy
+        existing = supabase.table("business_trophies") \
+            .select("id") \
+            .eq("business_id", business_id) \
+            .eq("user_id", user_id) \
+            .execute()
+
+        if existing.data:
+            # Remove trophy
+            supabase.table("business_trophies") \
+                .delete() \
+                .eq("business_id", business_id) \
+                .eq("user_id", user_id) \
+                .execute()
+            new_count = max(current_count - 1, 0)
+            toggled = "removed"
+        else:
+            # Add trophy
+            supabase.table("business_trophies") \
+                .insert({"business_id": business_id, "user_id": user_id}) \
+                .execute()
+            new_count = current_count + 1
+            toggled = "added"
+
+        # Update trophies count in businesses table
+        supabase.table("businesses") \
+            .update({"trophies": new_count}) \
+            .eq("id", business_id) \
+            .execute()
+
+        return jsonify({
+            "success": True,
+            "new_count": new_count,
+            "toggled": toggled
+        })
+
+    except Exception as e:
+        print(f"Trophy error: {e}")
+        return jsonify({"error": "Server error"}), 500
+
+
+@search_bp.route('/business/<int:business_id>/trophy_status', methods=['GET'])
+@login_required
+def trophy_status(business_id):
+    try:
+        supabase = current_app.supabase
+        user_id = current_user.id  # INT, not str
+
+        existing = supabase.table("business_trophies") \
+            .select("id") \
+            .eq("business_id", business_id) \
+            .eq("user_id", user_id) \
+            .execute()
+
+        return jsonify({"has_trophy": bool(existing.data)})
+
+    except Exception as e:
+        print(f"Trophy status error: {e}")
+        return jsonify({"error": "Server error"}), 500
+    
+@search_bp.route('/leaderboard', methods=['GET'])
+def leaderboard():
+    supabase = current_app.supabase
+
+    # State abbreviation map (reuse from search)
+    STATE_ABBREVIATIONS = {
+        'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA',
+        'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA',
+        'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA',
+        'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+        'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO',
+        'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+        'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH',
+        'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+        'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT',
+        'virginia': 'VA', 'washington': 'WA', 'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'
+    }
+
+    location = request.args.get('location', '').strip()
+    per_page = int(request.args.get('per_page', 10))
+    page = int(request.args.get('page', 1))
+    offset = (page - 1) * per_page
+
+    query = supabase.table('businesses').select('id, name, trophies, city, state', count='exact')
+
+    if location:
+        if ',' in location:
+            city, state = [x.strip() for x in location.split(',', 1)]
+            # match city and state
+            query = query.ilike('city', f'%{city}%').ilike('state', f'%{state}%')
+        else:
+            # check if input is a known state abbreviation or name
+            state_input = STATE_ABBREVIATIONS.get(location.lower(), None)
+            if state_input:
+                # only filter by state
+                query = query.eq('state', state_input)
+            else:
+                # only filter by city
+                query = query.ilike('city', f'%{location}%')
+
+    response = query.order('trophies', desc=True).range(offset, offset + per_page - 1).execute()
+    businesses = response.data or []
+
+    return jsonify({
+        "success": True,
+        "leaderboard": businesses,
+        "page": page,
+        "per_page": per_page,
+        "total": response.count or 0
+    })
+
+@search_bp.route('/business/<int:business_id>/analytics', methods=['GET'])
+@login_required
+def business_analytics(business_id):
+    supabase = current_app.supabase
+    today = date.today()
+
+    try:
+        # --- Week (last 7 days) ---
+        week_start = today - timedelta(days=7)
+        week_resp = supabase.table("business_analytics") \
+            .select("profile_views, search_appearances") \
+            .eq("business_id", business_id) \
+            .gte("date", str(week_start)) \
+            .execute()
+        week_views = sum(r["profile_views"] for r in week_resp.data)
+        week_searches = sum(r["search_appearances"] for r in week_resp.data)
+
+        # --- Month (last 30 days) ---
+        month_start = today - timedelta(days=30)
+        month_resp = supabase.table("business_analytics") \
+            .select("profile_views, search_appearances") \
+            .eq("business_id", business_id) \
+            .gte("date", str(month_start)) \
+            .execute()
+        month_views = sum(r["profile_views"] for r in month_resp.data)
+        month_searches = sum(r["search_appearances"] for r in month_resp.data)
+
+        # --- All time ---
+        all_resp = supabase.table("business_analytics") \
+            .select("profile_views, search_appearances") \
+            .eq("business_id", business_id) \
+            .execute()
+        all_views = sum(r["profile_views"] for r in all_resp.data)
+        all_searches = sum(r["search_appearances"] for r in all_resp.data)
+
+        return jsonify({
+            "success": True,
+            "week": {"profile_views": week_views, "search_appearances": week_searches},
+            "month": {"profile_views": month_views, "search_appearances": month_searches},
+            "all_time": {"profile_views": all_views, "search_appearances": all_searches}
+        })
+
+    except Exception as e:
+        current_app.logger.error(f"Error fetching analytics for business {business_id}: {e}")
+        return jsonify({"success": False, "error": "Could not fetch analytics"}), 500

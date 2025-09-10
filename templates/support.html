@@ -181,11 +181,12 @@
   <ul class="nav-links">
     <li><a href="{{ url_for('business.index') }}"><img src="{{ url_for('static', filename='home_logo.svg') }}" alt="Home Icon" class="nav-icon-small"> Home</a></li>
     <li><a href="{{ url_for('business.dashboard') }}"><img src="{{ url_for('static', filename = 'dash_svg.svg') }}" alt ="Dash Icon" name="dash-icon" class="nav-icon-small"> Dashboard</a></li>
-    <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename = 'login.svg') }}" alt ="Login Icon" name="login-icon" class="nav-icon-small"> Login</a></li>
-    <li><a href="{{ url_for('auth.signup') }}"><img src="{{ url_for('static', filename = 'sign.svg') }}" alt ="Sign Up Icon" name="sign-icon" class="nav-icon-small"> Sign Up</a></li>
+    <li><a href="{{ url_for('search.search') }}"><i class="fas fa-store nav-icon-small"></i> Browse</a></li>
+    <li><a href="{{ url_for('auth.login') }}"><img src="{{ url_for('static', filename = 'login.svg') }}" alt ="Login Icon" name="login-icon" class="nav-icon-small"> Sign In</a></li>
+    <li><a href="{{ url_for('business.premium') }}"><i class="fas fa-crown nav-icon-small" style="color: #ffffff;"></i> Premium</a></li>
     <li>
-      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ff4d4d;">
-        <i class="fas fa-heart"></i> Support Us
+      <a href="{{ url_for('business.support') }}" class="support-link" style="color: #ffffff;">
+        <i class="fas fa-heart"></i> About Us
       </a>
     </li>
   </ul>
@@ -197,22 +198,22 @@
 
 
 <div class="donate-section">
-  <h2>Support Our Mission</h2>
-  <p>
-    If you like what we're building, consider donating to help us grow and keep the platform free for small businesses. 
-    Donations help cover website maintenance costs, including server hosting and database management. Thank you :D !
-    <br>
+  <h2>Our Mission</h2>
+<p>
+  At <strong>Localate</strong>, our mission is to empower small businesses by giving them modern tools to create profiles, showcase their services, and manage appointments all in one place. 
+  <br><br>
+  We believe every local business deserves the chance to thrive online with the same quality tools big companies use without the high costs. 
+  <br><br>
+  Together, we're building a community where customers can easily discover, connect, and book with local businesses.
+</p>
 
-    Contact: (530) 812-7455
+<p><strong>Contact:</strong> (530) 812-7455</p>
   </p>
   <div class="founder-photo">
   <img src="{{ url_for('static', filename='satvir.png') }}" alt="Satvir Hundal" />
   <p class="photo-caption">Satvir Hundal – Founder of Localate</p>
 </div>
   <div class="button-group">
-  <a href="https://paypal.me/SatvirHundal" target="_blank" rel="noopener noreferrer" class="donate-button">
-    <i class="fab fa-paypal"></i> Donate with PayPal
-  </a>
   <a href="https://www.instagram.com/localate_org?igsh=bm5ieWluZmMxY2sx&utm_source=qr" target="_blank" rel="noopener noreferrer" class="follow-button">
     <i class="fab fa-instagram"></i> Follow on Instagram
   </a>
