@@ -1,8 +1,9 @@
 .autocomplete-suggestions {
   position: absolute;
-  background-color: #1f1f1f;
-  border: 1px solid #444;
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(25, 25, 25, 0.95), rgba(35, 35, 35, 0.9));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(138, 110, 248, 0.2);
+  border-radius: 12px;
   margin-top: 4px;
   list-style: none;
   padding: 0;
@@ -10,18 +11,25 @@
   overflow-y: auto;
   width: 100%;
   z-index: 1000;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
 }
 
 .autocomplete-suggestions li {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.2rem;
   cursor: pointer;
-  color: #eee;
+  color: #f0f0f0;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .autocomplete-suggestions li:hover {
-  background-color: #333;
+  background: linear-gradient(135deg, rgba(138, 110, 248, 0.15), rgba(102, 89, 199, 0.1));
+  color: #fff;
+  transform: translateX(4px);
+}
 
-
+.autocomplete-suggestions li:last-child {
+  border-bottom: none;
 }
 
 body {

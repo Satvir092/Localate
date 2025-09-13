@@ -12,6 +12,19 @@ from sib_api_v3_sdk.rest import ApiException
 
 search_bp = Blueprint('search', __name__, url_prefix='/search')
 
+STATE_ABBREVIATIONS = {
+        'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA',
+        'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA',
+        'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA',
+        'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
+        'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO',
+        'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
+        'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH',
+        'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
+        'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT',
+        'virginia': 'VA', 'washington': 'WA', 'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'
+    }
+
 def record_analytics(business_id, field):
     supabase = current_app.supabase
 
@@ -85,73 +98,66 @@ def create_gcal_event(business_name, business_id, date, time, user_name, user_em
     
 @search_bp.route('/', methods=['GET'])
 def search():
-    
-    STATE_ABBREVIATIONS = {
-        'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA',
-        'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA',
-        'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA',
-        'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
-        'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO',
-        'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
-        'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH',
-        'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
-        'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT',
-        'virginia': 'VA', 'washington': 'WA', 'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'
-    }
-
     supabase = current_app.supabase
     query = request.args.get('q', '').strip()
     category = request.args.get('category', '').strip()
     location = request.args.get('location', '').strip()
     popularity = request.args.get('popularity', '').strip()
-    page = int(request.args.get('page', 1))
     per_page = 20
-    offset = (page - 1) * per_page
+    last_id = request.args.get('last_id', type=int)
+    filters = supabase.table('businesses').select('*, user:user_id(is_premium)')
 
-    if not query and not category and not location:
+    if not (query or category or location):
         return render_template(
             'search.html',
             businesses=[],
             popularity=popularity,
-            page=1,
-            total_pages=0,
+            next_cursor=None,
             query=query,
             category=category,
             location=location,
-            is_empty_search=True
+            is_empty_search=True,
+            has_more=False
         )
 
-    # Include the owner's is_premium status
-    filters = supabase.table('businesses').select('*, user:user_id(is_premium)')
-
     if query:
-        filters = filters.ilike('name', f'%{query}%')
-
+        filters = filters.ilike('name', f'*{query}*')
     if category:
         filters = filters.eq('category', category)
-
     if location:
         if ',' in location:
             city, state = [part.strip() for part in location.split(',', 1)]
-            state_lower = state.lower()
-            if state_lower in STATE_ABBREVIATIONS:
-                state = STATE_ABBREVIATIONS[state_lower]
-            filters = filters.ilike('city', f'%{city}%').ilike('state', f'%{state}%')
+            state = STATE_ABBREVIATIONS.get(state.lower(), state)
+            filters = filters.ilike('city', f'*{city}*').eq('state', state)
         else:
-            location_to_search = location
-            if location.lower() in STATE_ABBREVIATIONS:
-                location_to_search = STATE_ABBREVIATIONS[location.lower()]
-            filters = filters.or_(f'city.ilike.%{location_to_search}%,state.ilike.%{location_to_search}%')
+            loc = location.strip()
+            state_abbr = STATE_ABBREVIATIONS.get(loc.lower())
+            if state_abbr:
+                filters = filters.eq('state', state_abbr)
+            else:
+                filters = filters.ilike('city', f'*{loc}*')
 
-    if popularity == 'most':
-        filters = filters.order('review_count', desc=True)
-    elif popularity == 'least':
-        filters = filters.order('review_count', desc=False)
+    if popularity == 'least':
+        filters = filters.order('boosted_score', desc=False).order('id', desc=False)
+    else:  
+        filters = filters.order('boosted_score', desc=True).order('id', desc=False)
+    if last_id is not None:
+        filters = filters.gt('id', last_id)
 
-    response = filters.range(offset, offset + per_page - 1).execute()
+    response = filters.limit(per_page + 1).execute()
     businesses = response.data or []
-    total_count = response.count or 0
-    total_pages = ceil(total_count / per_page)
+
+    has_more = len(businesses) > per_page
+    if has_more:
+        businesses = businesses[:per_page]
+
+    next_cursor = None
+    if has_more and businesses:
+        last_business = businesses[-1]
+        next_cursor = {
+            'last_id': last_business['id'],
+            'last_boosted_score': last_business.get('boosted_score')
+        }
 
     if businesses:
         record_search_analytics(businesses)
@@ -160,14 +166,76 @@ def search():
         'search.html',
         businesses=businesses,
         popularity=popularity,
-        page=page,
-        total_pages=total_pages,
+        next_cursor=next_cursor,
         query=query,
         category=category,
         location=location,
-        is_empty_search=False
+        is_empty_search=False,
+        has_more=has_more
     )
 
+
+@search_bp.route('/api/load-more', methods=['GET'])
+def load_more():
+    supabase = current_app.supabase
+    query = request.args.get('q', '').strip()
+    category = request.args.get('category', '').strip()
+    location = request.args.get('location', '').strip()
+    popularity = request.args.get('popularity', '').strip()
+    per_page = 20
+
+    last_id = request.args.get('last_id', type=int)
+
+    filters = supabase.table('businesses').select('*, user:user_id(is_premium)')
+
+    # Apply filters (same as search route)
+    if query:
+        filters = filters.ilike('name', f'*{query}*')
+    if category:
+        filters = filters.eq('category', category)
+    if location:
+        if ',' in location:
+            city, state = [part.strip() for part in location.split(',', 1)]
+            state = STATE_ABBREVIATIONS.get(state.lower(), state)
+            filters = filters.ilike('city', f'*{city}*').eq('state', state)
+        else:
+            loc = location.strip()
+            state_abbr = STATE_ABBREVIATIONS.get(loc.lower())
+            if state_abbr:
+                filters = filters.eq('state', state_abbr)
+            else:
+                filters = filters.ilike('city', f'*{loc}*')
+
+    # SIMPLIFIED: Use only last_id for cursor, but still sort by boosted_score
+    if popularity == 'least':
+        filters = filters.order('boosted_score', desc=False).order('id', desc=False)
+    else:  # most or default
+        filters = filters.order('boosted_score', desc=True).order('id', desc=False)
+    
+    # Simple cursor - just use ID (this is reliable)
+    if last_id is not None:
+        filters = filters.gt('id', last_id)
+
+    response = filters.limit(per_page + 1).execute()
+    businesses = response.data or []
+
+    has_more = len(businesses) > per_page
+    if has_more:
+        businesses = businesses[:per_page]
+
+    next_cursor = None
+    if has_more and businesses:
+        last_business = businesses[-1]
+        next_cursor = {
+            'last_id': last_business['id'],
+            'last_boosted_score': last_business.get('boosted_score')
+        }
+
+    return jsonify({
+        'businesses': businesses,
+        'has_more': has_more,
+        'next_cursor': next_cursor
+    })
 @search_bp.route('/customer_view/<int:business_id>')
 def customer_view(business_id):
     record_analytics(business_id, "profile_views")
@@ -572,53 +640,33 @@ def trophy_status(business_id):
 @search_bp.route('/leaderboard', methods=['GET'])
 def leaderboard():
     supabase = current_app.supabase
-
-    # State abbreviation map (reuse from search)
-    STATE_ABBREVIATIONS = {
-        'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA',
-        'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA',
-        'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA',
-        'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD',
-        'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO',
-        'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ',
-        'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', 'ohio': 'OH',
-        'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode island': 'RI', 'south carolina': 'SC',
-        'south dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT',
-        'virginia': 'VA', 'washington': 'WA', 'west virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY'
-    }
-
     location = request.args.get('location', '').strip()
-    per_page = int(request.args.get('per_page', 10))
-    page = int(request.args.get('page', 1))
-    offset = (page - 1) * per_page
+    MAX_FETCH = 1000 
 
-    query = supabase.table('businesses').select('id, name, trophies, city, state', count='exact')
+    filters = supabase.table('businesses').select('id, name, trophies, city, state')
 
     if location:
         if ',' in location:
-            city, state = [x.strip() for x in location.split(',', 1)]
-            # match city and state
-            query = query.ilike('city', f'%{city}%').ilike('state', f'%{state}%')
+            city, state = [part.strip() for part in location.split(',', 1)]
+            state = STATE_ABBREVIATIONS.get(state.lower(), state)
+            filters = filters.ilike('city', f'*{city}*').eq('state', state)
         else:
-            # check if input is a known state abbreviation or name
-            state_input = STATE_ABBREVIATIONS.get(location.lower(), None)
-            if state_input:
-                # only filter by state
-                query = query.eq('state', state_input)
+            loc = location.strip()
+            state_abbr = STATE_ABBREVIATIONS.get(loc.lower())
+            if state_abbr:
+                filters = filters.eq('state', state_abbr)
             else:
-                # only filter by city
-                query = query.ilike('city', f'%{location}%')
+                filters = filters.ilike('city', f'*{loc}*')
 
-    response = query.order('trophies', desc=True).range(offset, offset + per_page - 1).execute()
+    response = filters.order('trophies', desc=True).limit(MAX_FETCH).execute()
     businesses = response.data or []
 
     return jsonify({
         "success": True,
         "leaderboard": businesses,
-        "page": page,
-        "per_page": per_page,
-        "total": response.count or 0
+        "total": len(businesses)
     })
+
 
 @search_bp.route('/business/<int:business_id>/analytics', methods=['GET'])
 @login_required

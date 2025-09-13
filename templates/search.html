@@ -284,7 +284,7 @@
           {% if businesses is not none %}
             <section class="results-section">
               {% if businesses %}
-                <div class="results-grid">
+                <div class="results-grid" id="results-grid">
                   {% for business in businesses %}
                     <div class="business-card">
                       {% if business.profile_image_url %}
@@ -304,15 +304,14 @@
                           </span>
                         {% endif %}
                       </h3>
-                      <span class="business-category">{{ business.category }}</span>
+                      <span class="business-category">{{ business.category or 'None' }}</span>
                       <div class="business-rating">
                       <a href="{{ url_for('business.view_reviews',
                         business_id=business.id,
                         q=query,
                         category=category,
                         location=location,
-                        popularity=popularity,
-                        page=page) }}"
+                        popularity=popularity) }}"
                         class="star-display" aria-label="View reviews for {{ business.name }}">
                         {% set avg_rating = business.avg_rating or 0 %}
                         {% set review_count = business.review_count or 0 %}
@@ -331,6 +330,11 @@
                     </div>
 
                     <div class="business-info-trophy">
+                        {% if business.user.is_premium %}
+                      <div class="premium-labels">
+                        <span class="sponsored-label">SPONSORED</span>
+                      </div>
+                    {% endif %}
                       <button 
                           class="trophy-btn" 
                           data-business="{{ business.id }}"
@@ -338,70 +342,48 @@
                           🏆 <span class="trophy-count">{{ business.trophies or 0 }}</span>
                       </button>
                     </div>
+                      <div class="business-info-center">
+                        {% set location = '' %}
+                        {% if business.city and business.state %}
+                          {% set location = business.city ~ ', ' ~ business.state %}
+                        {% elif business.city %}
+                          {% set location = business.city %}
+                        {% elif business.state %}
+                          {% set location = business.state %}
+                        {% endif %}
 
-                    <div class="business-info-center">
-                      <p class="business-location">{{ business.location }}</p>
-                    </div>
-
+                        <p class="business-location" title="{{ location }}">{{ location }}</p>
+                      </div>
                     <div class="business-info-right">
                      <a href="{{ url_for('search.customer_view', business_id=business.id,
                       q=query, 
                       category=category,
                       location=location,
-                      popularity=popularity,
-                      page=page) }}" class="view-profile-btn">View Profile</a>
+                      popularity=popularity) }}" class="view-profile-btn">View Profile</a>
                     </div>
                   </div>
                 {% endfor %}
               </div>
             {% else %}
-              <p class="no-results">No businesses found.</p>
+              <p class="no-results"></p>
             {% endif %}
           </section>
         {% endif %}
 
-        <!-- Pagination Section -->
-        <section class="pagination-section">
-          {% if total_pages > 1 %}
-            <div class="pagination">
-              {% if page > 1 %}
-                <a href="{{ url_for('search.search', page=page-1, q=query, category=category, location=location, popularity=popularity) }}">&laquo;</a>
-              {% endif %}
+        <!-- Infinite Scroll Controls -->
+        <div id="loading-indicator" style="display: none; text-align: center; padding: 20px;">
+          <div class="spinner">
+            <i class="fas fa-spinner fa-spin"></i> Loading more results...
+          </div>
+        </div>
 
-              {% if page == 1 %}
-                <span class="current-page">1</span>
-              {% else %}
-                <a href="{{ url_for('search.search', page=1, q=query, category=category, location=location, popularity=popularity) }}">1</a>
-              {% endif %}
-
-              {% if page > 4 %}<span class="ellipsis">...</span>{% endif %}
-
-              {% for p in range(page-2, page+3) %}
-                {% if p > 1 and p < total_pages %}
-                  {% if p == page %}
-                    <span class="current-page">{{ p }}</span>
-                  {% else %}
-                    <a href="{{ url_for('search.search', page=p, q=query, category=category, location=location, popularity=popularity) }}">{{ p }}</a>
-                  {% endif %}
-                {% endif %}
-              {% endfor %}
-
-              {% if page < total_pages - 3 %}<span class="ellipsis">...</span>{% endif %}
-
-              {% if total_pages > 1 %}
-                {% if page == total_pages %}
-                  <span class="current-page">{{ total_pages }}</span>
-                {% else %}
-                  <a href="{{ url_for('search.search', page=total_pages, q=query, category=category, location=location, popularity=popularity) }}">{{ total_pages }}</a>
-                {% endif %}
-              {% endif %}
-
-              {% if page < total_pages %}
-                <a href="{{ url_for('search.search', page=page+1, q=query, category=category, location=location, popularity=popularity) }}">&raquo;</a>
-              {% endif %}
-            </div>
+        <div id="load-more-container" style="text-align: center; padding: 20px;">
+          {% if has_more %}
+            <button id="load-more-btn" class="load-more-btn">Load More Results</button>
+          {% else %}
+            <p class="no-more-results">No more results available</p>
           {% endif %}
-        </section>
+        </div>
       </div>
 
         <!-- Leaderboard Section -->
@@ -563,241 +545,257 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// FIXED LeaderboardManager class
-class LeaderboardManager {
-  constructor(containerId, paginationId, locationInputId) {
-    this.container = document.getElementById(containerId);
-    this.pagination = document.getElementById(paginationId);
-    this.locationInput = document.getElementById(locationInputId);
-    this.currentPage = 1;
-    this.perPage = 10;
-    this.currentLocation = '';
-    this.debounceTimer = null;
-    this.debounceMs = 300; // debounce delay for typing
-    this.endpoint = "{{ url_for('search.leaderboard') }}";
-
-    this.init();
-  }
-
-  init() {
-    // initial load
-    this.loadLeaderboard();
-
-    if (!this.locationInput) return;
-
-    // when user selects from datalist or browser "change" fires
-    this.locationInput.addEventListener('change', () => {
-      this._applyLocationAndReload(/*force*/ true);
-    });
-
-    // debounce typing, allow searching while typing (keeps datalist UX)
-    this.locationInput.addEventListener('input', (e) => {
-      clearTimeout(this.debounceTimer);
-
-      // if input cleared -> reset filter immediately
-      if (!e.target.value.trim()) {
-        this.currentLocation = '';
-        this.currentPage = 1;
-        this.loadLeaderboard();
-        return;
-      }
-
-      this.debounceTimer = setTimeout(() => {
-        this._applyLocationAndReload(false);
-      }, this.debounceMs);
-    });
-
-    // Enter key triggers immediate search
-    this.locationInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        clearTimeout(this.debounceTimer);
-        this._applyLocationAndReload(true);
-      }
-    });
-  }
-
-  _applyLocationAndReload(force = false) {
-    const newLocation = (this.locationInput && this.locationInput.value || '').trim();
-    // Only reload if changed OR forced (Enter / explicit change)
-    if (newLocation !== this.currentLocation || force) {
-      this.currentLocation = newLocation;
-      this.currentPage = 1;
-      this.loadLeaderboard();
-    }
-  }
-
-  async loadLeaderboard() {
-    if (!this.container) return;
-
-    this.showLoading();
-
-    try {
-      const params = new URLSearchParams({
-        page: this.currentPage,
-        per_page: this.perPage
-      });
-
-      if (this.currentLocation) params.append('location', this.currentLocation);
-
-      const url = `${this.endpoint}?${params.toString()}`;
-      console.log('[Leaderboard] fetching ->', url);
-
-      const response = await fetch(url, {
-        headers: { 'Accept': 'application/json' },
-        credentials: 'same-origin'
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log('[Leaderboard] response JSON ->', data);
-
-      // backend returns success + leaderboard (your code uses "leaderboard")
-      if (data && data.success) {
-        const list = data.leaderboard || data.businesses || [];
-        this.renderLeaderboard(list);
-        this.renderPagination(data);
-      } else {
-        // helpful error text
-        const errMsg = (data && (data.error || data.message)) || 'Failed to load leaderboard';
-        this.showError(errMsg);
-      }
-    } catch (err) {
-      console.error('[Leaderboard] load error:', err);
-      this.showError(`Error loading leaderboard: ${err.message}`);
-    }
-  }
-
-  showLoading() {
-    if (!this.container) return;
-    this.container.innerHTML = `
-      <div class="leaderboard-loading">
-        <i class="fas fa-spinner fa-spin"></i>
-        Loading leaderboard...
-      </div>
-    `;
-  }
-
-  showError(message) {
-    if (!this.container) return;
-    this.container.innerHTML = `
-      <div class="leaderboard-error">
-        <i class="fas fa-exclamation-triangle"></i>
-        ${message}
-      </div>
-    `;
-  }
-
-renderLeaderboard(businesses) {
-  if (!this.container) return;
-
-  if (!businesses || businesses.length === 0) {
-    const locationText = this.currentLocation ? ` in "${this.currentLocation}"` : '';
-    this.container.innerHTML = `<div class="no-leaderboard-results">No businesses found${locationText}.</div>`;
-    return;
-  }
-
-  const startRank = (this.currentPage - 1) * this.perPage + 1;
-
-  this.container.innerHTML = businesses.map((b, i) => {
-    const rank = startRank + i;
-    const rankClass = rank <= 3 ? `rank-${rank}` : '';
-    const trophies = this.formatCount(b.trophies || b.trophy_count || 0);
-    const city = b.city || '';
-    const state = b.state || '';
-    
-    const profileUrl = `/search/customer_view/${b.id || b.business_id}`;
-
-    return `
-      <div class="leaderboard-item ${rankClass}" onclick="window.location.href='${profileUrl}'" style="cursor: pointer;">
-        <div class="leaderboard-rank">
-          ${rank <= 3 ? this.getRankIcon(rank) : `<span class="rank-number">#${rank}</span>`}
-        </div>
-        <div class="leaderboard-info">
-          <h4 class="leaderboard-business-name">${this.truncateText(b.name || '', 25)}</h4>
-          <p class="leaderboard-location">${city}${city && state ? ', ' : ''}${state}</p>
-        </div>
-        <div class="leaderboard-trophies">
-          <span class="trophy-icon">🏆</span>
-          <span class="trophy-count-display">${trophies}</span>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-  renderPagination(data) {
-    if (!this.pagination) return;
-
-    const total = (data && (data.total || data.total_pages || 0)) || 0;
-    const totalPages = Math.ceil(total / this.perPage);
-
-    if (totalPages <= 1) {
-      this.pagination.classList.add('hidden');
-      this.pagination.innerHTML = '';
-      return;
-    }
-
-    this.pagination.classList.remove('hidden');
-    let html = '';
-
-    if (this.currentPage > 1) {
-      html += `<button class="leaderboard-page-btn" data-page="${this.currentPage - 1}">&laquo;</button>`;
-    }
-
-    for (let i = Math.max(1, this.currentPage - 2); i <= Math.min(totalPages, this.currentPage + 2); i++) {
-      if (i === this.currentPage) html += `<span class="leaderboard-page-current">${i}</span>`;
-      else html += `<button class="leaderboard-page-btn" data-page="${i}">${i}</button>`;
-    }
-
-    if (this.currentPage < totalPages) {
-      html += `<button class="leaderboard-page-btn" data-page="${this.currentPage + 1}">&raquo;</button>`;
-    }
-
-    this.pagination.innerHTML = html;
-    this.pagination.querySelectorAll('.leaderboard-page-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        this.currentPage = parseInt(btn.dataset.page, 10) || 1;
-        this.loadLeaderboard();
-      });
-    });
-  }
-
-  getRankIcon(rank) {
-    const icons = {
-      1: '<i class="fas fa-crown gold-crown"></i>',
-      2: '<i class="fas fa-medal silver-medal"></i>',
-      3: '<i class="fas fa-award bronze-award"></i>'
-    };
-    return icons[rank] || `<span class="rank-number">#${rank}</span>`;
-  }
-
-  formatCount(num) {
-    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
-    return String(num);
-  }
-
-  truncateText(text, maxLength) {
-    return (text && text.length > maxLength) ? text.substring(0, maxLength) + '…' : (text || '');
-  }
-}
-
-// init (replace any previous initializers)
+// INFINITE SCROLL IMPLEMENTATION
 document.addEventListener('DOMContentLoaded', function() {
-  new LeaderboardManager('leaderboard-list', 'leaderboard-pagination', 'leaderboard-location');
-  new LeaderboardManager('sidebar-leaderboard-list', 'sidebar-leaderboard-pagination', 'sidebar-leaderboard-location');
-});
+  let isLoading = false;
+  let hasMore = {{ 'true' if has_more else 'false' }};
+  let nextCursor = {{ next_cursor | tojson if next_cursor else 'null' }};
 
-document.addEventListener('DOMContentLoaded', () => {
-  const trophyButtons = document.querySelectorAll('.trophy-btn');
+  // Current search parameters
+  const searchParams = {
+    q: '{{ query or "" }}',
+    category: '{{ category or "" }}',
+    location: '{{ location or "" }}',
+    popularity: '{{ popularity or "" }}'
+  };
 
+  const loadingIndicator = document.getElementById('loading-indicator');
+  const loadMoreContainer = document.getElementById('load-more-container');
+  const loadMoreBtn = document.getElementById('load-more-btn');
+  const resultsGrid = document.getElementById('results-grid');
+
+  // Function to load more results
+  async function loadMore() {
+    if (isLoading || !hasMore) return;
+    
+    isLoading = true;
+    loadingIndicator.style.display = 'block';
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    
+    try {
+      const params = new URLSearchParams(searchParams);
+      if (nextCursor) {
+        params.append('last_id', nextCursor.last_id);
+        if (nextCursor.last_review_count !== null) {
+          params.append('last_review_count', nextCursor.last_review_count);
+        }
+      }
+      
+      const response = await fetch(`{{ url_for('search.load_more') }}?${params}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load more results');
+      }
+      
+      // Append new results to the grid
+      if (resultsGrid && data.businesses) {
+        data.businesses.forEach(business => {
+          const businessCard = createBusinessCard(business);
+          resultsGrid.appendChild(businessCard);
+        });
+        
+        // Initialize trophy functionality for new cards
+        initializeTrophyButtons();
+      }
+      
+      // Update state
+      hasMore = data.has_more;
+      nextCursor = data.next_cursor;
+      
+      // Update UI
+      if (hasMore) {
+        if (loadMoreBtn) loadMoreBtn.style.display = 'block';
+      } else {
+        loadMoreContainer.innerHTML = '<p class="no-more-results">No more results available</p>';
+      }
+      
+    } catch (error) {
+      console.error('Error loading more results:', error);
+      loadMoreContainer.innerHTML = '<p class="load-error">Error loading results. <button onclick="loadMore()">Try again</button></p>';
+    } finally {
+      isLoading = false;
+      loadingIndicator.style.display = 'none';
+    }
+  }
+
+// Function to create a business card element
+function createBusinessCard(business) {
+  const card = document.createElement('div');
+  card.className = 'business-card';
+  
+  const imageHtml = business.profile_image_url ? 
+    `<img src="${business.profile_image_url}" alt="Business Image" class="business-image" />` :
+    `<svg xmlns="http://www.w3.org/2000/svg" class="business-image" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true" role="img">
+       <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm89.6 32h-11.7a174.87 174.87 0 0 1-155.8 0h-11.7A134.42 134.42 0 0 0 0 422.4V464a48 48 0 0 0 48 48h352a48 48 0 0 0 48-48v-41.6A134.42 134.42 0 0 0 313.6 288z"/>
+     </svg>`;
+
+  const businessName = business.name.length > 20 ? business.name.substring(0, 20) + '…' : business.name;
+  const premiumBadge = business.user?.is_premium ? 
+    `<span class="premium-badge">
+       <i class="fa-solid fa-shield badge-background"></i>
+       <i class="fa-solid fa-cat badge-icon"></i>
+     </span>` : '';
+
+  const avgRating = business.avg_rating || 0;
+  const reviewCount = business.review_count || 0;
+  const roundedRating = Math.round(avgRating);
+  
+  let starsHtml = '';
+  for (let i = 1; i <= 5; i++) {
+    starsHtml += `<span class="star ${i <= roundedRating ? 'filled' : ''}">&#9733;</span>`;
+  }
+
+  // Handle city and state properly - check for null/undefined and provide fallbacks
+  const city = business.city || '';
+  const state = business.state || '';
+  let location = '';
+  
+  if (city && state) {
+    location = `${city}, ${state}`;
+  } else if (city) {
+    location = city;
+  } else if (state) {
+    location = state;
+  }
+  
+  // Truncate location if it's too long to prevent layout issues
+  const originalLocation = location;
+  if (location.length > 25) {
+    location = location.substring(0, 25) + '…';
+  }
+
+  // Handle category - show "None" if null/undefined/empty
+  const category = business.category || 'None';
+
+  card.innerHTML = `
+    ${imageHtml}
+    <div class="business-info-left">
+      <h3 class="business-name">
+        ${businessName}
+        ${premiumBadge}
+      </h3>
+      <span class="business-category">${category}</span>
+      <div class="business-rating">
+        <a href="/business/business/${business.id}/reviews" class="star-display" aria-label="View reviews for ${business.name}">
+          ${starsHtml}
+          <span class="rating-score">${avgRating.toFixed(1)}</span>
+          <span class="rating-count">(${reviewCount})</span>
+        </a>
+      </div>
+    </div>
+    <div class="business-info-trophy">
+      <button class="trophy-btn" data-business="${business.id}" data-user-authenticated="{{ 'true' if current_user.is_authenticated else 'false' }}">
+        🏆 <span class="trophy-count">${business.trophies || 0}</span>
+      </button>
+    </div>
+    <div class="business-info-center">
+      <p class="business-location" title="${originalLocation}">${location}</p>
+    </div>
+    <div class="business-info-right">
+      <a href="/search/customer_view/${business.id}" class="view-profile-btn">View Profile</a>
+    </div>
+  `;
+  
+  return card;
+}
+  // Function to initialize trophy buttons for new cards
+  function initializeTrophyButtons() {
+    const newTrophyButtons = document.querySelectorAll('.trophy-btn:not([data-initialized])');
+    const isAuthenticated = {{ 'true' if current_user.is_authenticated else 'false' }};
+
+    newTrophyButtons.forEach(button => {
+      button.setAttribute('data-initialized', 'true');
+      const businessId = button.dataset.business;
+      
+      // Format trophy count
+      const countSpan = button.querySelector('.trophy-count');
+      if (countSpan) {
+        const count = parseInt(countSpan.textContent, 10) || 0;
+        countSpan.textContent = formatCount(count);
+      }
+
+      // Check trophy status if authenticated
+      if (isAuthenticated) {
+        fetch(`/search/business/${businessId}/trophy_status`, { credentials: 'same-origin' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.has_trophy) button.classList.add('trophy-given');
+        })
+        .catch(console.error);
+      }
+
+      // Add click handler
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (!isAuthenticated) return alert('You must be logged in to give a trophy.');
+        if (button.disabled) return;
+
+        button.disabled = true;
+        try {
+          const res = await fetch(`/search/business/${businessId}/trophy`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            credentials: 'same-origin'
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Error');
+
+          const countSpan = button.querySelector('.trophy-count');
+          if (countSpan) countSpan.textContent = formatCount(data.new_count);
+
+          if (data.toggled === 'added') {
+            createFlyingTrophy(button);
+            button.classList.add('trophy-given');
+          } else {
+            button.classList.remove('trophy-given');
+          }
+        } catch (err) {
+          console.error(err);
+          alert(err.message);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+  }
+
+  // Infinite scroll detection
+  function checkScroll() {
+    if (isLoading || !hasMore) return;
+    
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const documentHeight = document.documentElement.offsetHeight;
+    
+    // Trigger load more when user is 300px from bottom
+    if (scrollPosition >= documentHeight - 300) {
+      loadMore();
+    }
+  }
+
+  // Throttled scroll listener
+  let ticking = false;
+  function requestTick() {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        checkScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+
+  // Event listeners
+  document.addEventListener('scroll', requestTick);
+  if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', loadMore);
+  }
+
+  // Utility functions
   function formatCount(num) {
     if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
     if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
-    return num;
+    return String(num);
   }
 
   function createFlyingTrophy(button) {
@@ -836,59 +834,176 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1200);
   }
 
-  // Format counts initially
-  trophyButtons.forEach(button => {
-    const countSpan = button.querySelector('.trophy-count');
-    if (countSpan) countSpan.textContent = formatCount(parseInt(countSpan.textContent, 10) || 0);
-  });
+  // Initialize existing trophy buttons on page load
+  initializeTrophyButtons();
+});
 
-  // Add backend logic for trophy buttons
-  trophyButtons.forEach(button => {
-    const businessId = button.dataset.business;
-    const isAuthenticated = button.dataset.userAuthenticated === 'true';
+class LeaderboardManager {
+  constructor(containerId, locationInputId) {
+    this.container = document.getElementById(containerId);
+    this.locationInput = document.getElementById(locationInputId);
+    this.currentLocation = '';
+    this.debounceTimer = null;
+    this.debounceMs = 300;
+    this.endpoint = "{{ url_for('search.leaderboard') }}";
 
-    if (isAuthenticated) {
-      fetch(`/search/business/${businessId}/trophy_status`, { credentials: 'same-origin' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.has_trophy) button.classList.add('trophy-given');
-      })
-      .catch(console.error);
-    }
+    this.init();
+  }
 
-    button.addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (!isAuthenticated) return alert('You must be logged in to give a trophy.');
-      if (button.disabled) return;
+  init() {
+    this.loadLeaderboard();
 
-      button.disabled = true;
-      try {
-        const res = await fetch(`/search/business/${businessId}/trophy`, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          credentials: 'same-origin'
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Error');
+    if (!this.locationInput) return;
 
-        const countSpan = button.querySelector('.trophy-count');
-        if (countSpan) countSpan.textContent = formatCount(data.new_count);
+    this.locationInput.addEventListener('change', () => {
+      this._applyLocationAndReload(true);
+    });
 
-        if (data.toggled === 'added') {
-          createFlyingTrophy(button);
-          button.classList.add('trophy-given');
-        } else {
-          button.classList.remove('trophy-given');
-        }
-      } catch (err) {
-        console.error(err);
-        alert(err.message);
-      } finally {
-        button.disabled = false;
+    this.locationInput.addEventListener('input', (e) => {
+      clearTimeout(this.debounceTimer);
+
+      if (!e.target.value.trim()) {
+        this.currentLocation = '';
+        this.loadLeaderboard();
+        return;
+      }
+
+      this.debounceTimer = setTimeout(() => {
+        this._applyLocationAndReload(false);
+      }, this.debounceMs);
+    });
+
+    this.locationInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        clearTimeout(this.debounceTimer);
+        this._applyLocationAndReload(true);
       }
     });
-  });
+  }
+
+  _applyLocationAndReload(force = false) {
+    const newLocation = (this.locationInput && this.locationInput.value || '').trim();
+    if (newLocation !== this.currentLocation || force) {
+      this.currentLocation = newLocation;
+      this.loadLeaderboard();
+    }
+  }
+
+  async loadLeaderboard() {
+    if (!this.container) return;
+
+    this.showLoading();
+
+    try {
+      const params = new URLSearchParams();
+      if (this.currentLocation) params.append('location', this.currentLocation);
+
+      const url = `${this.endpoint}?${params.toString()}`;
+
+      const response = await fetch(url, {
+        headers: { 'Accept': 'application/json' },
+        credentials: 'same-origin'
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`);
+
+      const data = await response.json();
+
+      if (data && data.success) {
+        const list = data.leaderboard || data.businesses || [];
+        this.renderLeaderboard(list);
+      } else {
+        const errMsg = (data && (data.error || data.message)) || 'Failed to load leaderboard';
+        this.showError(errMsg);
+      }
+    } catch (err) {
+      console.error('[Leaderboard] load error:', err);
+      this.showError(`Error loading leaderboard: ${err.message}`);
+    }
+  }
+
+  showLoading() {
+    if (!this.container) return;
+    this.container.innerHTML = `
+      <div class="leaderboard-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading leaderboard...
+      </div>
+    `;
+  }
+
+  showError(message) {
+    if (!this.container) return;
+    this.container.innerHTML = `
+      <div class="leaderboard-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        ${message}
+      </div>
+    `;
+  }
+
+  renderLeaderboard(businesses) {
+    if (!this.container) return;
+
+    if (!businesses || businesses.length === 0) {
+      const locationText = this.currentLocation ? ` in "${this.currentLocation}"` : '';
+      this.container.innerHTML = `<div class="no-leaderboard-results">No businesses found${locationText}.</div>`;
+      return;
+    }
+
+    this.container.innerHTML = businesses.map((b, i) => {
+      const rank = i + 1;
+      const rankClass = rank <= 3 ? `rank-${rank}` : '';
+      const trophies = this.formatCount(b.trophies || b.trophy_count || 0);
+      const city = b.city || '';
+      const state = b.state || '';
+      const profileUrl = `/search/customer_view/${b.id || b.business_id}`;
+
+      return `
+        <div class="leaderboard-item ${rankClass}" onclick="window.location.href='${profileUrl}'" style="cursor: pointer;">
+          <div class="leaderboard-rank">
+            ${rank <= 3 ? this.getRankIcon(rank) : `<span class="rank-number">#${rank}</span>`}
+          </div>
+          <div class="leaderboard-info">
+            <h4 class="leaderboard-business-name">${this.truncateText(b.name || '', 25)}</h4>
+            <p class="leaderboard-location">${city}${city && state ? ', ' : ''}${state}</p>
+          </div>
+          <div class="leaderboard-trophies">
+            <span class="trophy-icon">🏆</span>
+            <span class="trophy-count-display">${trophies}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  getRankIcon(rank) {
+    const icons = {
+      1: '<i class="fas fa-crown gold-crown"></i>',
+      2: '<i class="fas fa-medal silver-medal"></i>',
+      3: '<i class="fas fa-award bronze-award"></i>'
+    };
+    return icons[rank] || `<span class="rank-number">#${rank}</span>`;
+  }
+
+  formatCount(num) {
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return String(num);
+  }
+
+  truncateText(text, maxLength) {
+    return (text && text.length > maxLength) ? text.substring(0, maxLength) + '…' : (text || '');
+  }
+}
+
+// Initialize leaderboards
+document.addEventListener('DOMContentLoaded', function() {
+  new LeaderboardManager('leaderboard-list', 'leaderboard-location');
+  new LeaderboardManager('sidebar-leaderboard-list', 'sidebar-leaderboard-location');
 });
+
 
 // Search autocomplete functionality
 function setupAutocomplete(inputId, listId, formId) {
@@ -949,6 +1064,58 @@ document.addEventListener('DOMContentLoaded', function() {
   setupAutocomplete('q', 'autocomplete-list', 'search-form');
 });
 </script>
+
+<style>
+.load-more-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.load-more-btn:hover {
+  background: #0056b3;
+}
+
+.load-more-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.spinner {
+  color: #666;
+  font-style: italic;
+}
+
+.no-more-results {
+  color: #666;
+  font-style: italic;
+  margin: 0;
+}
+
+.load-error {
+  color: #d32f2f;
+  margin: 0;
+}
+
+.load-error button {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+#loading-indicator {
+  opacity: 0.8;
+}
+</style>
 
 </body>
 </html>
