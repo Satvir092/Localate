@@ -107,24 +107,13 @@
     {% endif %}
 
     <div class="back-btn-container">
-    {% if request.args.get('source') == 'business' %}
-        <a href="{{ url_for('search.customer_view', 
-                             business_id=business.id, 
-                             q=q, 
-                             category=category, 
-                             location=location,
-                             popularity=popularity,
-                             page=page) }}" 
-           class="btn-back">Back to Business</a>
-    {% else %}
-        <a href="{{ url_for('search.search', 
-                             q=q, 
-                             category=category, 
-                             location=location,
-                             popularity=popularity,
-                             page=page) }}" 
-           class="btn-back">Back to Search</a>
-    {% endif %}
+    <a href="javascript:history.back()" class="btn-back">
+  {% if request.args.get('source') == 'business' %}
+    Back to Business
+  {% else %}
+    Back to Search
+  {% endif %}
+</a>
 </div>
   </main>
 </body>
