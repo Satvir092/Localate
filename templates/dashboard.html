@@ -26,50 +26,49 @@
     </div>
   </div>
 
-<!-- Analytics Modal -->
-<div id="analyticsModal" class="analytics-modal hidden">
-  <div class="analytics-modal-content">
-    <div class="analytics-header">
-      <h2 id="analyticsBusinessName">Business Analytics</h2>
-      <button id="closeAnalytics" class="close-btn">&times;</button>
-    </div>
-    <div class="analytics-content">
-
-      <h3 class="analytics-period-label">Week</h3>
-      <div class="analytics-cards">
-        <div class="analytics-card">
-          <div class="analytics-card-icon">👁️</div>
-          <div class="analytics-card-content">
-            <h3 id="weekViews">0</h3>
-            <p>Profile Views</p>
-          </div>
-        </div>
-        <div class="analytics-card">
-          <div class="analytics-card-icon">🔍</div>
-          <div class="analytics-card-content">
-            <h3 id="weekSearches">0</h3>
-            <p>Search Appearances</p>
-          </div>
-        </div>
+  <!-- Analytics Modal -->
+  <div id="analyticsModal" class="analytics-modal hidden">
+    <div class="analytics-modal-content">
+      <div class="analytics-header">
+        <h2 id="analyticsBusinessName">Business Analytics</h2>
+        <button id="closeAnalytics" class="close-btn">&times;</button>
       </div>
+      <div class="analytics-content">
+        <h3 class="analytics-period-label">Week</h3>
+        <div class="analytics-cards">
+          <div class="analytics-card">
+            <div class="analytics-card-icon">👁️</div>
+            <div class="analytics-card-content">
+              <h3 id="weekViews">0</h3>
+              <p>Profile Views</p>
+            </div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-icon">🔍</div>
+            <div class="analytics-card-content">
+              <h3 id="weekSearches">0</h3>
+              <p>Search Appearances</p>
+            </div>
+          </div>
+        </div>
 
-      <h3 class="analytics-period-label">Month</h3>
-      <div class="analytics-cards">
-        <div class="analytics-card">
-          <div class="analytics-card-icon">👁️</div>
-          <div class="analytics-card-content">
-            <h3 id="monthViews">0</h3>
-            <p>Profile Views</p>
+        <h3 class="analytics-period-label">Month</h3>
+        <div class="analytics-cards">
+          <div class="analytics-card">
+            <div class="analytics-card-icon">👁️</div>
+            <div class="analytics-card-content">
+              <h3 id="monthViews">0</h3>
+              <p>Profile Views</p>
+            </div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-icon">🔍</div>
+            <div class="analytics-card-content">
+              <h3 id="monthSearches">0</h3>
+              <p>Search Appearances</p>
+            </div>
           </div>
         </div>
-        <div class="analytics-card">
-          <div class="analytics-card-icon">🔍</div>
-          <div class="analytics-card-content">
-            <h3 id="monthSearches">0</h3>
-            <p>Search Appearances</p>
-          </div>
-        </div>
-      </div>
         <div class="chart-container">
           <canvas id="analyticsChart"></canvas>
         </div>
@@ -240,103 +239,151 @@
   </nav>
 
   <main class="dashboard-content">
-    <section class="dashboard-card">
-        <div class="card-label">Me</div>
-      <div class="profile-section">
-        <form method="POST" action="{{ url_for('user.upload_profile_pic') }}" enctype="multipart/form-data" id="profilePicForm">
-          <label for="profilePicInput" class="profile-circle" aria-label="Upload Profile Picture">
-            {% if current_user.profile_image_url %}
-            <img src="{{ current_user.profile_image_url }}" alt="Your Profile" />
-            {% else %}
-            <span class="plus-only">+</span>
-            {% endif %}
-          </label>
-          <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" style="display: none;" />
-        </form>
-        {% if is_premium %}
-      <span class="premium-badge" id="premiumBadge">
-        <i class="fas fa-crown"></i>
-        {% if ends_soon %}
-          Premium Ends Soon
-        {% else %}
-          Premium Member
-          <a href="javascript:void(0);" id="cancelSubscriptionBtn" class="cancel-subscription-link">
-            <i class="fas fa-times-circle"></i> Cancel
-          </a>
-        {% endif %}
-      </span>
-      {% endif %}
-
-        <div class="edit-profile-btn-container" class="action-buttons">
-          <a href="{{ url_for('user.edit_profile') }}" class="edit-profile-btn">Manage Profile</a>
-          <a href="{{ url_for('business.create_business') }}" class="action-btn">+ Create a Business</a>
+    <!-- Profile Header Section -->
+    <section class="profile-header-section">
+      <div class="profile-info">
+        <div class="profile-avatar">
+          <form method="POST" action="{{ url_for('user.upload_profile_pic') }}" enctype="multipart/form-data" id="profilePicForm">
+            <label for="profilePicInput" class="profile-circle" aria-label="Upload Profile Picture">
+              {% if current_user.profile_image_url %}
+              <img src="{{ current_user.profile_image_url }}" alt="Your Profile" />
+              {% else %}
+              <span class="plus-only">+</span>
+              {% endif %}
+            </label>
+            <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" style="display: none;" />
+          </form>
         </div>
+        <div class="profile-details">
+          <div class="profile-name-section">
+            <h1 class="profile-name">{{ current_user.username or 'Your Account' }}</h1>
+            {% if is_premium %}
+            <span class="premium-badge" id="premiumBadge">
+              <i class="fas fa-crown"></i>
+              {% if ends_soon %}
+                Premium Ends Soon
+                <a href="javascript:void(0);" id="cancelSubscriptionBtn" class="cancel-subscription-link">
+                  <i class="fas fa-times-circle"></i> Cancel
+                </a>
+              {% else %}
+                Premium Member
+                <a href="javascript:void(0);" id="cancelSubscriptionBtn" class="cancel-subscription-link">
+                  <i class="fas fa-times-circle"></i> Cancel
+                </a>
+              {% endif %}
+            </span>
+            {% endif %}
+          </div>
+          <p class="profile-subtitle"></p>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <a href="{{ url_for('user.edit_profile') }}" class="action-btn secondary">
+          <i class="fas fa-user-edit"></i>
+          Manage Profile
+        </a>
+        <a href="{{ url_for('business.create_business') }}" class="action-btn primary">
+          <i class="fas fa-plus"></i>
+          Create Business
+        </a>
       </div>
     </section>
 
-    <div class="main-boxes-container">
-      <section class="business-section">
-        <h2>My Appointments</h2>
-        <div class="business-list">
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- My Appointments Section -->
+      <section class="dashboard-card appointments-card">
+        <div class="card-header">
+          <h2><i class="fas fa-calendar-alt"></i> My Appointments</h2>
+          <span class="card-count">{{ appointments|length if appointments else 0 }}</span>
+        </div>
+        <div class="card-content">
           {% if appointments %}
-          {% for appt in appointments %}
-          <div class="business-card">
-            <h3>{{ appt.business.name or "Unknown Business" }}</h3>
-            <p>{{ appt.business.category or "Unknown Category" }}</p>
-
-            {% set formatted_time = appt.time[:5] %}
-            {% set hour = formatted_time.split(':')[0]|int %}
-            {% set minute = formatted_time.split(':')[1] %}
-            {% set ampm = 'AM' if hour < 12 else 'PM' %}
-            {% set display_hour = hour if hour <= 12 else hour - 12 %}
-            <p>Appointment: {{ appt.date }} at {{ '%02d' % display_hour }}:{{ minute }} {{ ampm }}</p>
-
-            <p>Status:
-              {% if appt.confirmed %}
-              <span style="color: #4caf50; font-weight: bold;">Confirmed</span>
-              {% else %}
-              <span style="color: #f44336; font-weight: bold;">Pending</span>
-              {% endif %}
-            </p>
-            <form action="{{ url_for('search.cancel_appointment') }}" method="POST" onsubmit="return confirmCancel();" style="margin-top: 1rem;">
-            <input type="hidden" name="appointment_id" value="{{ appt.id }}">
-            <button type="submit" class="cancel-btn">Cancel Appointment</button>
-            </form>
-          </div>
-          {% endfor %}
+            {% for appt in appointments %}
+            <div class="appointment-item">
+              <div class="appointment-info">
+                <h3>{{ appt.business.name or "Unknown Business" }}</h3>
+                <p class="appointment-category">{{ appt.business.category or "Unknown Category" }}</p>
+                
+                {% set formatted_time = appt.time[:5] %}
+                {% set hour = formatted_time.split(':')[0]|int %}
+                {% set minute = formatted_time.split(':')[1] %}
+                {% set ampm = 'AM' if hour < 12 else 'PM' %}
+                {% set display_hour = hour if hour <= 12 else hour - 12 %}
+                <p class="appointment-datetime">
+                  <i class="fas fa-clock"></i>
+                  {{ appt.date }} at {{ '%02d' % display_hour }}:{{ minute }} {{ ampm }}
+                </p>
+                
+                <div class="appointment-status">
+                  {% if appt.confirmed %}
+                  <span class="status-badge confirmed">
+                    <i class="fas fa-check-circle"></i> Confirmed
+                  </span>
+                  {% else %}
+                  <span class="status-badge pending">
+                    <i class="fas fa-clock"></i> Pending
+                  </span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="appointment-actions">
+                <form action="{{ url_for('search.cancel_appointment') }}" method="POST" onsubmit="return confirmCancel();">
+                  <input type="hidden" name="appointment_id" value="{{ appt.id }}">
+                  <button type="submit" class="cancel-btn">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% endfor %}
           {% else %}
-          <p>Nothing to see here yet...</p>
+            <div class="empty-state">
+              <i class="fas fa-calendar-plus"></i>
+              <p>No appointments yet</p>
+              <span>Book your first appointment to get started</span>
+            </div>
           {% endif %}
         </div>
       </section>
 
-      <section class="your-business-section">
-        <h2>My Businesses</h2>
-        <div class="your-business-list">
-          {% if businesses %}
-          {% for biz in businesses %}
-          <div class="business-card owner">
-          <h3>
-              {{ biz.name }}
-              {% if current_user.is_premium %}
-                <span class="dashboard-badge">
-                  <i class="fa-solid fa-shield badge-background"></i>
-                  <i class="fa-solid fa-cat badge-icon"></i>
-                </span>
-              {% endif %}
-            </h3>
-            <p>Category: {{ biz.category }}</p>
-            <p>Location: {{ biz.city }}</p>
-            <div class="business-actions">
-              <a href="{{ url_for('business.view_business', business_id=biz.id) }}" class="edit-btn">Manage</a>
-              <button class="analytics-btn" onclick="showAnalytics({{ biz.id }}, '{{ biz.name }}')">
-                <i class="fas fa-chart-bar"></i> Analytics
-              </button>
+      <!-- My Businesses Section -->
+      <section class="dashboard-card businesses-card">
+        <div class="card-header">
+          <h2><i class="fas fa-store"></i> My Businesses</h2>
+          <span class="card-count">{{ businesses|length if businesses else 0 }}</span>
+        </div>
+        <div class="card-content">
+          <div class="your-business-list">
+            {% if businesses %}
+            {% for biz in businesses %}
+            <div class="business-card owner">
+            <h3>
+                {{ biz.name }}
+                {% if current_user.is_premium %}
+                  <span class="dashboard-badge">
+                    <i class="fa-solid fa-shield badge-background"></i>
+                    <i class="fa-solid fa-cat badge-icon"></i>
+                  </span>
+                {% endif %}
+              </h3>
+              <p>Category: {{ biz.category }}</p>
+              <p>Location: {{ biz.city }}</p>
+              <div class="business-actions">
+                <a href="{{ url_for('business.view_business', business_id=biz.id) }}" class="edit-btn">Manage</a>
+                <button class="analytics-btn" onclick="showAnalytics({{ biz.id }}, '{{ biz.name }}')">
+                  <i class="fas fa-chart-bar"></i> Analytics
+                </button>
+              </div>
             </div>
-          </div>
-          {% endfor %}
+            {% endfor %}
           {% else %}
-          <p>Nothing to see here yet...</p>
+            <div class="empty-state">
+              <i class="fas fa-store-slash"></i>
+              <p>No businesses yet</p>
+              <span>Create your first business to get started</span>
+            </div>
           {% endif %}
         </div>
       </section>
@@ -379,169 +426,167 @@
   </div>
 
   <script>
-  function confirmCancel() {
-    return confirm("Are you sure you want to cancel this appointment?");
-  }
-
-  let analyticsChart = null;
-
-  function showAnalytics(businessId, businessName) {
-    const modal = document.getElementById('analyticsModal');
-    const businessNameEl = document.getElementById('analyticsBusinessName');
-    
-    businessNameEl.textContent = `${businessName} - Analytics`;
-    modal.classList.remove('hidden');
-    
-    // Show loading state
-    document.getElementById('weekViews').textContent = '...';
-    document.getElementById('weekSearches').textContent = '...';
-    document.getElementById('monthViews').textContent = '...';
-    document.getElementById('monthSearches').textContent = '...';
-    document.getElementById('allTimeViews').textContent = '...';
-    document.getElementById('allTimeSearches').textContent = '...';
-    
-    // Fetch analytics data
-    fetch(`/search/business/${businessId}/analytics`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          // Update cards
-          document.getElementById('weekViews').textContent = data.week.profile_views;
-          document.getElementById('weekSearches').textContent = data.week.search_appearances;
-          document.getElementById('monthViews').textContent = data.month.profile_views;
-          document.getElementById('monthSearches').textContent = data.month.search_appearances;
-          document.getElementById('allTimeViews').textContent = data.all_time.profile_views;
-          document.getElementById('allTimeSearches').textContent = data.all_time.search_appearances;
-          
-          // Update chart
-          updateAnalyticsChart(data);
-        } else {
-          console.error('Failed to fetch analytics:', data.error);
-          alert('Failed to load analytics data');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('Error loading analytics data');
-      });
-  }
-
-  function updateAnalyticsChart(data) {
-    const ctx = document.getElementById('analyticsChart').getContext('2d');
-    
-    // Destroy existing chart if it exists
-    if (analyticsChart) {
-      analyticsChart.destroy();
+    function confirmCancel() {
+      return confirm("Are you sure you want to cancel this appointment?");
     }
-    
-    analyticsChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['7 Days', '30 Days', 'All Time'],
-        datasets: [
-            {
-              label: 'Profile Views',
-              data: [data.week.profile_views, data.month.profile_views, data.all_time.profile_views],
-              backgroundColor: 'rgba(56, 189, 248, 0.8)', 
-              borderColor: 'rgba(14, 165, 233, 1)',       
-              borderWidth: 2,
-              borderRadius: 8
-            },
-            {
-              label: 'Search Appearances',
-              data: [data.week.search_appearances, data.month.search_appearances, data.all_time.search_appearances],
-              backgroundColor: 'rgba(134, 239, 172, 0.8)', 
-              borderColor: 'rgba(22, 163, 74, 1)',         
-              borderWidth: 2,
-              borderRadius: 8
-            }
-          ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            labels: {
-              color: '#e5e5e5',
-              font: {
-                family: 'Inter, sans-serif',
-                size: 12
-              }
-            }
+
+    let analyticsChart = null;
+
+    function showAnalytics(businessId, businessName) {
+      const modal = document.getElementById('analyticsModal');
+      const businessNameEl = document.getElementById('analyticsBusinessName');
+      
+      businessNameEl.textContent = `${businessName} - Analytics`;
+      modal.classList.remove('hidden');
+      
+      // Show loading state
+      document.getElementById('weekViews').textContent = '...';
+      document.getElementById('weekSearches').textContent = '...';
+      document.getElementById('monthViews').textContent = '...';
+      document.getElementById('monthSearches').textContent = '...';
+      document.getElementById('allTimeViews').textContent = '...';
+      document.getElementById('allTimeSearches').textContent = '...';
+      
+      // Fetch analytics data
+      fetch(`/search/business/${businessId}/analytics`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Update cards
+            document.getElementById('weekViews').textContent = data.week.profile_views;
+            document.getElementById('weekSearches').textContent = data.week.search_appearances;
+            document.getElementById('monthViews').textContent = data.month.profile_views;
+            document.getElementById('monthSearches').textContent = data.month.search_appearances;
+            document.getElementById('allTimeViews').textContent = data.all_time.profile_views;
+            document.getElementById('allTimeSearches').textContent = data.all_time.search_appearances;
+            
+            // Update chart
+            updateAnalyticsChart(data);
+          } else {
+            console.error('Failed to fetch analytics:', data.error);
+            alert('Failed to load analytics data');
           }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              color: '#b0b0b0',
-              font: {
-                family: 'Inter, sans-serif'
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error loading analytics data');
+        });
+    }
+
+    function updateAnalyticsChart(data) {
+      const ctx = document.getElementById('analyticsChart').getContext('2d');
+      
+      // Destroy existing chart if it exists
+      if (analyticsChart) {
+        analyticsChart.destroy();
+      }
+      
+      analyticsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['7 Days', '30 Days', 'All Time'],
+          datasets: [
+              {
+                label: 'Profile Views',
+                data: [data.week.profile_views, data.month.profile_views, data.all_time.profile_views],
+                backgroundColor: 'rgba(56, 189, 248, 0.8)', 
+                borderColor: 'rgba(14, 165, 233, 1)',       
+                borderWidth: 2,
+                borderRadius: 8
+              },
+              {
+                label: 'Search Appearances',
+                data: [data.week.search_appearances, data.month.search_appearances, data.all_time.search_appearances],
+                backgroundColor: 'rgba(134, 239, 172, 0.8)', 
+                borderColor: 'rgba(22, 163, 74, 1)',         
+                borderWidth: 2,
+                borderRadius: 8
               }
-            },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
+            ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#e5e5e5',
+                font: {
+                  family: 'Inter, sans-serif',
+                  size: 12
+                }
+              }
             }
           },
-          x: {
-            ticks: {
-              color: '#b0b0b0',
-              font: {
-                family: 'Inter, sans-serif'
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: '#b0b0b0',
+                font: {
+                  family: 'Inter, sans-serif'
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
               }
             },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
+            x: {
+              ticks: {
+                color: '#b0b0b0',
+                font: {
+                  family: 'Inter, sans-serif'
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              }
             }
           }
         }
+      });
+    }
+
+    document.getElementById('closeAnalytics').addEventListener('click', () => {
+      document.getElementById('analyticsModal').classList.add('hidden');
+    });
+
+    document.getElementById('analyticsModal').addEventListener('click', (e) => {
+      if (e.target.id === 'analyticsModal') {
+        document.getElementById('analyticsModal').classList.add('hidden');
       }
     });
-  }
 
-  document.getElementById('closeAnalytics').addEventListener('click', () => {
-    document.getElementById('analyticsModal').classList.add('hidden');
-  });
+    document.addEventListener('DOMContentLoaded', () => {
+      const cancelBtn = document.getElementById('cancelSubscriptionBtn');
+      const modal = document.getElementById('cancelSubscriptionModal');
+      const closeBtn = document.getElementById('closeCancelModal');
+      const confirmBtn = document.getElementById('confirmCancelSubscription');
+      const keepBtn = document.getElementById('keepSubscription');
 
-  document.getElementById('analyticsModal').addEventListener('click', (e) => {
-    if (e.target.id === 'analyticsModal') {
-      document.getElementById('analyticsModal').classList.add('hidden');
-    }
-  });
+      // Show modal
+      cancelBtn?.addEventListener('click', () => modal.classList.remove('hidden'));
 
-document.addEventListener('DOMContentLoaded', () => {
-  const cancelBtn = document.getElementById('cancelSubscriptionBtn');
-  const modal = document.getElementById('cancelSubscriptionModal');
-  const closeBtn = document.getElementById('closeCancelModal');
-  const confirmBtn = document.getElementById('confirmCancelSubscription');
-  const keepBtn = document.getElementById('keepSubscription');
+      // Close modal
+      closeBtn?.addEventListener('click', () => modal.classList.add('hidden'));
+      keepBtn?.addEventListener('click', () => modal.classList.add('hidden'));
 
-  // Show modal
-  cancelBtn?.addEventListener('click', () => modal.classList.remove('hidden'));
+      // Submit cancel form
+      confirmBtn?.addEventListener('click', () => {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("business.cancel_subscription") }}';
+        document.body.appendChild(form);
+        form.submit();
+        modal.classList.add('hidden');
+      });
 
-  // Close modal
-  closeBtn?.addEventListener('click', () => modal.classList.add('hidden'));
-  keepBtn?.addEventListener('click', () => modal.classList.add('hidden'));
+      // Close modal by clicking outside
+      modal?.addEventListener('click', e => {
+        if (e.target.id === 'cancelSubscriptionModal') modal.classList.add('hidden');
+      });
+    });
 
-  // Submit cancel form
-  confirmBtn?.addEventListener('click', () => {
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '{{ url_for("business.cancel_subscription") }}';
-    document.body.appendChild(form);
-    form.submit();
-    modal.classList.add('hidden');
-  });
-
-  // Close modal by clicking outside
-  modal?.addEventListener('click', e => {
-    if (e.target.id === 'cancelSubscriptionModal') modal.classList.add('hidden');
-  });
-});
-</script>
-
-  <script>
     function setupAutocomplete(inputId, listId, formId) {
       const input = document.getElementById(inputId);
       const list = document.getElementById(listId);
@@ -591,26 +636,26 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAutocomplete("q", "autocomplete-list", "search-form");
     setupAutocomplete("navbar-q", "navbar-autocomplete-list", "navbar-search-form");
   </script>
-</body>
-<div id="cookie-banner">
-  <p>We use cookies to improve your experience on our site. By using our site, you consent to cookies.</p>
-  <button id="accept-cookies">Got it</button>
-</div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const banner = document.getElementById("cookie-banner");
-    const acceptBtn = document.getElementById("accept-cookies");
+  <div id="cookie-banner">
+    <p>We use cookies to improve your experience on our site. By using our site, you consent to cookies.</p>
+    <button id="accept-cookies">Got it</button>
+  </div>
 
-    if (!localStorage.getItem("cookiesAccepted")) {
-      setTimeout(() => banner.classList.add("show"), 500);
-    }
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const banner = document.getElementById("cookie-banner");
+      const acceptBtn = document.getElementById("accept-cookies");
 
-    acceptBtn.addEventListener("click", () => {
-      localStorage.setItem("cookiesAccepted", "true");
-      banner.classList.remove("show");
+      if (!localStorage.getItem("cookiesAccepted")) {
+        setTimeout(() => banner.classList.add("show"), 500);
+      }
+
+      acceptBtn.addEventListener("click", () => {
+        localStorage.setItem("cookiesAccepted", "true");
+        banner.classList.remove("show");
+      });
     });
-  });
-</script>
-
+  </script>
+</body>
 </html>
