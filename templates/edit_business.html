@@ -163,6 +163,9 @@
       <label for="website_url">Website (optional)</label>
       <input type="website" id="wesbite_url" placeholder="Website URL" maxlength="2000" name="website_url" value="{{ business.website_url }}"/>
 
+      <label for="google_maps_url">Directions (optional)</label>
+      <input type="google" id="google_maps_url" name="google_maps_url" placeholder="Google Maps URL" maxlength="2000" value="{{ business.google_maps_url or '' }}"/>
+
       <button type="submit">Update Business</button>
     </form>
     <a href="{{ url_for('business.view_business', business_id=business.id) }}" class="btn secondary">Back</a>

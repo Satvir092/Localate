@@ -98,6 +98,7 @@ def create_business():
         social_url = request.form.get('social_url')
         website_url = request.form.get('website_url')
         timezone = request.form.get('timezone')
+        google_maps_url = request.form.get('google_maps_url')
 
         form_data = {
             'name': name,
@@ -111,6 +112,7 @@ def create_business():
             'state': state,
             'social_url': social_url,
             'website_url': website_url,
+            'google_maps_url': google_maps_url,
             'timezone': timezone
         }
 
@@ -190,6 +192,7 @@ def create_business():
             "timezone": timezone,
             "social_url": social_url,
             "website_url": website_url,
+            "google_maps_url": google_maps_url,
             "closing_time": closing_time
         }).execute()
 
@@ -313,6 +316,7 @@ def edit_business(business_id):
         social_url = request.form.get('social_url')
         website_url = request.form.get('website_url')
         timezone = request.form.get('timezone')
+        google_maps_url = request.form.get('google_maps_url')
 
         if not name:
             flash("Business name is required.", "error")
@@ -383,6 +387,7 @@ def edit_business(business_id):
             "timezone": timezone,
             "website_url": website_url,
             "social_url": social_url,
+            "google_maps_url": google_maps_url,
             "state": state
         }
 

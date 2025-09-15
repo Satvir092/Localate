@@ -275,6 +275,12 @@
             <i class="fas fa-globe"></i> Website
           </a>
         {% endif %}
+
+        {% if business.google_maps_url %}
+          <a href="{{ business.google_maps_url }}" class="website-btn" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-location-dot"></i> Find
+          </a>
+        {% endif %}
             
      <button class="share-btn" onclick="copyProfileLink()">
       <i class="fas fa-share-alt"></i> Share
