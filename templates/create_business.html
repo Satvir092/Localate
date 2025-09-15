@@ -214,6 +214,9 @@
       <label for="website_url">Website (optional)</label>
       <input type="website" id="website_url" name="website_url" placeholder="Website URL" maxlength="2000" value="{{ form_data.website_url or '' }}"/>
 
+      <label for="google_maps_url">Directions (optional)</label>
+      <input type="google" id="google_maps_url" name="google_maps_url" placeholder="Google Maps URL" maxlength="2000" value="{{ form_data.google_maps_url or '' }}"/>
+
       <button type="submit">Create Business</button>
     </form>
   </main>
