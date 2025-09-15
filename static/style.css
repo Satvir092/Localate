@@ -1000,7 +1000,7 @@ body {
   }
 
   .nav-toggle:checked + .nav-links {
-    max-height: 400px;
+    max-height: 500px;
   }
 
 .nav-toggle-label {
