@@ -801,14 +801,48 @@ body {
   animation: warning-pulse 2s ease-in-out infinite;
 }
 
-/* === My Businesses Section: Adjusted Top Space + Nice Hover === */
 .your-business-list {
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: 1.25rem;
-  margin-top: 1.2rem;   /* slightly less space above first card */
+  margin-top: 1.2rem;
   padding: 0;
   width: 100%;
+  min-height: 0; 
+}
+
+.your-business-list:has(.business-card) {
+  justify-content: flex-start;
+}
+
+.your-business-list.has-businesses {
+  justify-content: flex-start;
+}
+
+.your-business-list:has(.empty-state) {
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+}
+
+.your-business-list.empty {
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+}
+
+.your-business-list .empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #888;
+  gap: 1rem;
+  padding: 3rem 2rem;
+  margin-top: 0;
 }
 
 .business-card.owner {
@@ -820,6 +854,7 @@ body {
   margin: 0 auto;
   box-shadow: 0 3px 10px rgba(0,0,0,0.25);
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  flex-shrink: 0;
 }
 
 .business-card.owner:hover {
