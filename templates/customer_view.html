@@ -242,11 +242,31 @@
     </div>
   </div>
 </div>
-    <div class="business-meta">
+<div class="business-meta">
+  <div class="meta-content">
+    <div class="meta-info">
       <p><strong>Open:</strong> {{ business.opening_time }}</p>
       <p><strong>Close:</strong> {{ business.closing_time }}</p>
       <p><strong>Days:</strong> {{ business.open_days | join(', ') }}</p>
     </div>
+    
+    {% if business.google_maps_url %}
+    <div class="map-find-container">
+      <a href="{{ business.google_maps_url }}" class="apple-maps-btn" target="_blank" rel="noopener noreferrer" aria-label="Find location on map">
+        <div class="maps-icon">
+          <div class="map-background">
+            <div class="map-route route-1"></div>
+            <div class="map-route route-2"></div>
+            <div class="map-route route-3"></div>
+          </div>
+          <div class="location-dot"></div>
+        </div>
+        <span class="maps-text">Find</span>
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
 
       <div class="action-buttons">
   <a href="javascript:history.back()" class="btn secondary">Back to Search</a>
@@ -273,12 +293,6 @@
         {% if business.website_url %}
           <a href="{{ business.website_url }}" class="website-btn" target="_blank" rel="noopener noreferrer">
             <i class="fas fa-globe"></i> Website
-          </a>
-        {% endif %}
-
-        {% if business.google_maps_url %}
-          <a href="{{ business.google_maps_url }}" class="website-btn" target="_blank" rel="noopener noreferrer">
-            <i class="fas fa-location-dot"></i> Find
           </a>
         {% endif %}
             

@@ -678,23 +678,36 @@ def customize_business(business_id):
     # Check if current user is premium
     user = supabase.table("users").select("*").eq("id", current_user.id).single().execute().data
     if not user["is_premium"]:
-
         return redirect(url_for("business.premium"))
 
     if request.method == "POST":
-        button_color = request.form.get("button_color") or None
-        font_family = request.form.get("font_family") or None
-        text_color = request.form.get("text_color") or None
-        card_background = request.form.get("card_background") or None
-        small_card_bg = request.form.get("small_card_bg") or None
-
-        supabase.table("businesses").update({
+        button_color = request.form.get("button_color", "").strip() or None
+        font_family = request.form.get("font_family", "").strip() or None
+        text_color = request.form.get("text_color", "").strip() or None
+        card_background = request.form.get("card_background", "").strip() or None
+        small_card_bg = request.form.get("small_card_bg", "").strip() or None
+        
+        card_background_gradient = request.form.get("card_background_gradient", "").strip()
+        small_card_bg_gradient = request.form.get("small_card_bg_gradient", "").strip()  
+        button_color_gradient = request.form.get("button_color_gradient", "").strip()
+        
+        update_data = {
             "button_color": button_color,
             "font_family": font_family,
             "text_color": text_color,
             "card_background": card_background,
             "small_card_bg": small_card_bg,
-        }).eq("id", business_id).execute()
+            "card_background_gradient": card_background_gradient,
+            "small_card_bg_gradient": small_card_bg_gradient,
+            "button_color_gradient": button_color_gradient,
+        }
+
+        try:
+            result = supabase.table("businesses").update(update_data).eq("id", business_id).execute()
+            
+        except Exception as e:
+            print(f"Database update error: {e}")
+            
         return redirect(url_for("business.view_business", business_id=business_id))
 
     return render_template("customize_business.html", business=business)

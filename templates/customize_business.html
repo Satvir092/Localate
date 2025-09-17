@@ -233,7 +233,12 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+  
   function createGradient(baseColor) {
+    if (isGradientString(baseColor)) {
+      return baseColor;
+    }
+    
     const hex = baseColor.replace('#', '');
     if (hex.length !== 6) return baseColor;
     const r = parseInt(hex.substr(0, 2), 16);
@@ -243,29 +248,37 @@ document.addEventListener('DOMContentLoaded', function () {
     const darker  = `#${clamp(r-30,0,255).toString(16).padStart(2,'0')}${clamp(g-30,0,255).toString(16).padStart(2,'0')}${clamp(b-30,0,255).toString(16).padStart(2,'0')}`;
     return `linear-gradient(135deg, ${lighter} 0%, ${baseColor} 50%, ${darker} 100%)`;
   }
-
   function setHiddenValue(target, baseColor, useGradient) {
     const mainInput = document.getElementById(target);
     const gradInput = document.getElementById(target + '_gradient');
-    if (useGradient && baseColor) {
-      mainInput.value = createGradient(baseColor); 
+    
+    const actualBaseColor = isGradientString(baseColor) ? extractFirstHex(baseColor) : baseColor;
+
+    if (actualBaseColor && actualBaseColor.startsWith('#')) {
+      mainInput.dataset.baseColor = actualBaseColor;
+    }
+    
+    if (useGradient && actualBaseColor) {
+      mainInput.value = actualBaseColor; 
       gradInput.value = 'true';
     } else {
-      mainInput.value = baseColor || '';
+      mainInput.value = actualBaseColor;
       gradInput.value = '';
     }
-    mainInput.dataset.baseColor = baseColor;
   }
 
   function updatePreview(target, baseColor, useGradient) {
     const customDisplay = document.getElementById(target + '_custom');
     const swatch = customDisplay?.querySelector('.color-preview-swatch');
     if (!swatch) return;
-    if (useGradient && baseColor) {
-      swatch.style.background = createGradient(baseColor);
-    } else if (baseColor) {
-      swatch.style.background = baseColor;
-      swatch.style.backgroundColor = baseColor;
+
+    const actualBaseColor = isGradientString(baseColor) ? extractFirstHex(baseColor) : baseColor;
+    
+    if (useGradient && actualBaseColor) {
+      swatch.style.background = createGradient(actualBaseColor);
+    } else if (actualBaseColor) {
+      swatch.style.background = actualBaseColor;
+      swatch.style.backgroundColor = actualBaseColor;
     } else {
       swatch.style.background = '';
       swatch.style.backgroundColor = '';
@@ -291,6 +304,37 @@ document.addEventListener('DOMContentLoaded', function () {
     const parent = document.getElementById(target + '_picker')?.parentElement;
     const customBtn = parent?.querySelector('.custom-color-btn[data-target="' + target + '"]');
     if (customBtn) customBtn.classList.add('active');
+  }
+
+  // FIXED: Always return pure base color, never a gradient + debug logging
+  function getBaseColor(target, fallback = '#000000') {
+    const mainInput = document.getElementById(target);
+    
+    // First: Check stored base color (most reliable)
+    if (mainInput.dataset.baseColor && mainInput.dataset.baseColor.startsWith('#') && !isGradientString(mainInput.dataset.baseColor)) {
+      console.log(`[${target}] Using stored base color: ${mainInput.dataset.baseColor}`);
+      return mainInput.dataset.baseColor;
+    }
+    
+    // Second: Extract from gradient if present
+    if (isGradientString(mainInput.value)) {
+      const extracted = extractFirstHex(mainInput.value);
+      console.log(`[${target}] Extracted from gradient: ${extracted} (from ${mainInput.value})`);
+      if (extracted) {
+        mainInput.dataset.baseColor = extracted;
+        return extracted;
+      }
+    }
+    
+    // Third: Use direct color value
+    if (mainInput.value && mainInput.value.startsWith('#') && !isGradientString(mainInput.value)) {
+      console.log(`[${target}] Using direct color: ${mainInput.value}`);
+      mainInput.dataset.baseColor = mainInput.value;
+      return mainInput.value;
+    }
+    
+    console.log(`[${target}] Using fallback: ${fallback}`);
+    return fallback;
   }
 
   function triggerMobileColorPicker(target, currentColor) {
@@ -408,6 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(cleanup, 60000);
   }
 
+  // Color option clicks
   document.querySelectorAll('.color-picker').forEach(picker => {
     picker.querySelectorAll('.color-option').forEach(option => {
       option.addEventListener('click', () => {
@@ -424,6 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Hidden color input changes
   document.querySelectorAll('.hidden-color-input').forEach(input => {
     input.addEventListener('input', (e) => {
       const target = e.target.dataset.target;
@@ -438,26 +484,52 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // FIXED: Gradient toggle with better debugging and validation
   document.querySelectorAll('.gradient-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent form submission
+      
       const target = btn.dataset.target;
       const mainInput = document.getElementById(target);
       const gradInput = document.getElementById(target + '_gradient');
       const currentlyOn = gradInput.value === 'true' || btn.classList.contains('active');
-      const baseColor = mainInput.dataset.baseColor || mainInput.value || '#000000';
+      
+      console.log(`[${target}] Gradient toggle clicked. Currently on: ${currentlyOn}`);
+      console.log(`[${target}] Current input value: ${mainInput.value}`);
+      console.log(`[${target}] Current gradient flag: ${gradInput.value}`);
+      
+      // Get pure base color with extra validation
+      let baseColor = getBaseColor(target, '#000000');
+      
+      // Extra validation: if we got a gradient somehow, extract again
+      if (isGradientString(baseColor)) {
+        console.log(`[${target}] WARNING: getBaseColor returned a gradient, re-extracting...`);
+        baseColor = extractFirstHex(baseColor) || '#000000';
+      }
+      
+      console.log(`[${target}] Using base color: ${baseColor}`);
+      
       if (!currentlyOn) {
+        // Turn gradient ON
+        console.log(`[${target}] Turning gradient ON`);
         markGradientButton(target, true);
         setHiddenValue(target, baseColor, true);
         showCustomArea(target);
         updatePreview(target, baseColor, true);
       } else {
+        // Turn gradient OFF
+        console.log(`[${target}] Turning gradient OFF`);
         markGradientButton(target, false);
         setHiddenValue(target, baseColor, false);
         updatePreview(target, baseColor, false);
       }
+      
+      console.log(`[${target}] New input value: ${mainInput.value}`);
+      console.log(`[${target}] New gradient flag: ${gradInput.value}`);
     });
   });
 
+  // Custom color button logic
   document.querySelectorAll('.custom-color-btn').forEach(btn => {
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     
@@ -478,8 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tempInput.style.width = '1px';
         tempInput.style.height = '1px';
         
-        const mainInput = document.getElementById(target);
-        const currentColor = mainInput.dataset.baseColor || extractFirstHex(mainInput.value) || '#000000';
+        const currentColor = getBaseColor(target, '#000000');
         tempInput.value = currentColor;
         
         document.body.appendChild(tempInput);
@@ -509,16 +580,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 50);
         
       } else {
-        const mainInput = document.getElementById(target);
-        const currentColor = mainInput.dataset.baseColor || extractFirstHex(mainInput.value) || '#000000';
+        const currentColor = getBaseColor(target, '#000000');
         triggerMobileColorPicker(target, currentColor);
       }
     });
   });
 
+  // Default button logic
   document.querySelectorAll('.default-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.dataset.target;
+      const mainInput = document.getElementById(target);
+      
+      // Clear stored base color
+      delete mainInput.dataset.baseColor;
+      
       setHiddenValue(target, '', false);
       const picker = document.getElementById(target + '_picker');
       picker.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
@@ -535,28 +611,55 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // CRITICAL FIX: Don't regenerate gradients that already exist
   ['button_color','card_background','small_card_bg','text_color'].forEach(target => {
     const mainInput = document.getElementById(target);
     const gradInput = document.getElementById(target + '_gradient');
     const val = mainInput.value;
+    
     let baseColor = null;
     let gradientOn = false;
+    
+    // Determine the actual state
     if (isGradientString(val)) {
-      gradientOn = true;
+      // Current value is a gradient - DON'T recreate it, just extract base color for storage
       baseColor = extractFirstHex(val);
-    } else {
+      gradientOn = true;
+      // CRITICAL: Don't call setHiddenValue here - the gradient already exists
+    } else if (val && val.startsWith('#')) {
+      // Current value is a plain color
+      baseColor = val;
       gradientOn = gradInput.value === 'true';
-      baseColor = val || null;
+    } else {
+      // No color set
+      gradientOn = gradInput.value === 'true';
+      if (gradientOn) baseColor = '#000000';
     }
+    
+    // Store the base color
+    if (baseColor) {
+      mainInput.dataset.baseColor = baseColor;
+    }
+    
+    // Set the UI state WITHOUT regenerating values
     if (gradientOn) {
       markGradientButton(target, true);
-      showCustomArea(target);
-      if (!baseColor) baseColor = '#000000';
-      updatePreview(target, baseColor, true);
-      setHiddenValue(target, baseColor, true);
+      if (baseColor) {
+        showCustomArea(target);
+        updatePreview(target, baseColor, true);
+        // ONLY set hidden value if we don't already have a gradient
+        if (!isGradientString(val)) {
+          setHiddenValue(target, baseColor, true);
+        }
+      }
     } else if (baseColor) {
+      markGradientButton(target, false);
       showCustomArea(target);
       updatePreview(target, baseColor, false);
+      // ONLY set hidden value if the current value is wrong
+      if (mainInput.value !== baseColor) {
+        setHiddenValue(target, baseColor, false);
+      }
     }
   });
 
