@@ -255,6 +255,7 @@ body {
   padding: 0;
   overflow-y: auto;
   display: flex;
+  padding: 0 0 0.5rem;
   flex-direction: column;
 }
 
@@ -858,7 +859,6 @@ body {
 }
 
 .business-card.owner:hover {
-  transform: translateY(-6px);
   box-shadow: 0 8px 20px rgba(0,0,0,0.4);
   background: linear-gradient(145deg, #222 0%, #1a1a1a 100%);
 }
@@ -1239,15 +1239,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Mobile Responsiveness */
+/* Mobile Responsiveness - Updated */
 @media (max-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   
+  /* Keep fixed height on tablet */
   .dashboard-card {
-    height: auto;
-    min-height: 400px;
+    height: 600px;
   }
 }
 
@@ -1288,17 +1289,49 @@ h1, h2, h3, h4, h5, h6 {
     padding: 1.25rem 1.5rem;
   }
 
+  /* IMPORTANT: Keep fixed height for dashboard cards on mobile */
+  .dashboard-card {
+    height: 500px; /* Fixed height for mobile */
+  }
+
+  /* Ensure card content maintains scroll behavior */
+  .card-content {
+    flex: 1;
+    padding: 0 0 0.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Important for flexbox scrolling */
+  }
+
   .appointment-item,
   .business-item {
     padding: 1.25rem 1.5rem;
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
+    flex-shrink: 0; /* Prevent items from shrinking */
   }
 
   .appointment-actions,
   .business-actions {
     justify-content: flex-start;
+  }
+
+  .your-business-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 1.25rem;
+    margin-top: 1.2rem;
+    padding: 0;
+    width: 100%;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .business-card.owner {
+    flex-shrink: 0; /
   }
 
   .analytics-modal-content {
@@ -1333,6 +1366,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 600px) {
+  .dashboard-card {
+    height: 450px; 
+  }
+
   #cookie-banner {
     flex-direction: column;
     padding: 1rem;
@@ -1371,6 +1408,11 @@ h1, h2, h3, h4, h5, h6 {
   .appointment-info h3,
   .business-info h3 {
     font-size: 1rem;
+  }
+
+  /* Maintain fixed height on smallest screens */
+  .dashboard-card {
+    height: 400px;
   }
 
   .analytics-modal {
