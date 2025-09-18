@@ -9,7 +9,7 @@ body {
 }
 
 .business-card {
-  max-width: 1580px;
+  max-width: 1470px;
   width: 100%;
   margin: 4rem auto;
   padding: 4rem 4rem 3rem;
@@ -1714,7 +1714,7 @@ input:hover, select:hover, textarea:hover {
   }
 }
 
-@media (min-width: 1200px) and (max-width: 1570px) {
+@media (min-width: 1200px) and (max-width: 1470px) {
   .business-card {
     padding: 3.5rem 3rem;
     margin: 2rem auto;
@@ -1907,124 +1907,63 @@ input:hover, select:hover, textarea:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
+  padding: 1.2rem;
+  border-radius: 28px;
   text-decoration: none;
-  color: var(--dynamic-text-color, #f8fafc);
+  color: #ffffff;
   font-family: var(--dynamic-font-family, inherit);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  width: 110px;
-  height: 110px;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(15px);
+  width: 120px;
+  height: 120px;
   cursor: pointer;
   position: relative;
-  overflow: hidden;
   font-size: 0.9rem;
 }
 
 .apple-maps-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
-  transform: translateY(-1px);
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    inset 0 2px 6px rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.6);
   text-decoration: none;
 }
 
-.maps-icon {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle, elegant border */
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+.map-icon {
+  font-size: 3.2rem;
+  margin-bottom: 0.6rem;
+  color: #e74c3c;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+  transition: all 0.3s ease;
 }
 
-.map-background {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%); /* Elegant blue gradient */
-  border-radius: 7px;
-  overflow: hidden;
-}
-
-.map-route {
-  position: absolute;
-  background: rgba(255, 255, 255, 0.5); /* Clearer route color */
-  border-radius: 1px;
-}
-
-.route-1 {
-  width: 22px;
-  height: 2px;
-  top: 10px;
-  left: 6px;
-  transform: rotate(-15deg);
-}
-
-.route-2 {
-  width: 18px;
-  height: 2px;
-  top: 20px;
-  left: 10px;
-  transform: rotate(25deg);
-}
-
-.route-3 {
-  width: 16px;
-  height: 2px;
-  top: 28px;
-  left: 8px;
-  transform: rotate(-35deg);
-}
-
-.location-dot {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  width: 10px;
-  height: 10px;
-  background: #f87171; /* Softer red tone */
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  animation: locationPulse 2s ease-in-out infinite;
-}
-
-@keyframes locationPulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  }
-  50% {
-    transform: scale(1.15);
-    box-shadow: 0 1px 6px rgba(248, 113, 113, 0.4);
-  }
+.apple-maps-btn:hover .map-icon {
+  transform: scale(1.15);
+  color: #c0392b;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
 }
 
 .maps-text {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 800;
   text-align: center;
-  color: inherit;
+  color: #ffffff;
   line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  font-family: var(--dynamic-font-family, inherit);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.apple-maps-btn:hover .map-background {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); /* Deeper blue on hover */
-}
-
-.apple-maps-btn:hover .location-dot {
-  background: #ef4444; /* Brighter red on hover */
-  animation-duration: 1.2s;
+.apple-maps-btn:hover .maps-text {
+  transform: translateY(-2px) scale(1.05);
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* Mobile Optimizations */
@@ -2032,7 +1971,7 @@ input:hover, select:hover, textarea:hover {
   .business-meta .meta-content {
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
   .business-meta .meta-info {
@@ -2041,26 +1980,21 @@ input:hover, select:hover, textarea:hover {
 
   .map-find-container {
     align-self: center;
-    min-width: 80px;
+    min-width: 90px;
     margin-left: 0;
   }
 
   .apple-maps-btn {
-    width: 80px;
-    height: 80px;
-    padding: 0.8rem;
+    width: 90px;
+    height: 90px;
+    padding: 1rem;
+    border-radius: 22px;
+    border-width: 2px;
   }
 
-  .maps-icon {
-    width: 32px;
-    height: 32px;
-  }
-
-  .location-dot {
-    top: 12px;
-    left: 12px;
-    width: 8px;
-    height: 8px;
+  .map-icon {
+    font-size: 2.4rem;
+    margin-bottom: 0.4rem;
   }
 
   .maps-text {
@@ -2072,7 +2006,7 @@ input:hover, select:hover, textarea:hover {
   .business-meta .meta-content {
     flex-direction: column;
     align-items: center;
-    gap: 1.2rem;
+    gap: 1.4rem;
   }
 
   .business-meta .meta-info {
@@ -2081,24 +2015,22 @@ input:hover, select:hover, textarea:hover {
 
   .map-find-container {
     align-self: center;
-    min-width: 90px;
+    min-width: 100px;
   }
 
   .apple-maps-btn {
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 100px;
+    border-radius: 24px;
   }
 
-  .maps-icon {
-    width: 36px;
-    height: 36px;
+  .map-icon {
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
   }
 
-  .location-dot {
-    top: 13px;
-    left: 13px;
-    width: 9px;
-    height: 9px;
+  .maps-text {
+    font-size: 0.8rem;
   }
 }
 
