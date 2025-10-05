@@ -940,7 +940,7 @@ body {
   top: -2px; /* Negative value moves it up, positive moves it down */
 }
 
-@media (max-width: 1350px) {
+@media (max-width: 1351px) {
   .navbar {
     flex-direction: column;
     align-items: center;
