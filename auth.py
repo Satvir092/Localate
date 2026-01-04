@@ -124,7 +124,7 @@ def signup():
             else:
                 flash(
                     'An account with this email already exists but is not verified. '
-                    'Please check your email or resend the verification email.',
+                    'Check your email or resend the verification email with the button below.',
                 'warning'
                 )
                 session['unverified_email'] = email
