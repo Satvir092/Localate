@@ -107,6 +107,60 @@
     </section>
   </main>
 
+<section class="profile-showcase">
+        <!-- Floating elements for visual flair -->
+        <div class="floating-element floating-element-1"></div>
+        <div class="floating-element floating-element-2"></div>
+        <div class="floating-element floating-element-3"></div>
+        
+        <div class="showcase-container">
+            <div class="showcase-content">
+                <div class="showcase-text">
+                    <h2>Beautiful, Custom Business Profiles</h2>
+                    <p>Create a stunning online presence that reflects your brand. Showcase your services, collect reviews, and connect with customers through professionally designed profiles that you control.</p>
+                </div>
+                
+                <div class="profile-mockup">
+                    <div class="mockup-container">
+                        <div class="profile-image">
+                            <div class="image-carousel">
+                                <div class="carousel-container" id="carouselContainer">
+                                    <div class="carousel-slide">
+                                        <img src="{{ url_for('static', filename='act_cuts.png') }}" alt="Business Profile 1" />
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="{{ url_for('static', filename='sprint.png') }}" alt="Business Profile 2" />
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="{{ url_for('static', filename='loc_display.png') }}" alt="Business Profile 3" />
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="{{ url_for('static', filename='nail_display.png') }}" alt="Business Profile 4" />
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="{{ url_for('static', filename='auto_display.png') }}" alt="Business Profile 5" />
+                                    </div>
+                                </div>
+                                
+                                <button class="carousel-nav carousel-prev" onclick="prevSlide()">‹</button>
+                                <button class="carousel-nav carousel-next" onclick="nextSlide()">›</button>
+                                
+                                <div class="carousel-dots">
+                                    <div class="carousel-dot active" onclick="currentSlide(1)"></div>
+                                    <div class="carousel-dot" onclick="currentSlide(2)"></div>
+                                    <div class="carousel-dot" onclick="currentSlide(3)"></div>
+                                    <div class="carousel-dot" onclick="currentSlide(4)"></div>
+                                    <div class="carousel-dot" onclick="currentSlide(5)"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Fallback text if no images are loaded -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
   <section class="more-info">
   <div class="info-container">
     <h2>Customers</h2>
@@ -270,7 +324,42 @@
     </div>
   </div>
 </section>
+    <script>
+        let currentSlideIndex = 0;
+        const totalSlides = 5;
 
+        function showSlide(index) {
+            const container = document.getElementById('carouselContainer');
+            const dots = document.querySelectorAll('.carousel-dot');
+            
+            // Update slide position
+            container.style.transform = `translateX(-${index * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            
+            currentSlideIndex = index;
+        }
+
+        function nextSlide() {
+            const nextIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(nextIndex);
+        }
+
+        function prevSlide() {
+            const prevIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(prevIndex);
+        }
+
+        function currentSlide(index) {
+            showSlide(index - 1);
+        }
+
+        // Auto-play functionality (optional)
+        setInterval(nextSlide, 5000); // Auto advance every 5 seconds
+    </script>
 <script>
 function setupAutocomplete(inputId, listId, formId) {
   const input = document.getElementById(inputId);

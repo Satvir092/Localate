@@ -1126,3 +1126,421 @@ body {
     font-size: 0.9rem;
   }
 }
+ .profile-showcase {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .profile-showcase::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(120, 119, 198, 0.6), transparent);
+        }
+
+        .showcase-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .showcase-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .showcase-text {
+            color: white;
+        }
+
+        .showcase-text h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .showcase-text p {
+            font-size: 1.15rem;
+            margin-bottom: 40px;
+            opacity: 0.85;
+            line-height: 1.7;
+            color: #cbd5e1;
+            font-weight: 300;
+        }
+
+        .profile-mockup {
+            position: relative;
+        }
+
+        .mockup-container {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            box-shadow: 
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(120, 119, 198, 0.15);
+            overflow: hidden;
+            transform: perspective(1000px) rotateY(-8deg) rotateX(3deg);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 450px;
+            margin-left: auto;
+            position: relative;
+        }
+
+        .mockup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .mockup-container:hover {
+            transform: perspective(1000px) rotateY(-2deg) rotateX(1deg) scale(1.02);
+            box-shadow: 
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 35px 70px -12px rgba(0, 0, 0, 0.6),
+                0 0 100px rgba(120, 119, 198, 0.25);
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 420px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shine 3s infinite;
+        }
+
+        /* Image carousel */
+        .image-carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+            border-radius: 15px;
+            padding: 20px;
+            background: white;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .carousel-prev {
+            left: 50px;
+        }
+
+        .carousel-next {
+            right: 50px;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        /* Add floating elements for extra flair */
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(120, 119, 198, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .floating-element-1 {
+            top: 10%;
+            right: 15%;
+            width: 100px;
+            height: 100px;
+            animation: float-1 6s ease-in-out infinite;
+        }
+
+        .floating-element-2 {
+            bottom: 20%;
+            left: 10%;
+            width: 60px;
+            height: 60px;
+            animation: float-2 8s ease-in-out infinite reverse;
+        }
+
+        .floating-element-3 {
+            top: 50%;
+            right: 5%;
+            width: 40px;
+            height: 40px;
+            animation: float-3 4s ease-in-out infinite;
+        }
+
+        @keyframes float-1 {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+        }
+
+        @keyframes float-2 {
+            0%, 100% { transform: translateX(0px) translateY(0px); opacity: 0.4; }
+            50% { transform: translateX(15px) translateY(-15px); opacity: 0.7; }
+        }
+
+        @keyframes float-3 {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+        }
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+@media (max-width: 768px) {
+    .profile-showcase {
+        padding: 40px 0; /* Reduced padding */
+    }
+
+    .showcase-container {
+        padding: 0 15px; /* Reduced horizontal padding */
+        max-width: 100%; /* Ensure full width usage */
+    }
+
+    .showcase-content {
+        grid-template-columns: 1fr;
+        gap: 30px; /* Reduced gap */
+        text-align: center;
+    }
+
+    .showcase-text h2 {
+        font-size: 2rem; /* Further reduced for smaller screens */
+        margin-bottom: 15px;
+    }
+
+    .showcase-text p {
+        font-size: 1rem; /* Smaller text */
+        margin-bottom: 25px;
+        padding: 0 10px; /* Add padding to prevent edge touching */
+    }
+
+    .mockup-container {
+        transform: none;
+        max-width: calc(100vw - 30px); /* Ensure it fits within viewport */
+        width: 100%;
+        margin: 0 auto;
+        box-shadow: 
+            0 0 0 1px rgba(255, 255, 255, 0.05),
+            0 15px 30px -12px rgba(0, 0, 0, 0.4),
+            0 0 60px rgba(120, 119, 198, 0.1);
+    }
+
+    .mockup-container:hover {
+        transform: scale(1.01); /* Reduced scale to prevent overflow */
+    }
+
+    .profile-image {
+        height: 250px; /* Further reduced height */
+    }
+
+    .carousel-nav {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    .carousel-prev {
+        left: 8px; /* Moved closer to edge */
+    }
+
+    .carousel-next {
+        right: 8px; /* Moved closer to edge */
+    }
+
+    .carousel-dots {
+        bottom: 8px;
+    }
+
+    .carousel-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .carousel-slide img {
+        padding: 8px; /* Reduced padding */
+        border-radius: 6px;
+    }
+
+    .floating-element-1, 
+    .floating-element-2, 
+    .floating-element-3 {
+        display: none; /* Hide floating elements on mobile */
+    }
+}
+
+/* Additional mobile breakpoint for very small screens */
+@media (max-width: 480px) {
+    .profile-showcase {
+        padding: 30px 0;
+    }
+
+    .showcase-container {
+        padding: 0 10px; /* Even less padding for small screens */
+    }
+
+    .showcase-text h2 {
+        font-size: 1.8rem;
+    }
+
+    .showcase-text p {
+        font-size: 0.95rem;
+        padding: 0 5px;
+    }
+
+    .mockup-container {
+        max-width: calc(100vw - 20px); /* Tighter constraints */
+    }
+
+    .profile-image {
+        height: 220px;
+    }
+
+    .carousel-nav {
+        width: 28px;
+        height: 28px;
+        font-size: 10px;
+    }
+
+    .carousel-prev {
+        left: 5px;
+    }
+
+    .carousel-next {
+        right: 5px;
+    }
+}
+
+/* Fix for horizontal overflow */
+.profile-showcase {
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.showcase-container {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ensure images don't break layout */
+.carousel-slide img {
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}

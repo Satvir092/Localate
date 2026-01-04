@@ -111,10 +111,26 @@ def signup():
         if get_user_by_username_or_email(username):
             flash('Username already exists.')
             return redirect(url_for('auth.signup'))
+        
+        existing_user = get_user_by_username_or_email(email)
 
-        if get_user_by_username_or_email(email):
-            flash('Email already registered.')
-            return redirect(url_for('auth.signup'))
+
+        if existing_user:
+            if existing_user.confirmed:
+
+                flash('Email already registered. Please log in.', 'error')
+                return redirect(url_for('auth.login'))
+            
+            else:
+                flash(
+                    'An account with this email already exists but is not verified. '
+                    'Please check your email or resend the verification email.',
+                'warning'
+                )
+                session['unverified_email'] = email
+                session['show_resend_button'] = True
+                return redirect(url_for('auth.signup'))
+
 
         password_hash = generate_password_hash(password)
         supabase = current_app.supabase
